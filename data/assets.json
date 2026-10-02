@@ -1,0 +1,52 @@
+{
+  "updated": "March 2026",
+  "assets": [
+    {
+      "id": "insurance-story-tracker",
+      "title": "Insurance Story Tracker",
+      "category": "Insurance",
+      "type": "Google Sheet",
+      "description": "Current story pipeline and status",
+      "url": "https://docs.google.com/spreadsheets/d/11EsVxXvsVnr5y73pml5UPcVdAhkT1VZBAxsIV_kjbow/edit",
+      "tags": ["pipeline", "daily"],
+      "favorite": true
+    },
+    {
+      "id": "phase-3-visual-scripts",
+      "title": "Phase 3 Visual Scripts",
+      "category": "Insurance",
+      "type": "Google Drive",
+      "description": "Visual scripts, collateral, and production notes",
+      "url": "https://drive.google.com/",
+      "tags": ["phase 3", "visuals"],
+      "favorite": true
+    },
+    {
+      "id": "google-docs",
+      "title": "Google Docs",
+      "category": "Google Workspace",
+      "type": "Workspace",
+      "description": "Open Docs and research treatments",
+      "url": "https://docs.google.com/document/u/0/",
+      "tags": ["docs"]
+    },
+    {
+      "id": "google-sheets",
+      "title": "Google Sheets",
+      "category": "Google Workspace",
+      "type": "Workspace",
+      "description": "Open Sheets and trackers",
+      "url": "https://docs.google.com/spreadsheets/u/0/",
+      "tags": ["sheets"]
+    },
+    {
+      "id": "telegram",
+      "title": "Telegram",
+      "category": "Operations",
+      "type": "Messaging",
+      "description": "Open Telegram operations",
+      "url": "https://web.telegram.org/",
+      "tags": ["operations", "messaging"]
+    }
+  ]
+}
