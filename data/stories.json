@@ -15,7 +15,7 @@
       "category": "Insurance fraud and abuse / staged luxury-vehicle claims",
       "actors": "Alfiya Zuckerman; Ruben Tamrazian; Vahe Muradkhanyan; Ararat Chirkinian; California Department of Insurance; California Department of Fish and Wildlife biologist; Glendale Police Department; California Highway Patrol; San Bernardino County District Attorney; affected insurance companies",
       "doc": "https://docs.google.com/document/d/1B9iMQ75Zt7yfyqwuNKsKH8a7gdTtkUsIln1iX4W7Kgo/edit",
-      "telegram": "https://t.me/mehyanbot?start=story_operation-bear-claw-bear-suit-luxury-car-insurance-fraud",
+      "telegram": "",
       "telegramNote": "https://t.me/mehyanbot?text=Insurance%20story%20note%20%E2%80%94%20ID%3A%20operation-bear-claw-bear-suit-luxury-car-insurance-fraud%20%E2%80%94%20what%20I%20like%3A%20",
       "source": "https://www.insurance.ca.gov/0400-news/0100-press-releases/2026/release017-2026.cfm",
       "sources": [
@@ -33,7 +33,10 @@
         "Phase 3",
         "accepted",
         "Phase 3"
-      ]
+      ],
+      "telegramTopicLink": "",
+      "telegramTopicId": "",
+      "telegramFirstMessageId": ""
     },
     {
       "id": "kenneth-tran-san-jose-road-rage-dashcam-insurance-fraud",
@@ -48,7 +51,7 @@
       "category": "Insurance fraud and abuse / road rage and staged-claim mechanics",
       "actors": "Kenneth Pham Tran; semi-truck driver; independent 911 witness; San Jose CHP; California Department of Insurance Task Force; Santa Clara County District Attorney Jeff Rosen; Insurance Commissioner Ricardo Lara; Tran’s insurance company",
       "doc": "https://docs.google.com/document/d/1Q6z2ncpVXhdz2H_Jur3r43PdDEuwG92yzo-c2_IFRVE/edit",
-      "telegram": "https://t.me/mehyanbot?start=story_kenneth-tran-san-jose-road-rage-dashcam-insurance-fraud",
+      "telegram": "",
       "telegramNote": "https://t.me/mehyanbot?text=Insurance%20story%20note%20%E2%80%94%20ID%3A%20kenneth-tran-san-jose-road-rage-dashcam-insurance-fraud%20%E2%80%94%20what%20I%20like%3A%20",
       "source": "https://www.insurance.ca.gov/0400-news/0100-press-releases/2026/release023-2026.cfm",
       "sources": [
@@ -66,7 +69,10 @@
         "Phase 3",
         "accepted",
         "Phase 3"
-      ]
+      ],
+      "telegramTopicLink": "",
+      "telegramTopicId": "",
+      "telegramFirstMessageId": ""
     },
     {
       "id": "adrian-alexander-nyc-trip-and-fall-surgery-funding-fraud",
@@ -96,7 +102,10 @@
       "tags": [
         "Phase 2",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/88?thread=87&topic",
+      "telegramTopicId": "87",
+      "telegramFirstMessageId": "88"
     },
     {
       "id": "andrew-hopper-cornwall-dry-ice-leg-amputation-insurance-fraud",
@@ -126,7 +135,10 @@
       "tags": [
         "Phase 2",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/221?thread=220&topic",
+      "telegramTopicId": "220",
+      "telegramFirstMessageId": "221"
     },
     {
       "id": "adam-otrok-florida-luxury-vehicle-premium-refund-fraud",
@@ -156,7 +168,10 @@
       "tags": [
         "Phase 2",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/35?thread=34&topic",
+      "telegramTopicId": "34",
+      "telegramFirstMessageId": "35"
     },
     {
       "id": "chadrick-mundy-mundy-funeral-home-burial-policy-fraud",
@@ -171,7 +186,7 @@
       "category": "Insurance fraud and abuse / burial-policy claims",
       "actors": "Chadrick “Chad” Mundy; Mundy Funeral Home; elderly and vulnerable clients; bereaved families",
       "doc": "https://docs.google.com/document/d/1onQ2j74jNz19IFlfmrWHQAp5tjw0f8RHoBvIOFXixgM/edit",
-      "telegram": "https://t.me/mehyanbot/3660/3633",
+      "telegram": "",
       "telegramNote": "https://t.me/mehyanbot?text=Insurance%20story%20note%20%E2%80%94%20ID%3A%20chadrick-mundy-mundy-funeral-home-burial-policy-fraud%20%E2%80%94%20what%20I%20like%3A%20",
       "source": "https://tbinewsroom.com/2026/09/23/tbi-investigation-results-in-multiple-count-indictment-of-jamestown-funeral-home-owner/",
       "sources": [
@@ -186,7 +201,10 @@
       "tags": [
         "Phase 2",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "",
+      "telegramTopicId": "",
+      "telegramFirstMessageId": ""
     },
     {
       "id": "chadrick-mundy-mundy-funeral-home-burial-policy-fraud",
@@ -201,7 +219,7 @@
       "category": "Insurance fraud and abuse / burial-policy claims",
       "actors": "Chadrick “Chad” Mundy; Mundy Funeral Home; TBI; elderly/vulnerable clients",
       "doc": "https://docs.google.com/document/d/1onQ2j74jNz19IFlfmrWHQAp5tjw0f8RHoBvIOFXixgM/edit",
-      "telegram": "https://t.me/mehyanbot/3660/3633",
+      "telegram": "",
       "telegramNote": "https://t.me/mehyanbot?text=Insurance%20story%20note%20%E2%80%94%20ID%3A%20chadrick-mundy-mundy-funeral-home-burial-policy-fraud%20%E2%80%94%20what%20I%20like%3A%20",
       "source": "https://tbinewsroom.com/2026/09/23/tbi-investigation-results-in-multiple-count-indictment-of-jamestown-funeral-home-owner/",
       "sources": [
@@ -216,7 +234,10 @@
       "tags": [
         "Phase 2",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "",
+      "telegramTopicId": "",
+      "telegramFirstMessageId": ""
     },
     {
       "id": "igor-vorotinov-faked-death-life-insurance",
@@ -246,7 +267,10 @@
       "tags": [
         "Phase 2",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/86?thread=85&topic",
+      "telegramTopicId": "85",
+      "telegramFirstMessageId": "86"
     },
     {
       "id": "jacob-mcnabb-bakersfield-repeated-auto-collision-claims",
@@ -276,7 +300,10 @@
       "tags": [
         "Phase 2",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/131?thread=130&topic",
+      "telegramTopicId": "130",
+      "telegramFirstMessageId": "131"
     },
     {
       "id": "marcus-blair-south-carolina-prison-cell-property-claims-fraud",
@@ -306,7 +333,10 @@
       "tags": [
         "Phase 2",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/129?thread=128&topic",
+      "telegramTopicId": "128",
+      "telegramFirstMessageId": "129"
     },
     {
       "id": "thomas-hoyt-virginia-insurance-premium-wire-fraud",
@@ -321,7 +351,7 @@
       "category": "Insurance fraud and abuse / premium diversion",
       "actors": "Thomas Robert Hoyt; Hoyt Insurance Agency; unnamed Virginia/Maryland clients; insurance carriers; U.S. Attorney’s Office for the Eastern District of Virginia; U.S. District Court for the Eastern District of Virginia",
       "doc": "https://docs.google.com/document/d/1zsghdKdApyUXGEc8wpQOY5Wk-JCbtrKswdbyhXe7c4A/edit",
-      "telegram": "https://t.me/mehyanbot?start=story_thomas-hoyt-virginia-insurance-premium-wire-fraud",
+      "telegram": "https://t.me/c/3984316484/20?thread=19&topic",
       "telegramNote": "https://t.me/mehyanbot?text=Insurance%20story%20note%20%E2%80%94%20ID%3A%20thomas-hoyt-virginia-insurance-premium-wire-fraud%20%E2%80%94%20what%20I%20like%3A%20",
       "source": "https://www.justice.gov/usao-edva/pr/former-insurance-agent-pleads-guilty-wire-fraud",
       "sources": [
@@ -336,7 +366,10 @@
       "tags": [
         "Phase 2",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/20?thread=19&topic",
+      "telegramTopicId": "19",
+      "telegramFirstMessageId": "20"
     },
     {
       "id": "nunzio-florida-life-insurance-nonemployee-deceased-claims",
@@ -366,7 +399,10 @@
       "tags": [
         "Phase 2",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/33?thread=32&topic",
+      "telegramTopicId": "32",
+      "telegramFirstMessageId": "33"
     },
     {
       "id": "huiracocha-murillo-nyc-staged-highway-crashes-insurance-fraud",
@@ -381,7 +417,7 @@
       "category": "Insurance fraud and abuse / staged auto crashes",
       "actors": "Jaime Huiracocha; Victor Murillo; 47-year-old Long Island woman; 44-year-old New Jersey tractor-trailer driver; 31-year-old Queens woman; Maikel Martinez; Ivon Matus-Martinez; Queens DA Melinda Katz; Governor Kathy Hochul; NYPD; NY DFS investigators; Queens Supreme Court Justice Jerry Iannece",
       "doc": "https://docs.google.com/document/d/1f32siBbw9_ngAXfSbhIeXcIjfXP8Vwu4LpEo5Mne7FI/edit",
-      "telegram": "https://t.me/mehyanbot?start=story_huiracocha-murillo-nyc-staged-highway-crashes-insurance-fraud",
+      "telegram": "",
       "telegramNote": "https://t.me/mehyanbot?text=Insurance%20story%20note%20%E2%80%94%20ID%3A%20huiracocha-murillo-nyc-staged-highway-crashes-insurance-fraud%20%E2%80%94%20what%20I%20like%3A%20",
       "source": "https://www.governor.ny.gov/news/governor-hochul-and-queens-county-district-attorney-melinda-katz-announce-sentencings",
       "sources": [
@@ -398,7 +434,10 @@
       "tags": [
         "Phase 2",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "",
+      "telegramTopicId": "",
+      "telegramFirstMessageId": ""
     },
     {
       "id": "victor-bannerman-greensboro-forged-towing-invoice-erie-claim",
@@ -413,7 +452,7 @@
       "category": "Insurance",
       "actors": "Victor Deontray Bannerman; Kirk Sineath Towing; Erie Insurance Co.; Erie adjuster",
       "doc": "https://docs.google.com/document/d/10HiYKoKAoctO7TMlO-YKRKp4RLZCwzld9GcSQ1PpeTE/edit",
-      "telegram": "https://t.me/mehyanbot?start=story_victor-bannerman-greensboro-forged-towing-invoice-erie-claim",
+      "telegram": "",
       "telegramNote": "https://t.me/mehyanbot?text=Insurance%20story%20note%20%E2%80%94%20ID%3A%20victor-bannerman-greensboro-forged-towing-invoice-erie-claim%20%E2%80%94%20what%20I%20like%3A%20",
       "source": "https://www.ncdoi.gov/news/press-releases/2026/09/02/guilford-county-man-arrested-multiple-fraud-related-charges",
       "sources": [
@@ -429,7 +468,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "",
+      "telegramTopicId": "",
+      "telegramFirstMessageId": ""
     },
     {
       "id": "adrian-peebles-st-louis-night-staged-auto-accidents",
@@ -462,7 +504,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/63?thread=62&topic",
+      "telegramTopicId": "62",
+      "telegramFirstMessageId": "63"
     },
     {
       "id": "la-county-state-farm-eaton-palisades-claims-lawsuit",
@@ -477,7 +522,7 @@
       "category": "Insurance",
       "actors": "Los Angeles County; State Farm General Insurance Company; Eaton Fire survivors; Palisades Fire survivors; County Counsel; California Department of Insurance; Los Angeles County Supervisors Lindsey P. Horvath and Kathryn Barger",
       "doc": "https://docs.google.com/document/d/19LkrvMwRrxF0p6gy63u5XhcI4wTBS_mcyvs10tj_Adw/edit",
-      "telegram": "https://t.me/mehyanbot?start=story_la-county-state-farm-eaton-palisades-claims-lawsuit",
+      "telegram": "",
       "telegramNote": "https://t.me/mehyanbot?text=Insurance%20story%20note%20%E2%80%94%20ID%3A%20la-county-state-farm-eaton-palisades-claims-lawsuit%20%E2%80%94%20what%20I%20like%3A%20",
       "source": "https://lacounty.gov/2026/08/31/los-angeles-county-sues-state-farm-for-unfair-business-practices-in-handling-2025-wildfire-claims/",
       "sources": [
@@ -493,7 +538,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "",
+      "telegramTopicId": "",
+      "telegramFirstMessageId": ""
     },
     {
       "id": "douglas-oconnor-alabama-dental-office-explosion-insurance-fraud",
@@ -523,7 +571,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/156?thread=155&topic",
+      "telegramTopicId": "155",
+      "telegramFirstMessageId": "156"
     },
     {
       "id": "ali-elmezayen-port-of-los-angeles-life-insurance-murders",
@@ -556,7 +607,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/197?thread=196&topic",
+      "telegramTopicId": "196",
+      "telegramFirstMessageId": "197"
     },
     {
       "id": "jhoiner-rodriguez-celis-upland-staged-collisions-innocent-driver",
@@ -584,7 +638,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/80?thread=79&topic",
+      "telegramTopicId": "79",
+      "telegramFirstMessageId": "80"
     },
     {
       "id": "remonica-earl-nc-altered-medical-records-disability-claims",
@@ -599,7 +656,7 @@
       "category": "Insurance",
       "actors": "Remonica Corlishia Earl; UNUM Insurance Co.; Atrium Health; OrthoCarolina; NC DOI Criminal Investigations Division; Mecklenburg County District Court",
       "doc": "https://docs.google.com/document/d/1iOLuVCxNC0_pyHC9awhM29pknMTidX6mOqel8PTBHaw/edit",
-      "telegram": "https://t.me/mehyanbot?start=story_remonica-earl-nc-altered-medical-records-disability-claims",
+      "telegram": "",
       "telegramNote": "https://t.me/mehyanbot?text=Insurance%20story%20note%20%E2%80%94%20ID%3A%20remonica-earl-nc-altered-medical-records-disability-claims%20%E2%80%94%20what%20I%20like%3A%20",
       "source": "https://www.ncdoi.gov/news/press-releases/2026/09/09/mecklenburg-county-woman-charged-medical-insurance-fraud",
       "sources": [
@@ -614,7 +671,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "",
+      "telegramTopicId": "",
+      "telegramFirstMessageId": ""
     },
     {
       "id": "zenaida-nieves-cordero-apple-insurance-client-funds-theft",
@@ -645,7 +705,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/53?thread=52&topic",
+      "telegramTopicId": "52",
+      "telegramFirstMessageId": "53"
     },
     {
       "id": "joseph-arthurs-vgn-enterprise-workers-comp-premium-fraud",
@@ -660,7 +723,7 @@
       "category": "Insurance",
       "actors": "Joseph Arthurs; VGN Enterprise Corp.; Suffolk County District Attorney Raymond A. Tierney; New York State Inspector General; Wesco Insurance Co.; New York Labor Department",
       "doc": "https://docs.google.com/document/d/1Wuy7u2Y5bNRS_xfZAcCwh1NXHRcXnq6QT7N7sg1GxeU/edit",
-      "telegram": "https://t.me/mehyanbot?start=story_joseph-arthurs-vgn-enterprise-workers-comp-premium-fraud",
+      "telegram": "",
       "telegramNote": "https://t.me/mehyanbot?text=Insurance%20story%20note%20%E2%80%94%20ID%3A%20joseph-arthurs-vgn-enterprise-workers-comp-premium-fraud%20%E2%80%94%20what%20I%20like%3A%20",
       "source": "https://www.suffolkcountyda.org/patchogue-employer-charged-with-workers-comp-insurance-fraud/",
       "sources": [
@@ -676,7 +739,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "",
+      "telegramTopicId": "",
+      "telegramFirstMessageId": ""
     },
     {
       "id": "banito-reyes-south-carolina-fake-policies-unlicensed-producer-scheme",
@@ -704,7 +770,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/84?thread=83&topic",
+      "telegramTopicId": "83",
+      "telegramFirstMessageId": "84"
     },
     {
       "id": "boy-scouts-abuse-insurer-funded-bankruptcy-settlement",
@@ -737,7 +806,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/227?thread=226&topic",
+      "telegramTopicId": "226",
+      "telegramFirstMessageId": "227"
     },
     {
       "id": "california-auto-insurance-marital-status-rating-reform",
@@ -752,7 +824,7 @@
       "category": "Insurance",
       "actors": "Ricardo Lara; California DOI; auto insurers; California drivers",
       "doc": "https://docs.google.com/document/d/1kqduGaiHzlzeiNIwgrsArSyYGNBSWLpWcoCVdLXQ-Cw/edit",
-      "telegram": "https://t.me/mehyanbot?start=story_california-auto-insurance-marital-status-rating-reform",
+      "telegram": "",
       "telegramNote": "https://t.me/mehyanbot?text=Insurance%20story%20note%20%E2%80%94%20ID%3A%20california-auto-insurance-marital-status-rating-reform%20%E2%80%94%20what%20I%20like%3A%20",
       "source": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxQNm9iMVNFdGZRV01paFY1ajZOUlByT1NDS25MMGlBeHAyLXZvQ0NVbkdvMUhHbWVzcGdLUVhRNUVmckNCWTc2czQtY1NYbUQ0c1Fhdmg4UUF1ZENCeFA4d09Cei1DMWJPZi0tT1QyUkJteTIxUWlzVXNMM2JjVXZBNjZrZ3B5QldZMmJv?oc=5",
       "sources": [
@@ -767,7 +839,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "",
+      "telegramTopicId": "",
+      "telegramFirstMessageId": ""
     },
     {
       "id": "texas-home-hardening-insurance-discounts",
@@ -782,7 +857,7 @@
       "category": "Insurance",
       "actors": "Texas DOI; insurers; homeowners",
       "doc": "https://docs.google.com/document/d/1FE-E2_VGFnY_7jSY-CMaCrL7DkOBUnQeYQw6XFEQkgA/edit",
-      "telegram": "https://t.me/mehyanbot?start=story_texas-home-hardening-insurance-discounts",
+      "telegram": "",
       "telegramNote": "https://t.me/mehyanbot?text=Insurance%20story%20note%20%E2%80%94%20ID%3A%20texas-home-hardening-insurance-discounts%20%E2%80%94%20what%20I%20like%3A%20",
       "source": "https://news.google.com/rss/articles/CBMiYkFVX3lxTE1lbElrSEh1VV9iZGduWmJiUi1WV2pJM29PMlBkdDl1MzIxUmM5emF6bi0yRDZGMWpDdGZKX0Qxb1BBV2dDRURoZDRlUEM4S2JwcHhDdUV4QndxT0dZdnk5WlJR?oc=5",
       "sources": [
@@ -797,7 +872,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "",
+      "telegramTopicId": "",
+      "telegramFirstMessageId": ""
     },
     {
       "id": "chapman-nationwide-indiana-tornado-home-rebuild-deadline",
@@ -812,7 +890,7 @@
       "category": "Insurance",
       "actors": "Robert Lee Chapman; Barbara Chapman; Nationwide Mutual Fire Insurance Company; Court of Appeals of Indiana; LaPorte Superior Court; Nationwide adjuster Robert Greenlee; Donan Engineering; RM Consulting and Engineering",
       "doc": "https://docs.google.com/document/d/1_9zi2URIjtBk5L5eeZEduiqYO_XLC44PmN5sQNzDxR0/edit",
-      "telegram": "https://t.me/mehyanbot?start=story_chapman-nationwide-indiana-tornado-home-rebuild-deadline",
+      "telegram": "",
       "telegramNote": "https://t.me/mehyanbot?text=Insurance%20story%20note%20%E2%80%94%20ID%3A%20chapman-nationwide-indiana-tornado-home-rebuild-deadline%20%E2%80%94%20what%20I%20like%3A%20",
       "source": "https://public.courts.in.gov/Decisions/api/Document/Opinion?Id=p90rTe4uVqLdN6YMYAvG2l_b73sU9xlibhS74bhh5MjOg_PJ7BsQgNXPOWZMIcCB0",
       "sources": [
@@ -828,7 +906,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "",
+      "telegramTopicId": "",
+      "telegramFirstMessageId": ""
     },
     {
       "id": "henry-clyburn-nc-fake-doctor-note-progressive-claim",
@@ -843,7 +924,7 @@
       "category": "Insurance",
       "actors": "Henry Lee Clyburn Jr.; Progressive Insurance; NC DOI Criminal Investigations Division; Mecklenburg County District Court",
       "doc": "https://docs.google.com/document/d/1DVRTjrFfkxP1HDlkejtPYgSda9bOM5713t0eZk4pdzg/edit",
-      "telegram": "https://t.me/mehyanbot?start=story_henry-clyburn-nc-fake-doctor-note-progressive-claim",
+      "telegram": "",
       "telegramNote": "https://t.me/mehyanbot?text=Insurance%20story%20note%20%E2%80%94%20ID%3A%20henry-clyburn-nc-fake-doctor-note-progressive-claim%20%E2%80%94%20what%20I%20like%3A%20",
       "source": "https://www.ncdoi.gov/news/press-releases/2026/09/16/charlotte-man-faces-insurance-fraud-charge-over-false-doctors-note",
       "sources": [
@@ -858,7 +939,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "",
+      "telegramTopicId": "",
+      "telegramFirstMessageId": ""
     },
     {
       "id": "joshua-willis-nc-multi-county-auto-policy-identity-fraud",
@@ -873,7 +957,7 @@
       "category": "Insurance",
       "actors": "Joshua Alexander Willis; Progressive Premier Insurance; Union County Sheriff; NC Department of Insurance; multiple dealerships and unnamed policyholders",
       "doc": "https://docs.google.com/document/d/1yt-bzlO5hLMm0x9VbWAgYURB1XmoTyrdy349kMufzPk/edit",
-      "telegram": "https://t.me/mehyanbot?start=story_joshua-willis-nc-multi-county-auto-policy-identity-fraud",
+      "telegram": "",
       "telegramNote": "https://t.me/mehyanbot?text=Insurance%20story%20note%20%E2%80%94%20ID%3A%20joshua-willis-nc-multi-county-auto-policy-identity-fraud%20%E2%80%94%20what%20I%20like%3A%20",
       "source": "https://www.ncdoi.gov/news/press-releases/2026/09/21/charlotte-man-charged-multi-county-insurance-fraud-scheme",
       "sources": [
@@ -888,7 +972,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "",
+      "telegramTopicId": "",
+      "telegramFirstMessageId": ""
     },
     {
       "id": "christopher-kimberly-phelps-youtube-intentional-collisions",
@@ -918,7 +1005,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/133?thread=132&topic",
+      "telegramTopicId": "132",
+      "telegramFirstMessageId": "133"
     },
     {
       "id": "cigna-medicare-advantage-home-visit-diagnosis-codes-settlement",
@@ -951,7 +1041,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/173?thread=172&topic",
+      "telegramTopicId": "172",
+      "telegramFirstMessageId": "173"
     },
     {
       "id": "daffney-davis-nc-adjuster-claim-check-diversion",
@@ -966,7 +1059,7 @@
       "category": "Insurance",
       "actors": "Daffney Davis; Ahold Delhaize Services; Chubb-Ace American Insurance Co.; Nicole Davis; PatLou Inc.; NC DOI Criminal Investigations Division",
       "doc": "https://docs.google.com/document/d/1Ox7QQVod7-Z3ztC145zToNsZeMRB1GYJ9JWUnelGri0/edit",
-      "telegram": "https://t.me/mehyanbot?start=story_daffney-davis-nc-adjuster-claim-check-diversion",
+      "telegram": "",
       "telegramNote": "https://t.me/mehyanbot?text=Insurance%20story%20note%20%E2%80%94%20ID%3A%20daffney-davis-nc-adjuster-claim-check-diversion%20%E2%80%94%20what%20I%20like%3A%20",
       "source": "https://www.ncdoi.gov/news/press-releases/2026/09/02/cabarrus-county-woman-faces-insurance-fraud-charges",
       "sources": [
@@ -981,7 +1074,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "",
+      "telegramTopicId": "",
+      "telegramFirstMessageId": ""
     },
     {
       "id": "colin-jackson-auto-insurance-fraud-conviction",
@@ -996,7 +1092,7 @@
       "category": "Insurance",
       "actors": "Colin Jackson; Kirill Afanasyev; co-conspirators; unnamed automobile insurer; DOJ; FBI",
       "doc": "https://docs.google.com/document/d/1OW-JTnYw4OgbHn4TcNbu2K6HTsx6rQzmLi6-uQNiqzI/edit",
-      "telegram": "https://t.me/mehyanbot/3664/3637",
+      "telegram": "",
       "telegramNote": "https://t.me/mehyanbot?text=Insurance%20story%20note%20%E2%80%94%20ID%3A%20colin-jackson-auto-insurance-fraud-conviction%20%E2%80%94%20what%20I%20like%3A%20",
       "source": "https://www.justice.gov/usao-ndca/pr/colin-jackson-convicted-participating-scheme-defraud-automobile-insurance-company",
       "sources": [
@@ -1011,7 +1107,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "",
+      "telegramTopicId": "",
+      "telegramFirstMessageId": ""
     },
     {
       "id": "murray-mejia-venetian-gardens-condo-repair-kickback-insurance",
@@ -1026,7 +1125,7 @@
       "category": "Insurance",
       "actors": "Richard Thomas Murray; AP Construction Solutions; Carlos Jose Mejia; Venetian Gardens condo; condo owners",
       "doc": "https://docs.google.com/document/d/12DAbeIwZNr7MqNttZ5iYFI-IYl4VpqellsxnRkkzjQY/edit",
-      "telegram": "https://t.me/mehyanbot/3662/3635",
+      "telegram": "",
       "telegramNote": "https://t.me/mehyanbot?text=Insurance%20story%20note%20%E2%80%94%20ID%3A%20murray-mejia-venetian-gardens-condo-repair-kickback-insurance%20%E2%80%94%20what%20I%20like%3A%20",
       "source": "https://www.insurancejournal.com/news/southeast/2026/09/17/885380.htm",
       "sources": [
@@ -1041,7 +1140,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "",
+      "telegramTopicId": "",
+      "telegramFirstMessageId": ""
     },
     {
       "id": "joseph-starr-iowa-unlicensed-public-adjusting-invoices",
@@ -1071,7 +1173,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/183?thread=182&topic",
+      "telegramTopicId": "182",
+      "telegramFirstMessageId": "183"
     },
     {
       "id": "cornelius-jones-south-carolina-elderly-parking-lot-injury-claims",
@@ -1101,7 +1206,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/127?thread=126&topic",
+      "telegramTopicId": "126",
+      "telegramFirstMessageId": "127"
     },
     {
       "id": "aca-enrollment-fraud-lloyd-strong-vulnerable-consumers-2026",
@@ -1116,7 +1224,7 @@
       "category": "Insurance",
       "actors": "Cory Lloyd; Steven Strong; Dafud Iza; vulnerable low-income consumers experiencing homelessness, unemployment, mental health and substance-use disorders; IRS-CI; FBI; HHS-OIG; U.S. Attorney Jason A. Reding Quiñones; DOJ Criminal Division",
       "doc": "https://docs.google.com/document/d/1C0FjP6OcQ_fI1rVpDvj7SSOVQ5YUWtOTRY8h6ChYcNI/edit",
-      "telegram": "https://t.me/mehyanbot?start=story_aca-enrollment-fraud-lloyd-strong-vulnerable-consumers-2026",
+      "telegram": "",
       "telegramNote": "https://t.me/mehyanbot?text=Insurance%20story%20note%20%E2%80%94%20ID%3A%20aca-enrollment-fraud-lloyd-strong-vulnerable-consumers-2026%20%E2%80%94%20what%20I%20like%3A%20",
       "source": "https://www.irs.gov/compliance/criminal-investigation/president-of-insurance-brokerage-firm-and-ceo-of-marketing-company-sentenced-in-233m-affordable-care-act-enrollment-fraud-scheme-that-preyed-on-vulnerable-consumers",
       "sources": [
@@ -1131,7 +1239,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "",
+      "telegramTopicId": "",
+      "telegramFirstMessageId": ""
     },
     {
       "id": "cory-martin-brandy-odom-life-insurance-murder",
@@ -1164,7 +1275,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/22?thread=21&topic",
+      "telegramTopicId": "21",
+      "telegramFirstMessageId": "22"
     },
     {
       "id": "cosme-family-erie-indiana-uninsured-motorist-cancellation-bad-faith",
@@ -1179,7 +1293,7 @@
       "category": "Insurance",
       "actors": "Christine Cosme; Roy Cosme; Broyce Cosme; Erie Insurance Exchange; Churilla Insurance; Megan Malena; Debora Warfield Clark; Indiana Court of Appeals; Lake Superior Court",
       "doc": "https://docs.google.com/document/d/1zezvcFzJ2r2PrNRICk8LyQS4TgJkyU02bSZX0eIYVq8/edit",
-      "telegram": "https://t.me/mehyanbot?start=story_cosme-family-erie-indiana-uninsured-motorist-cancellation-bad-faith",
+      "telegram": "",
       "telegramNote": "https://t.me/mehyanbot?text=Insurance%20story%20note%20%E2%80%94%20ID%3A%20cosme-family-erie-indiana-uninsured-motorist-cancellation-bad-faith%20%E2%80%94%20what%20I%20like%3A%20",
       "source": "https://law.justia.com/cases/indiana/court-of-appeals/2026/25a-ct-01439.html",
       "sources": [
@@ -1195,7 +1309,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "",
+      "telegramTopicId": "",
+      "telegramFirstMessageId": ""
     },
     {
       "id": "daniel-saad-snows-clam-box-restaurant-arson-insurance-fraud",
@@ -1228,7 +1345,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/201?thread=200&topic",
+      "telegramTopicId": "200",
+      "telegramFirstMessageId": "201"
     },
     {
       "id": "farid-fata-michigan-unnecessary-chemotherapy-health-insurance-fraud",
@@ -1260,7 +1380,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/158?thread=157&topic",
+      "telegramTopicId": "157",
+      "telegramFirstMessageId": "158"
     },
     {
       "id": "torey-keith-florida-fifteen-counterfeit-health-claims",
@@ -1290,7 +1413,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/37?thread=36&topic",
+      "telegramTopicId": "36",
+      "telegramFirstMessageId": "37"
     },
     {
       "id": "florida-homeowners-policy-cancellation-fraud-morales-patricio-carballeira",
@@ -1305,7 +1431,7 @@
       "category": "Insurance",
       "actors": "Lisette Patricio; Arturo Morales; Darely Carballeira; Antonio Carballeira; Yarelis Felipe; nearly 4,000 Florida homeowners; U.S. Attorney Jason A. Reding Quiñones; IRS-CI Special Agent in Charge Ron Loecker; U.S. District Judge Rodolfo A. Ruiz II; Florida Department of Financial Services",
       "doc": "https://docs.google.com/document/d/1DWc_r_ST__PHOET4uiTiZe3UDhk1lGtgJ_au4n3g3DI/edit",
-      "telegram": "https://t.me/mehyanbot?start=story_florida-homeowners-policy-cancellation-fraud-morales-patricio-carballeira",
+      "telegram": "",
       "telegramNote": "https://t.me/mehyanbot?text=Insurance%20story%20note%20%E2%80%94%20ID%3A%20florida-homeowners-policy-cancellation-fraud-morales-patricio-carballeira%20%E2%80%94%20what%20I%20like%3A%20",
       "source": "https://www.irs.gov/compliance/criminal-investigation/fifth-defendant-sentenced-for-bank-fraud-and-tax-offenses-arising-from-multiyear-homeowners-insurance-fraud-scheme",
       "sources": [
@@ -1320,7 +1446,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "",
+      "telegramTopicId": "",
+      "telegramFirstMessageId": ""
     },
     {
       "id": "stetzen-bailey-idaho-backdated-snowmobile-policy-agent-fraud",
@@ -1350,7 +1479,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/181?thread=180&topic",
+      "telegramTopicId": "180",
+      "telegramFirstMessageId": "181"
     },
     {
       "id": "michael-owen-prince-georges-police-auto-insurance-fraud",
@@ -1381,7 +1513,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/152?thread=151&topic",
+      "telegramTopicId": "151",
+      "telegramFirstMessageId": "152"
     },
     {
       "id": "melvin-jones-nc-restaurant-cockroach-claim-fraud",
@@ -1396,7 +1531,7 @@
       "category": "Insurance",
       "actors": "Melvin Junior Jones; NC Department of Insurance Criminal Investigations Division; Commissioner Mike Causey; KFC in Creedmoor; two Waffle House locations; Denny’s; PMA Insurance Group",
       "doc": "https://docs.google.com/document/d/1Qo-N15ykG37NNxPM3T_xTc11bWv66OdB1UoVyHt-5QE/edit",
-      "telegram": "https://t.me/mehyanbot?start=story_melvin-jones-nc-restaurant-cockroach-claim-fraud",
+      "telegram": "",
       "telegramNote": "https://t.me/mehyanbot?text=Insurance%20story%20note%20%E2%80%94%20ID%3A%20melvin-jones-nc-restaurant-cockroach-claim-fraud%20%E2%80%94%20what%20I%20like%3A%20",
       "source": "https://www.ncdoi.gov/news/press-releases/2026/08/27/warren-county-man-charged-insurance-fraud-involving-restaurant-claims",
       "sources": [
@@ -1412,7 +1547,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "",
+      "telegramTopicId": "",
+      "telegramFirstMessageId": ""
     },
     {
       "id": "gloria-satterfield-murdaugh-nautilus-insurance-settlement-theft",
@@ -1445,7 +1583,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/177?thread=176&topic",
+      "telegramTopicId": "176",
+      "telegramFirstMessageId": "177"
     },
     {
       "id": "greg-lindberg-global-bankers-policyholder-fraud-restitution",
@@ -1460,7 +1601,7 @@
       "category": "Insurance",
       "actors": "Greg Lindberg; Eli Global LLC; Global Bankers Insurance Group; North Carolina Department of Insurance; Insurance Commissioner Mike Causey; FBI Charlotte; U.S. Department of Justice; thousands of policyholder victims",
       "doc": "https://docs.google.com/document/d/12XzdYIzaCEiaWs3HIgqs6KzERXmJN5Z_vmYR-lu4bjs/edit",
-      "telegram": "https://t.me/mehyanbot?start=story_greg-lindberg-global-bankers-policyholder-fraud-restitution",
+      "telegram": "",
       "telegramNote": "https://t.me/mehyanbot?text=Insurance%20story%20note%20%E2%80%94%20ID%3A%20greg-lindberg-global-bankers-policyholder-fraud-restitution%20%E2%80%94%20what%20I%20like%3A%20",
       "source": "https://www.justice.gov/opa/pr/owner-multinational-investment-company-sentenced-2b-fraud-money-laundering-and-bribery",
       "sources": [
@@ -1477,7 +1618,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "",
+      "telegramTopicId": "",
+      "telegramFirstMessageId": ""
     },
     {
       "id": "nevada-hawk-fire-insurance-assistance-claims-flexibility-2026",
@@ -1492,7 +1636,7 @@
       "category": "Insurance",
       "actors": "Nevada Division of Insurance; Commissioner Ned Gaines; Washoe County residents; Farmers Insurance; American Family Insurance; CSAA; Allstate; State Farm; wildfire evacuees",
       "doc": "https://docs.google.com/document/d/1GA0kAhDDRsdD-B3fNFE6QaxCmnZhLjnoYYFV-E4fmys/edit",
-      "telegram": "https://t.me/mehyanbot?start=story_nevada-hawk-fire-insurance-assistance-claims-flexibility-2026",
+      "telegram": "",
       "telegramNote": "https://t.me/mehyanbot?text=Insurance%20story%20note%20%E2%80%94%20ID%3A%20nevada-hawk-fire-insurance-assistance-claims-flexibility-2026%20%E2%80%94%20what%20I%20like%3A%20",
       "source": "https://doi.nv.gov/News_Notices/Press_Releases/August_26,_2026_-_Nevada_Division_of_Insurance_mobilizes_to_provide_insurance_guidance_for_residents_affected_by_Hawk_Fire/",
       "sources": [
@@ -1508,7 +1652,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "",
+      "telegramTopicId": "",
+      "telegramFirstMessageId": ""
     },
     {
       "id": "helen-golay-olga-rutterschmidt-black-widow-life-insurance-murders",
@@ -1539,7 +1686,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/169?thread=168&topic",
+      "telegramTopicId": "168",
+      "telegramFirstMessageId": "169"
     },
     {
       "id": "kevin-kolenda-hole-in-won-prize-insurance-fraud-charities",
@@ -1554,7 +1704,7 @@
       "category": "Insurance",
       "actors": "Kevin Kolenda; Hole-in-Won LLC; Compliance HIW LLC; Hole-in-Won Worldwide; Hole-in-Won.com; charitable and civic organizations; golf-tournament and fishing-contest hosts; FBI; U.S. Attorney David X. Sullivan; U.S. District Judge Stefan R. Underhill",
       "doc": "https://docs.google.com/document/d/1a8xG2wuYwRlslpixTq5zZ0wcR4KLJ3uTnDynZ_gQJrM/edit",
-      "telegram": "https://t.me/mehyanbot?start=story_kevin-kolenda-hole-in-won-prize-insurance-fraud-charities",
+      "telegram": "",
       "telegramNote": "https://t.me/mehyanbot?text=Insurance%20story%20note%20%E2%80%94%20ID%3A%20kevin-kolenda-hole-in-won-prize-insurance-fraud-charities%20%E2%80%94%20what%20I%20like%3A%20",
       "source": "https://www.justice.gov/usao-ct/pr/operator-fraudulent-prize-insurance-business-pleads-guilty",
       "sources": [
@@ -1569,7 +1719,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "",
+      "telegramTopicId": "",
+      "telegramFirstMessageId": ""
     },
     {
       "id": "fleener-travel-insurance-claims-handler-kickback-fraud",
@@ -1584,7 +1737,7 @@
       "category": "Insurance",
       "actors": "Jennifer Fleener; Mike Fleener; Asha Mimms; Jasmin Aldava Grimes; Jennifer Thompson; Amber McDaniel; Christopher Perdue; Dasha Pearson; T.M. travel medical insurance company; FBI Indianapolis; U.S. District Judge Richard L. Young",
       "doc": "https://docs.google.com/document/d/1AZEhbxoCXFIg83doLS4izxOJHFzMM4OYbZDxZvFMPvw/edit",
-      "telegram": "https://t.me/mehyanbot?start=story_fleener-travel-insurance-claims-handler-kickback-fraud",
+      "telegram": "",
       "telegramNote": "https://t.me/mehyanbot?text=Insurance%20story%20note%20%E2%80%94%20ID%3A%20fleener-travel-insurance-claims-handler-kickback-fraud%20%E2%80%94%20what%20I%20like%3A%20",
       "source": "https://www.justice.gov/usao-sdin/pr/eight-sentenced-federal-prison-12-million-travel-insurance-fraud-scheme",
       "sources": [
@@ -1599,7 +1752,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "",
+      "telegramTopicId": "",
+      "telegramFirstMessageId": ""
     },
     {
       "id": "foor-state-farm-alabama-roof-claim-trade-secret-discovery",
@@ -1614,7 +1770,7 @@
       "category": "Insurance",
       "actors": "James Foor; Kristina Foor; State Farm; Alabama Supreme Court; Bullock County Circuit Court; Judge Bernard Smithhart; Jinks Crow and Inge Johnstone law firms; U.S. Chamber of Commerce; American Tort Reform Association",
       "doc": "https://docs.google.com/document/d/1H9lZaNKSGJhgSZO54Z-DiN5MTf5LomkXuBLXZZnWj5g/edit",
-      "telegram": "https://t.me/mehyanbot?start=story_foor-state-farm-alabama-roof-claim-trade-secret-discovery",
+      "telegram": "",
       "telegramNote": "https://t.me/mehyanbot?text=Insurance%20story%20note%20%E2%80%94%20ID%3A%20foor-state-farm-alabama-roof-claim-trade-secret-discovery%20%E2%80%94%20what%20I%20like%3A%20",
       "source": "https://www.insurancejournal.com/news/southeast/2026/08/19/882071.htm",
       "sources": [
@@ -1629,7 +1785,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "",
+      "telegramTopicId": "",
+      "telegramFirstMessageId": ""
     },
     {
       "id": "john-anne-darwin-canoe-faked-death-life-insurance",
@@ -1661,7 +1820,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/162?thread=161&topic",
+      "telegramTopicId": "161",
+      "telegramFirstMessageId": "162"
     },
     {
       "id": "joseph-ocarroll-virginia-fake-policies-beneficiary-client-fraud",
@@ -1693,7 +1855,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/61?thread=60&topic",
+      "telegramTopicId": "60",
+      "telegramFirstMessageId": "61"
     },
     {
       "id": "kaiser-medicare-advantage-invalid-diagnosis-codes-settlement",
@@ -1725,7 +1890,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/167?thread=166&topic",
+      "telegramTopicId": "166",
+      "telegramFirstMessageId": "167"
     },
     {
       "id": "amber-conner-kansas-preexisting-auto-damage-fraud",
@@ -1740,7 +1908,7 @@
       "category": "Insurance",
       "actors": "Amber Conner; Kansas Insurance Department; Commissioner Vicki Schmidt; Kansas Attorney General’s Office; Atchison County District Court; unnamed auto insurer",
       "doc": "https://docs.google.com/document/d/1j8ZV8dNSruOHqCH8E-srl-l0LfNlEA-KnpcUeVSHuTM/edit",
-      "telegram": "https://t.me/mehyanbot?start=story_amber-conner-kansas-preexisting-auto-damage-fraud",
+      "telegram": "",
       "telegramNote": "https://t.me/mehyanbot?text=Insurance%20story%20note%20%E2%80%94%20ID%3A%20amber-conner-kansas-preexisting-auto-damage-fraud%20%E2%80%94%20what%20I%20like%3A%20",
       "source": "https://www.insurance.kansas.gov/Home/Components/News/News/310/16?widgetId=41",
       "sources": [
@@ -1756,7 +1924,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "",
+      "telegramTopicId": "",
+      "telegramFirstMessageId": ""
     },
     {
       "id": "dwayne-wright-kansas-forged-receipts-worksite-materials-claims",
@@ -1787,7 +1958,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/55?thread=54&topic",
+      "telegramTopicId": "54",
+      "telegramFirstMessageId": "55"
     },
     {
       "id": "larry-walden-kentucky-tobacco-crop-insurance-false-receipts",
@@ -1818,7 +1992,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/223?thread=222&topic",
+      "telegramTopicId": "222",
+      "telegramFirstMessageId": "223"
     },
     {
       "id": "georgia-robinson-north-carolina-lemonade-eviction-bankruptcy-claim-statements",
@@ -1848,7 +2025,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/219?thread=218&topic",
+      "telegramTopicId": "218",
+      "telegramFirstMessageId": "219"
     },
     {
       "id": "tony-gunter-nc-agent-elder-life-policy-identity-fraud",
@@ -1863,7 +2043,7 @@
       "category": "Insurance",
       "actors": "Tony Lee Gunter; elderly client; Independent Order of Foresters; NC DOI Criminal Investigations Division; Yancey County District Court",
       "doc": "https://docs.google.com/document/d/11B2uCjhWF9QHeIOckY5vTWhBP9WF-CB9RD2Ha_2NXDI/edit",
-      "telegram": "https://t.me/mehyanbot?start=story_tony-gunter-nc-agent-elder-life-policy-identity-fraud",
+      "telegram": "",
       "telegramNote": "https://t.me/mehyanbot?text=Insurance%20story%20note%20%E2%80%94%20ID%3A%20tony-gunter-nc-agent-elder-life-policy-identity-fraud%20%E2%80%94%20what%20I%20like%3A%20",
       "source": "https://www.ncdoi.gov/news/press-releases/2026/09/21/licensed-agent-charged-identity-theft-additional-felonies",
       "sources": [
@@ -1878,7 +2058,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "",
+      "telegramTopicId": "",
+      "telegramFirstMessageId": ""
     },
     {
       "id": "mark-frisbie-florida-bell-pepper-crop-insurance-fraud",
@@ -1910,7 +2093,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/70?thread=69&topic",
+      "telegramTopicId": "69",
+      "telegramFirstMessageId": "70"
     },
     {
       "id": "martin-frankel-looted-insurance-company-reserves",
@@ -1943,7 +2129,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/160?thread=159&topic",
+      "telegramTopicId": "159",
+      "telegramFirstMessageId": "160"
     },
     {
       "id": "mgm-las-vegas-shooting-insurer-funded-800m-settlement",
@@ -1975,7 +2164,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/205?thread=204&topic",
+      "telegramTopicId": "204",
+      "telegramFirstMessageId": "205"
     },
     {
       "id": "mike-williams-duck-hunt-life-insurance-conspiracy",
@@ -2006,7 +2198,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/171?thread=170&topic",
+      "telegramTopicId": "170",
+      "telegramFirstMessageId": "171"
     },
     {
       "id": "adam-walker-montana-stolen-lawnmowers-false-claim",
@@ -2037,7 +2232,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/125?thread=124&topic",
+      "telegramTopicId": "124",
+      "telegramFirstMessageId": "125"
     },
     {
       "id": "bentley-brothers-nc-farm-bureau-roofing-sting",
@@ -2068,7 +2266,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/57?thread=56&topic",
+      "telegramTopicId": "56",
+      "telegramFirstMessageId": "57"
     },
     {
       "id": "new-york-auto-rate-prior-approval-transparency-2026",
@@ -2083,7 +2284,7 @@
       "category": "Insurance",
       "actors": "Gov. Kathy Hochul; NY Department of Financial Services; Acting Superintendent Kaitlin Asrow; New York auto insurers; policyholders",
       "doc": "https://docs.google.com/document/d/1xOSXZ9wAVOpmDsm3VRqFKAsru1GPPps1QIgiLyp6WR8/edit",
-      "telegram": "https://t.me/mehyanbot?start=story_new-york-auto-rate-prior-approval-transparency-2026",
+      "telegram": "",
       "telegramNote": "https://t.me/mehyanbot?text=Insurance%20story%20note%20%E2%80%94%20ID%3A%20new-york-auto-rate-prior-approval-transparency-2026%20%E2%80%94%20what%20I%20like%3A%20",
       "source": "https://www.dfs.ny.gov/reports_and_publications/press_releases/pr20260909",
       "sources": [
@@ -2098,7 +2299,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "",
+      "telegramTopicId": "",
+      "telegramFirstMessageId": ""
     },
     {
       "id": "oakes-farms-florida-crop-insurance-fraud-plea-2026",
@@ -2113,7 +2317,7 @@
       "category": "Insurance",
       "actors": "Unnamed Oakes Farms-linked farm manager; Oakes Farms; federal crop-insurance program; U.S. District Court",
       "doc": "https://docs.google.com/document/d/1mpwgvpa_-1yZJmavibYuhwoj9ZS_Wtn78TGGrh80-i4/edit",
-      "telegram": "https://t.me/mehyanbot?start=story_oakes-farms-florida-crop-insurance-fraud-plea-2026",
+      "telegram": "",
       "telegramNote": "https://t.me/mehyanbot?text=Insurance%20story%20note%20%E2%80%94%20ID%3A%20oakes-farms-florida-crop-insurance-fraud-plea-2026%20%E2%80%94%20what%20I%20like%3A%20",
       "source": "https://www.bradenton.com/news/local/crime/article312000000.html",
       "sources": [
@@ -2129,7 +2333,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "",
+      "telegramTopicId": "",
+      "telegramFirstMessageId": ""
     },
     {
       "id": "operation-sideswipe-new-orleans-staged-auto-crashes",
@@ -2162,7 +2369,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/26?thread=25&topic",
+      "telegramTopicId": "25",
+      "telegramFirstMessageId": "26"
     },
     {
       "id": "johnson-travelers-prairie-farms-dry-ice-wrongful-death-bad-faith",
@@ -2177,7 +2387,7 @@
       "category": "Insurance",
       "actors": "Paula Johnson; Eric Johnson; Travelers Property Casualty Company of America; Prairie Farms Dairy Inc.; Salvi, Schostok & Pritchard P.C.; Patrick A. Salvi II; Lance D. Northcutt; U.S. District Court for the Southern District of Illinois",
       "doc": "https://docs.google.com/document/d/19volh9IdxTa_KJ0augcozVK_N08pbkEdyZvyZ6nxWY8/edit",
-      "telegram": "https://t.me/mehyanbot?start=story_johnson-travelers-prairie-farms-dry-ice-wrongful-death-bad-faith",
+      "telegram": "",
       "telegramNote": "https://t.me/mehyanbot?text=Insurance%20story%20note%20%E2%80%94%20ID%3A%20johnson-travelers-prairie-farms-dry-ice-wrongful-death-bad-faith%20%E2%80%94%20what%20I%20like%3A%20",
       "source": "https://www.salvilaw.com/press-release/travelers-bad-faith-lawsuit-dry-ice-death/",
       "sources": [
@@ -2193,7 +2403,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "",
+      "telegramTopicId": "",
+      "telegramFirstMessageId": ""
     },
     {
       "id": "pge-wildfire-insurance-subrogation-bankruptcy-settlement",
@@ -2227,7 +2440,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/231?thread=230&topic",
+      "telegramTopicId": "230",
+      "telegramFirstMessageId": "231"
     },
     {
       "id": "phillip-wasserman-fastlife-elderly-investor-insurance-fraud",
@@ -2260,7 +2476,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/199?thread=198&topic",
+      "telegramTopicId": "198",
+      "telegramFirstMessageId": "199"
     },
     {
       "id": "renergy-mt-hawley-new-york-pollution-claim-bad-faith",
@@ -2275,7 +2494,7 @@
       "category": "Insurance",
       "actors": "Renergy, Inc.; Mt. Hawley Insurance Company; U.S. District Court for the Southern District of New York; outside consultant; unpaid vendors; Anderson Kill authors Cort T. Malone and Jillian Balsamo",
       "doc": "https://docs.google.com/document/d/145IVo9sym2ucBujxBCch8oi8VlC1bMVOaoxYsmDEaOs/edit",
-      "telegram": "https://t.me/mehyanbot?start=story_renergy-mt-hawley-new-york-pollution-claim-bad-faith",
+      "telegram": "",
       "telegramNote": "https://t.me/mehyanbot?text=Insurance%20story%20note%20%E2%80%94%20ID%3A%20renergy-mt-hawley-new-york-pollution-claim-bad-faith%20%E2%80%94%20what%20I%20like%3A%20",
       "source": "https://law.justia.com/cases/federal/district-courts/new-york/nysdce/1:2025cv05073/644453/75/",
       "sources": [
@@ -2292,7 +2511,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "",
+      "telegramTopicId": "",
+      "telegramFirstMessageId": ""
     },
     {
       "id": "richard-hill-allstate-new-mexico-hail-ccpr-claims-playbook",
@@ -2307,7 +2529,7 @@
       "category": "Insurance",
       "actors": "Richard Hill; Allstate Vehicle and Property Insurance Company; A Quest for Public Adjusters; Victoria Salgado; Albert Aveytia Agency; McKinsey & Company; U.S. District Court for the District of New Mexico",
       "doc": "https://docs.google.com/document/d/1wfrvrsH6iKXzY8VkI_cKVd4wQ5hBz_scFtsVn6eW5DE/edit",
-      "telegram": "https://t.me/mehyanbot?start=story_richard-hill-allstate-new-mexico-hail-ccpr-claims-playbook",
+      "telegram": "",
       "telegramNote": "https://t.me/mehyanbot?text=Insurance%20story%20note%20%E2%80%94%20ID%3A%20richard-hill-allstate-new-mexico-hail-ccpr-claims-playbook%20%E2%80%94%20what%20I%20like%3A%20",
       "source": "https://www.insurancebusinessmag.com/us/news/risk-compliance-legal/homeowner-drags-allstates-mckinsey-claims-program-back-into-court-576566.aspx",
       "sources": [
@@ -2323,7 +2545,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "",
+      "telegramTopicId": "",
+      "telegramFirstMessageId": ""
     },
     {
       "id": "ronald-daley-ohio-life-insurance-annuity-elder-fraud",
@@ -2353,7 +2578,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/225?thread=224&topic",
+      "telegramTopicId": "224",
+      "telegramFirstMessageId": "225"
     },
     {
       "id": "sandy-hook-remington-insurer-funded-marketing-settlement",
@@ -2387,7 +2615,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/203?thread=202&topic",
+      "telegramTopicId": "202",
+      "telegramFirstMessageId": "203"
     },
     {
       "id": "seneca-birchmore-ohio-unauthorized-life-policies-senior-victims",
@@ -2419,7 +2650,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/24?thread=23&topic",
+      "telegramTopicId": "23",
+      "telegramFirstMessageId": "24"
     },
     {
       "id": "florida-seven-shell-companies-workers-comp-payroll-fraud",
@@ -2434,7 +2668,7 @@
       "category": "Insurance",
       "actors": "Marlen Suazo Gutierrez; Gustavo Lara Suazo; Eduardo Blandon Martinez; Alejandra Lagos Matute; Erick Blandon; Blanca Ramirez Farina; Eduardo Olivera Leal; construction workers and subcontractors",
       "doc": "https://docs.google.com/document/d/1S4g4gnkskmpQ0EbMdjliza1HBQpDCHbzGy2pnETHrkE/edit",
-      "telegram": "https://t.me/mehyanbot?start=story_florida-seven-shell-companies-workers-comp-payroll-fraud",
+      "telegram": "",
       "telegramNote": "https://t.me/mehyanbot?text=Insurance%20story%20note%20%E2%80%94%20ID%3A%20florida-seven-shell-companies-workers-comp-payroll-fraud%20%E2%80%94%20what%20I%20like%3A%20",
       "source": "https://www.myfloridalegal.com/newsrelease/attorney-general-james-uthmeier-charges-seven-multi-million-dollar-workers-compensation",
       "sources": [
@@ -2450,7 +2684,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "",
+      "telegramTopicId": "",
+      "telegramFirstMessageId": ""
     },
     {
       "id": "sholam-weiss-national-heritage-life-insurance-company-looting",
@@ -2481,7 +2718,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/175?thread=174&topic",
+      "telegramTopicId": "174",
+      "telegramFirstMessageId": "175"
     },
     {
       "id": "forrest-smith-south-carolina-agent-premium-forgery-fraud",
@@ -2512,7 +2752,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/215?thread=214&topic",
+      "telegramTopicId": "214",
+      "telegramFirstMessageId": "215"
     },
     {
       "id": "starrla-norman-iowa-retired-postal-workers-annuity-twisting",
@@ -2544,7 +2787,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/72?thread=71&topic",
+      "telegramTopicId": "71",
+      "telegramFirstMessageId": "72"
     },
     {
       "id": "surfside-champlain-towers-insurer-funded-collapse-settlement",
@@ -2578,7 +2824,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/207?thread=206&topic",
+      "telegramTopicId": "206",
+      "telegramFirstMessageId": "207"
     },
     {
       "id": "texas-price-optimization-auto-home-insurance-2026",
@@ -2593,7 +2842,7 @@
       "category": "Insurance",
       "actors": "Texas Department of Insurance; Insurance Commissioner Amanda Crawford; Gov. Greg Abbott; Texas home and auto insurers; long-term customers",
       "doc": "https://docs.google.com/document/d/1dFGhWWIET-U7sYwucINUOaSjwdxEPRHx2Hwj9pvuRWc/edit",
-      "telegram": "https://t.me/mehyanbot?start=story_texas-price-optimization-auto-home-insurance-2026",
+      "telegram": "",
       "telegramNote": "https://t.me/mehyanbot?text=Insurance%20story%20note%20%E2%80%94%20ID%3A%20texas-price-optimization-auto-home-insurance-2026%20%E2%80%94%20what%20I%20like%3A%20",
       "source": "https://www.tdi.texas.gov/news/2026/tdi09022026.html",
       "sources": [
@@ -2608,7 +2857,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "",
+      "telegramTopicId": "",
+      "telegramFirstMessageId": ""
     },
     {
       "id": "tyger-richman-idaho-aflac-forged-signature-policies",
@@ -2638,7 +2890,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/193?thread=192&topic",
+      "telegramTopicId": "192",
+      "telegramFirstMessageId": "193"
     },
     {
       "id": "hammonds-sowers-nc-farm-bureau-rental-storage-bumper-claim",
@@ -2668,7 +2923,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/154?thread=153&topic",
+      "telegramTopicId": "153",
+      "telegramFirstMessageId": "154"
     },
     {
       "id": "evans-lenon-idaho-classic-car-fire-post-loss-policy-fraud",
@@ -2698,7 +2956,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/195?thread=194&topic",
+      "telegramTopicId": "194",
+      "telegramFirstMessageId": "195"
     },
     {
       "id": "jeremy-antone-idaho-80000-dental-injury-claim",
@@ -2728,7 +2989,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/191?thread=190&topic",
+      "telegramTopicId": "190",
+      "telegramFirstMessageId": "191"
     },
     {
       "id": "craig-elizabeth-gutierrez-state-farm-oklahoma-roof-claim-study",
@@ -2743,7 +3007,7 @@
       "category": "Insurance",
       "actors": "Craig Gutierrez; Elizabeth Gutierrez; State Farm; Oklahoma Insurance Commissioner Glen Mulready; Oklahoma Insurance Department; State Farm agent Matt Pryor; adjuster Tony Salamone; Oklahoma County District Court",
       "doc": "https://docs.google.com/document/d/1wFPzaRMRHe1qByCOzpoLAfbt6AwOnd3FA2zhUZrZDW4/edit",
-      "telegram": "https://t.me/mehyanbot?start=story_craig-elizabeth-gutierrez-state-farm-oklahoma-roof-claim-study",
+      "telegram": "",
       "telegramNote": "https://t.me/mehyanbot?text=Insurance%20story%20note%20%E2%80%94%20ID%3A%20craig-elizabeth-gutierrez-state-farm-oklahoma-roof-claim-study%20%E2%80%94%20what%20I%20like%3A%20",
       "source": "https://oklahomawatch.org/2026/01/12/families-speak-out-in-wake-of-news-of-state-farm-hail-scheme/",
       "sources": [
@@ -2759,7 +3023,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "",
+      "telegramTopicId": "",
+      "telegramFirstMessageId": ""
     },
     {
       "id": "james-cooper-idaho-preexisting-pickup-damage-claim",
@@ -2789,7 +3056,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/179?thread=178&topic",
+      "telegramTopicId": "178",
+      "telegramFirstMessageId": "179"
     },
     {
       "id": "h1-2026-insured-catastrophe-losses-below-trend-rising-risk",
@@ -2804,7 +3074,7 @@
       "category": "Insurance",
       "actors": "Swiss Re; reinsurers; primary insurers; exposed households",
       "doc": "https://docs.google.com/document/d/1t7WmlaxGyROR6rJL-xSCris320rf7s6nk0JhJbtVHI0/edit",
-      "telegram": "https://t.me/mehyanbot?start=story_h1-2026-insured-catastrophe-losses-below-trend-rising-risk",
+      "telegram": "",
       "telegramNote": "https://t.me/mehyanbot?text=Insurance%20story%20note%20%E2%80%94%20ID%3A%20h1-2026-insured-catastrophe-losses-below-trend-rising-risk%20%E2%80%94%20what%20I%20like%3A%20",
       "source": "https://news.google.com/rss/articles/CBMi6AFBVV95cUxQZGRvQVp3b2JoMkxnRnVhNWhiOV9SQ3FtQUp3cTNEU0t3VHBUV0E2MjRURkVYSDJHZjR4QkZtQmdRMENjc0U0UThOQ2RLcUlzSE9DSmhmQWZ5ell2VEVRejhlb2dpMnhTamlfMlVmQjhvdVJXWF9TQUpnM0hOdVdiM3BFdFBjbGI1SHFwNnRsbHpWbGFGeEI4ZFpVSU9zbWVQMTRPWmI2UEZCa2E5OXFEMGhMcTlkN3dqdmphVGUxMGprbHF1UEpPQllndnZhdm1ZdkNZUnBZWnJqSTJlOUhqaHJsY3htVUZD?oc=5",
       "sources": [
@@ -2819,7 +3089,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "",
+      "telegramTopicId": "",
+      "telegramFirstMessageId": ""
     },
     {
       "id": "ninio-family-rental-car-identity-auto-claims",
@@ -2849,7 +3122,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/135?thread=134&topic",
+      "telegramTopicId": "134",
+      "telegramFirstMessageId": "135"
     },
     {
       "id": "matthew-edwards-north-carolina-duplicate-prior-owner-vehicle-damage-claim",
@@ -2879,7 +3155,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/217?thread=216&topic",
+      "telegramTopicId": "216",
+      "telegramFirstMessageId": "217"
     },
     {
       "id": "hassan-brothers-southern-california-towing-workers-comp-payroll-fraud",
@@ -2907,7 +3186,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/82?thread=81&topic",
+      "telegramTopicId": "81",
+      "telegramFirstMessageId": "82"
     },
     {
       "id": "wilson-owings-mills-life-policy-investor-forgery-fraud",
@@ -2937,7 +3219,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/90?thread=89&topic",
+      "telegramTopicId": "89",
+      "telegramFirstMessageId": "90"
     },
     {
       "id": "thomas-lemmen-indiana-life-insurance-ponzi-policies",
@@ -2970,7 +3255,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/68?thread=67&topic",
+      "telegramTopicId": "67",
+      "telegramFirstMessageId": "68"
     },
     {
       "id": "usa-gymnastics-nassar-insurer-funded-bankruptcy-settlement",
@@ -3003,7 +3291,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/229?thread=228&topic",
+      "telegramTopicId": "228",
+      "telegramFirstMessageId": "229"
     },
     {
       "id": "usaa-tennessee-hidden-slab-leak-foundation-bad-faith",
@@ -3018,7 +3309,7 @@
       "category": "Insurance",
       "actors": "Unnamed Johnson City, Tennessee homeowners/policyholders; USAA Casualty Insurance Company; Garrison Property and Casualty Insurance Company; Hometown Plumbing; EFI Global; Foundation Systems Engineering; U.S. District Court for the Eastern District of Tennessee",
       "doc": "https://docs.google.com/document/d/14S24I4hzxFpi4cJazWFqlOXCNXsNztfD3AXutvk-a7w/edit",
-      "telegram": "https://t.me/mehyanbot?start=story_usaa-tennessee-hidden-slab-leak-foundation-bad-faith",
+      "telegram": "",
       "telegramNote": "https://t.me/mehyanbot?text=Insurance%20story%20note%20%E2%80%94%20ID%3A%20usaa-tennessee-hidden-slab-leak-foundation-bad-faith%20%E2%80%94%20what%20I%20like%3A%20",
       "source": "https://www.insurancebusinessmag.com/us/news/risk-compliance-legal/hidden-slab-leak-sparks-bad-faith-suit-against-usaa-590015.aspx",
       "sources": [
@@ -3033,7 +3324,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "",
+      "telegramTopicId": "",
+      "telegramFirstMessageId": ""
     },
     {
       "id": "victoria-totten-arizona-elderly-premium-advance-fraud",
@@ -3066,7 +3360,10 @@
       "tags": [
         "Story stub",
         "accepted"
-      ]
+      ],
+      "telegramTopicLink": "https://t.me/c/3984316484/59?thread=58&topic",
+      "telegramTopicId": "58",
+      "telegramFirstMessageId": "59"
     }
   ]
 }
