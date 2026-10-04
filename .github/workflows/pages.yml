@@ -1,15 +1,21 @@
 name: Deploy dashboard
+
 on:
   push:
     branches: [main]
+  schedule:
+    - cron: '*/15 * * * *'
   workflow_dispatch:
+
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
+
 concurrency:
   group: pages
   cancel-in-progress: true
+
 jobs:
   deploy:
     environment:
@@ -19,12 +25,34 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Setup Pages
+
+      - name: Validate Phase 3 Telegram links
+        env:
+          DASHBOARD_SHEET_ID: 11EsVxXvsVnr5y73pml5UPcVdAhkT1VZBAxsIV_kjbow
+        run: python3 scripts/validate_telegram_links.py
+
+      - name: Sync assets from Google Sheets
+        env:
+          DASHBOARD_SHEET_ID: 11EsVxXvsVnr5y73pml5UPcVdAhkT1VZBAxsIV_kjbow
+          DASHBOARD_SHEET_GID: 1429231739
+        run: python3 scripts/sync_assets.py
+
+      - name: Commit synced asset data
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/assets.json
+          git diff --cached --quiet || git commit -m 'chore: sync dashboard assets from Sheets'
+          git push || true
+
+      - name: Configure Pages
         uses: actions/configure-pages@v5
-      - name: Upload artifact
+
+      - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: .
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
