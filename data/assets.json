@@ -1,5 +1,6 @@
 {
-  "updated": "March 2026",
+  "updated": "2026-10-04 23:38 UTC",
+  "source": "Google Sheets — Dashboard Assets",
   "assets": [
     {
       "id": "insurance-story-tracker",
@@ -8,7 +9,10 @@
       "type": "Google Sheet",
       "description": "Current story pipeline and status",
       "url": "https://docs.google.com/spreadsheets/d/11EsVxXvsVnr5y73pml5UPcVdAhkT1VZBAxsIV_kjbow/edit",
-      "tags": ["pipeline", "daily"],
+      "tags": [
+        "pipeline",
+        "daily"
+      ],
       "favorite": true
     },
     {
@@ -18,7 +22,10 @@
       "type": "Google Drive",
       "description": "Visual scripts, collateral, and production notes",
       "url": "https://drive.google.com/",
-      "tags": ["phase 3", "visuals"],
+      "tags": [
+        "phase 3",
+        "visuals"
+      ],
       "favorite": true
     },
     {
@@ -28,7 +35,10 @@
       "type": "Workspace",
       "description": "Open Docs and research treatments",
       "url": "https://docs.google.com/document/u/0/",
-      "tags": ["docs"]
+      "tags": [
+        "docs"
+      ],
+      "favorite": false
     },
     {
       "id": "google-sheets",
@@ -37,7 +47,10 @@
       "type": "Workspace",
       "description": "Open Sheets and trackers",
       "url": "https://docs.google.com/spreadsheets/u/0/",
-      "tags": ["sheets"]
+      "tags": [
+        "sheets"
+      ],
+      "favorite": false
     },
     {
       "id": "telegram",
@@ -46,7 +59,11 @@
       "type": "Messaging",
       "description": "Open Telegram operations",
       "url": "https://web.telegram.org/",
-      "tags": ["operations", "messaging"]
+      "tags": [
+        "operations",
+        "messaging"
+      ],
+      "favorite": false
     }
   ]
 }
