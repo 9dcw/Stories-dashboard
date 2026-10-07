@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-07T21:22:47Z",
+  "generated_at": "2026-10-07T21:34:27Z",
   "recent_candidates": [
     {
       "item_id": 29,
@@ -1230,11 +1230,11 @@
       "source": "Smoke Test Source",
       "origin_item_id": 122,
       "origin_url": "https://smoke.example.test/claim?id=42&utm_source=smoke&utm_medium=test",
-      "google_doc_url": "",
-      "telegram_thread_url": "",
-      "research_folder_url": "",
+      "google_doc_url": "https://docs.google.com/document/d/1V72-N0nIoU9SIYgM9QlSxb0-w8hscrzD1i7MwuHoZ04/edit",
+      "telegram_thread_url": "https://t.me/c/3984316484/407?thread=406&topic",
+      "research_folder_url": "https://drive.google.com/drive/folders/1TiN1u0ExhHHaole98eSsWBmx7bNuUqMy",
       "created_at": "2026-10-07T21:18:18Z",
-      "updated_at": "2026-10-07T21:22:47Z"
+      "updated_at": "2026-10-07T21:34:27Z"
     },
     {
       "story_id": 101,
