@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-07T21:34:27Z",
+  "generated_at": "2026-10-07T23:19:34Z",
   "recent_candidates": [
     {
       "item_id": 29,
@@ -9,7 +9,11 @@
       "jurisdiction": "mixed",
       "date": "pre-2023-youtube-collisions-2023-05-24-phelps-sentenced",
       "source_link": "https://www.insurance.ca.gov/0400-news/0100-press-releases/2023/release031-2023.cfm",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "What happened: Christopher and Kimberly Phelps were sentenced after YouTube videos showed intentional vehicle collisions that became insurance claims.\n\nWho/what is involved: Yucaipa driver Christopher Phelps, his wife Kimberly Phelps, dashcam collision videos, YouTube, and insurance claims.\n\nStakes: The matter involved criminal sentencing and insurance-related claims arising from the reported collisions.\n\nNotable detail: The source item is identified as “pre-2023-youtube-collisions-2023-05-24-phelps-sentenced” and links to a California Department of Insurance press release.",
+      "summary_status": "COMPLETE",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": "2026-10-07T23:16:10Z"
     },
     {
       "item_id": 93,
@@ -19,7 +23,11 @@
       "jurisdiction": "mixed",
       "date": "pre-2020-life-policy-forgery-2025-sentencing",
       "source_link": "https://www.justice.gov/usao-md/pr/owings-mills-couple-sentenced-roles-20-million-insurance-fraud-scheme",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "FAILED",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": null
     },
     {
       "item_id": 121,
@@ -29,7 +37,11 @@
       "jurisdiction": "US",
       "date": "2026-10-24",
       "source_link": "https://www.insurancejournal.com/example/underwriting-control",
-      "status": "NEW"
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "FAILED",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": null
     },
     {
       "item_id": 120,
@@ -39,7 +51,11 @@
       "jurisdiction": "US",
       "date": "2026-10-23",
       "source_link": "https://www.insurancejournal.com/example/liability-ruling",
-      "status": "NEW"
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "FAILED",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": null
     },
     {
       "item_id": 119,
@@ -49,7 +65,11 @@
       "jurisdiction": "US",
       "date": "2026-10-22",
       "source_link": "https://www.insurancejournal.com/example/claims-practice",
-      "status": "NEW"
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "FAILED",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": null
     },
     {
       "item_id": 118,
@@ -59,7 +79,11 @@
       "jurisdiction": "US",
       "date": "2026-10-21",
       "source_link": "https://www.insurancejournal.com/example/business-interruption",
-      "status": "NEW"
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 117,
@@ -69,7 +93,11 @@
       "jurisdiction": "US",
       "date": "2026-10-20",
       "source_link": "https://www.fbi.gov/example/suspicious-loss",
-      "status": "NEW"
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "FAILED",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": null
     },
     {
       "item_id": 116,
@@ -79,7 +107,11 @@
       "jurisdiction": "US",
       "date": "2026-10-19",
       "source_link": "https://www.fbi.gov/example/commercial-coverage",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "FAILED",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": null
     },
     {
       "item_id": 115,
@@ -89,7 +121,11 @@
       "jurisdiction": "US",
       "date": "2026-10-18",
       "source_link": "https://www.fbi.gov/example/arson-claim",
-      "status": "NEW"
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "FAILED",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": null
     },
     {
       "item_id": 114,
@@ -99,7 +135,11 @@
       "jurisdiction": "US",
       "date": "2026-10-17",
       "source_link": "https://www.fbi.gov/example/staged-collision",
-      "status": "NEW"
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 113,
@@ -109,7 +149,11 @@
       "jurisdiction": "US",
       "date": "2026-10-16",
       "source_link": "https://www.sec.gov/example/premium-reporting",
-      "status": "NEW"
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "FAILED",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": null
     },
     {
       "item_id": 112,
@@ -119,7 +163,11 @@
       "jurisdiction": "US",
       "date": "2026-10-15",
       "source_link": "https://www.sec.gov/example/rate-filing",
-      "status": "NEW"
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "FAILED",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": null
     },
     {
       "item_id": 111,
@@ -129,7 +177,11 @@
       "jurisdiction": "US",
       "date": "2026-10-14",
       "source_link": "https://www.sec.gov/example/public-comment",
-      "status": "NEW"
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "FAILED",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": null
     },
     {
       "item_id": 110,
@@ -139,7 +191,11 @@
       "jurisdiction": "US",
       "date": "2026-10-13",
       "source_link": "https://www.sec.gov/example/rehabilitation",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "FAILED",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": null
     },
     {
       "item_id": 109,
@@ -149,7 +205,11 @@
       "jurisdiction": "US",
       "date": "2026-10-12",
       "source_link": "https://www.courtlistener.com/example/liability-language",
-      "status": "NEW"
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "FAILED",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": null
     },
     {
       "item_id": 108,
@@ -159,7 +219,11 @@
       "jurisdiction": "US",
       "date": "2026-10-11",
       "source_link": "https://www.courtlistener.com/example/investigation",
-      "status": "NEW"
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "FAILED",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": null
     },
     {
       "item_id": 107,
@@ -169,7 +233,11 @@
       "jurisdiction": "US",
       "date": "2026-10-10",
       "source_link": "https://www.courtlistener.com/example/unusual-loss",
-      "status": "NEW"
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "FAILED",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": null
     },
     {
       "item_id": 106,
@@ -179,7 +247,11 @@
       "jurisdiction": "US",
       "date": "2026-10-09",
       "source_link": "https://www.courtlistener.com/example/appraisal-deadlines",
-      "status": "NEW"
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 105,
@@ -189,7 +261,739 @@
       "jurisdiction": "US",
       "date": "2026-10-08",
       "source_link": "https://content.naic.org/example/fraud-referral",
-      "status": "NEW"
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "FAILED",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": null
+    },
+    {
+      "item_id": 393,
+      "headline": "Statement from Commissioner Zimmerman on the Passing of Former Governor Dick Codey",
+      "source": "New Jersey DOBI press releases",
+      "lane": "C",
+      "jurisdiction": "NJ",
+      "date": "2026-10-07T22:20:45Z",
+      "source_link": "https://www.nj.gov/dobi/pressreleases/pr260112.html",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "FAILED",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": null
+    },
+    {
+      "item_id": 392,
+      "headline": "Residents Encouraged to Enroll in Get Covered New Jersey Ahead of January 31 Deadline for Health Coverage",
+      "source": "New Jersey DOBI press releases",
+      "lane": "C",
+      "jurisdiction": "NJ",
+      "date": "2026-10-07T22:20:45Z",
+      "source_link": "https://www.nj.gov/dobi/pressreleases/pr260129.html",
+      "status": "NEW",
+      "gist": "What happened: New Jersey DOBI reminded residents that January 31, 2026, is the final Open Enrollment deadline for Get Covered New Jersey health plans.\n\nWho/what is involved: The state marketplace, Acting Commissioner Susan Ochs, insurers, Navigators, brokers, and residents seeking coverage.\n\nStakes: Financial assistance remains available, but reduced federal support has contributed to higher costs and greater selection of bronze plans with higher out-of-pocket expenses.\n\nNotable detail: As of January 2, 493,727 residents had signed up for 2026 coverage, including 203,836 who actively selected a plan.",
+      "summary_status": "COMPLETE",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": "2026-10-07T23:17:52Z"
+    },
+    {
+      "item_id": 391,
+      "headline": "NJ Department of Banking and Insurance Provides Get Covered New Jersey Open Enrollment Update",
+      "source": "New Jersey DOBI press releases",
+      "lane": "C",
+      "jurisdiction": "NJ",
+      "date": "2026-10-07T22:20:45Z",
+      "source_link": "https://www.nj.gov/dobi/pressreleases/pr260224.html",
+      "status": "NEW",
+      "gist": "What happened: More than 509,000 New Jersey residents enrolled in 2026 health coverage through Get Covered New Jersey, while the state warned enrollment may decline as federal subsidy changes increase costs.\n\nWho/what is involved: New Jersey DOBI, Get Covered New Jersey, marketplace consumers, federal premium tax credits, and participating insurers.\n\nStakes: Higher premiums and out-of-pocket costs have contributed to tens of thousands of disenrollments for nonpayment and increased risk of losing coverage.\n\nNotable detail: Active Silver-plan selections fell from 83% in 2025 to 68% in 2026, while Bronze selections rose from 16% to 31%.",
+      "summary_status": "COMPLETE",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": "2026-10-07T23:18:34Z"
+    },
+    {
+      "item_id": 390,
+      "headline": "NJ Department of Banking and Insurance Receives Reaccreditation from National Association of Insurance Commissioners",
+      "source": "New Jersey DOBI press releases",
+      "lane": "C",
+      "jurisdiction": "NJ",
+      "date": "2026-10-07T22:20:45Z",
+      "source_link": "https://www.nj.gov/dobi/pressreleases/pr260325.html",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 389,
+      "headline": "Cost Increases from Washington’s Inaction Drives nearly 70,000 New Jerseyans to Drop Health Coverage since January",
+      "source": "New Jersey DOBI press releases",
+      "lane": "C",
+      "jurisdiction": "NJ",
+      "date": "2026-10-07T22:20:45Z",
+      "source_link": "https://www.nj.gov/dobi/pressreleases/pr260421.html",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 388,
+      "headline": "El Departamento de Banca y Seguros de NJ insta a los residentes de Nueva Jersey a revisar su cobertura de seguro al comenzar la temporada de huracanes de 2026",
+      "source": "New Jersey DOBI press releases",
+      "lane": "C",
+      "jurisdiction": "NJ",
+      "date": "2026-10-07T22:20:45Z",
+      "source_link": "https://www.nj.gov/dobi/pressreleases/pr260608espanol.html",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 387,
+      "headline": "NJ Department of Banking and Insurance Urges New Jersey Residents to Review Insurance Coverage as the 2026 Hurricane Season Starts",
+      "source": "New Jersey DOBI press releases",
+      "lane": "C",
+      "jurisdiction": "NJ",
+      "date": "2026-10-07T22:20:45Z",
+      "source_link": "https://www.nj.gov/dobi/pressreleases/pr260608.html",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 386,
+      "headline": "NJ Department of Banking and Insurance Celebrates Opening of New Whippany Office for Regional Fraud Deterrence Division",
+      "source": "New Jersey DOBI press releases",
+      "lane": "C",
+      "jurisdiction": "NJ",
+      "date": "2026-10-07T22:20:45Z",
+      "source_link": "https://www.nj.gov/dobi/pressreleases/pr260617.html",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 385,
+      "headline": "NJ Department of Banking and Insurance Announces Grant Opportunity for Community Organizations to Help New Jerseyans Enroll in Health Coverage",
+      "source": "New Jersey DOBI press releases",
+      "lane": "C",
+      "jurisdiction": "NJ",
+      "date": "2026-10-07T22:20:45Z",
+      "source_link": "https://www.nj.gov/dobi/pressreleases/pr260709.html",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 384,
+      "headline": "NJ Department of Banking and Insurance to Maintain Three-Month Open Enrollment Period for Get Covered New Jersey Despite Federal Efforts to Narrow Sign Up Window",
+      "source": "New Jersey DOBI press releases",
+      "lane": "C",
+      "jurisdiction": "NJ",
+      "date": "2026-10-07T22:20:45Z",
+      "source_link": "https://www.nj.gov/dobi/pressreleases/pr260810.html",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 383,
+      "headline": "New Jersey Joins $15.5 Million Settlement with Mortgage Servicer",
+      "source": "New Jersey DOBI press releases",
+      "lane": "C",
+      "jurisdiction": "NJ",
+      "date": "2026-10-07T22:20:45Z",
+      "source_link": "https://www.nj.gov/dobi/pressreleases/pr260812.html",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 327,
+      "headline": "2018 Press Releases",
+      "source": "California DOI news",
+      "lane": "C",
+      "jurisdiction": "CA",
+      "date": "2026-10-07T22:20:43Z",
+      "source_link": "https://www.insurance.ca.gov/0400-news/0100-press-releases/2018/",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "FAILED",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": null
+    },
+    {
+      "item_id": 326,
+      "headline": "2019 Press Releases",
+      "source": "California DOI news",
+      "lane": "C",
+      "jurisdiction": "CA",
+      "date": "2026-10-07T22:20:43Z",
+      "source_link": "https://www.insurance.ca.gov/0400-news/0100-press-releases/2019/",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "FAILED",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": null
+    },
+    {
+      "item_id": 325,
+      "headline": "2020 Press Releases",
+      "source": "California DOI news",
+      "lane": "C",
+      "jurisdiction": "CA",
+      "date": "2026-10-07T22:20:43Z",
+      "source_link": "https://www.insurance.ca.gov/0400-news/0100-press-releases/2020/",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "FAILED",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": null
+    },
+    {
+      "item_id": 324,
+      "headline": "2021 Press Releases",
+      "source": "California DOI news",
+      "lane": "C",
+      "jurisdiction": "CA",
+      "date": "2026-10-07T22:20:43Z",
+      "source_link": "https://www.insurance.ca.gov/0400-news/0100-press-releases/2021/",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 323,
+      "headline": "2022 Press Releases",
+      "source": "California DOI news",
+      "lane": "C",
+      "jurisdiction": "CA",
+      "date": "2026-10-07T22:20:43Z",
+      "source_link": "https://www.insurance.ca.gov/0400-news/0100-press-releases/2022/",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 322,
+      "headline": "2023 Press Releases",
+      "source": "California DOI news",
+      "lane": "C",
+      "jurisdiction": "CA",
+      "date": "2026-10-07T22:20:43Z",
+      "source_link": "https://www.insurance.ca.gov/0400-news/0100-press-releases/2023/",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 321,
+      "headline": "2024 Press Releases",
+      "source": "California DOI news",
+      "lane": "C",
+      "jurisdiction": "CA",
+      "date": "2026-10-07T22:20:43Z",
+      "source_link": "https://www.insurance.ca.gov/0400-news/0100-press-releases/2024/",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 320,
+      "headline": "2025 Press Releases",
+      "source": "California DOI news",
+      "lane": "C",
+      "jurisdiction": "CA",
+      "date": "2026-10-07T22:20:43Z",
+      "source_link": "https://www.insurance.ca.gov/0400-news/0100-press-releases/2025/",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 319,
+      "headline": "2026 Press Releases",
+      "source": "California DOI news",
+      "lane": "C",
+      "jurisdiction": "CA",
+      "date": "2026-10-07T22:20:43Z",
+      "source_link": "https://www.insurance.ca.gov/0400-news/0100-press-releases/2026/",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 307,
+      "headline": "View current releases",
+      "source": "California DOI news",
+      "lane": "C",
+      "jurisdiction": "CA",
+      "date": "2026-10-07T22:19:21Z",
+      "source_link": "https://www.insurance.ca.gov/0400-news/0100-press-releases/index.cfm",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 248,
+      "headline": "Learn More",
+      "source": "New York DFS press releases",
+      "lane": "C",
+      "jurisdiction": "NY",
+      "date": "2026-10-07T22:18:41Z",
+      "source_link": "https://www.dfs.ny.gov/reports_and_publications/press_releases/pr20250613",
+      "status": "NEW",
+      "gist": "What happened: New York Department of Financial Services Superintendent Adrienne A. Harris secured the return of a book to the heirs of Dr. August Liebmann Mayer.\n\nWho/what is involved: Superintendent Harris, the New York Department of Financial Services, Dr. Mayer’s heirs, and the book.\n\nStakes: The item concerns the return of property to the deceased individual’s heirs.\n\nNotable detail: The source is a New York DFS press release dated June 13, 2025.",
+      "summary_status": "COMPLETE",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": "2026-10-07T23:17:06Z"
+    },
+    {
+      "item_id": 246,
+      "headline": "Learn More",
+      "source": "New York DFS press releases",
+      "lane": "C",
+      "jurisdiction": "NY",
+      "date": "2026-10-07T22:18:41Z",
+      "source_link": "https://www.dfs.ny.gov/reports_and_publications/press_releases/pr20250509_2",
+      "status": "NEW",
+      "gist": "What happened: Governor Hochul signed new legislation as part of New York’s FY 2026 budget.\n\nWho/what is involved: Governor Kathy Hochul, the New York Department of Financial Services, New York consumers, and the state budget.\n\nStakes: The legislation is intended to protect consumers and reduce costs or preserve money for New Yorkers.\n\nNotable detail: The source identifies the measure as part of the FY 2026 budget, but the supplied text does not specify the legislation’s individual provisions.",
+      "summary_status": "COMPLETE",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": "2026-10-07T23:18:02Z"
+    },
+    {
+      "item_id": 244,
+      "headline": "Learn More",
+      "source": "New York DFS press releases",
+      "lane": "C",
+      "jurisdiction": "NY",
+      "date": "2026-10-07T22:18:41Z",
+      "source_link": "https://www.dfs.ny.gov/reports_and_publications/press_releases/pr202504101",
+      "status": "NEW",
+      "gist": "What happened: New York’s Department of Financial Services announced a $40 million settlement with Block, Inc., citing an inadequate anti-money-laundering program and virtual-currency compliance failures on its Cash App platform.\n\nWho/what is involved: Superintendent Adrienne A. Harris, the New York Department of Financial Services, Block, Inc., and Cash App.\n\nStakes: The settlement involves $40 million and regulatory compliance obligations related to anti-money-laundering and virtual-currency oversight.\n\nNotable detail: The action concerns Cash App’s platform.",
+      "summary_status": "COMPLETE",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": "2026-10-07T23:18:44Z"
+    },
+    {
+      "item_id": 242,
+      "headline": "VIEW RELEASE",
+      "source": "New York DFS press releases",
+      "lane": "C",
+      "jurisdiction": "NY",
+      "date": "2026-10-07T22:18:41Z",
+      "source_link": "https://www.dfs.ny.gov/reports_and_publications/press_releases/pr20260701",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 353,
+      "headline": "People Moves: Severino Joins Alliant’s Midwest Benefits Team; Doubtless Names Wiley as Regional President for North America",
+      "source": "Insurance Journal",
+      "lane": "D",
+      "jurisdiction": "US",
+      "date": "2026-10-07T16:05:34Z",
+      "source_link": "https://www.insurancejournal.com/news/midwest/2026/10/07/888347.htm",
+      "status": "NEW",
+      "gist": "What happened: Insurance Journal reported two executive personnel moves: Severino joined Alliant’s Midwest benefits team, and Doubtless named Wiley regional president for North America.\n\nWho/what is involved: Severino, Alliant’s Midwest benefits team, Doubtless, and Wiley.\n\nStakes: The source metadata does not specify financial, legal, regulatory, consumer, or operational consequences.\n\nNotable detail: The announcements involve separate appointments spanning Midwest benefits operations and North American regional leadership.",
+      "summary_status": "COMPLETE",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": "2026-10-07T23:16:20Z"
+    },
+    {
+      "item_id": 354,
+      "headline": "AM Best Withdraws Credit Ratings of Hartland Mutual",
+      "source": "Insurance Journal",
+      "lane": "D",
+      "jurisdiction": "US",
+      "date": "2026-10-07T16:00:13Z",
+      "source_link": "https://www.insurancejournal.com/news/midwest/2026/10/07/888342.htm",
+      "status": "NEW",
+      "gist": "What happened: AM Best withdrew its credit ratings of Hartland Mutual.\n\nWho/what is involved: AM Best, a credit-rating organization, and Hartland Mutual, an insurance company.\n\nStakes: The withdrawal may affect how Hartland Mutual’s financial strength or creditworthiness is evaluated, but the supplied text does not state the reason, timing beyond the publication date, or any resulting regulatory, consumer, or operational consequences.\n\nNotable detail: The item was published by Insurance Journal on October 7, 2026.",
+      "summary_status": "COMPLETE",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": "2026-10-07T23:17:37Z"
+    },
+    {
+      "item_id": 355,
+      "headline": "FTC, USDA Seek Comment on Farm Equipment Market Practices",
+      "source": "Insurance Journal",
+      "lane": "D",
+      "jurisdiction": "US",
+      "date": "2026-10-07T15:53:58Z",
+      "source_link": "https://www.insurancejournal.com/news/national/2026/10/07/888337.htm",
+      "status": "NEW",
+      "gist": "What happened: The Federal Trade Commission and U.S. Department of Agriculture sought public comment on practices in the farm equipment market.\n\nWho/what is involved: The FTC, USDA, and participants or stakeholders in the farm equipment market.\n\nStakes: The request may inform federal consideration of market practices, but the supplied text does not identify specific legal, financial, or regulatory consequences.\n\nNotable detail: The item was published by Insurance Journal on October 7, 2026.",
+      "summary_status": "COMPLETE",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": "2026-10-07T23:18:24Z"
+    },
+    {
+      "item_id": 356,
+      "headline": "Sanlam’s $1.2 Billion Bid for Santam Would Give More Freedom to Deploy Capital",
+      "source": "Insurance Journal",
+      "lane": "D",
+      "jurisdiction": "US",
+      "date": "2026-10-07T15:16:58Z",
+      "source_link": "https://www.insurancejournal.com/news/international/2026/10/07/888325.htm",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 357,
+      "headline": "Markets/Coverages: Aviva to Enter US Specialty Market in Q4",
+      "source": "Insurance Journal",
+      "lane": "D",
+      "jurisdiction": "US",
+      "date": "2026-10-07T15:14:31Z",
+      "source_link": "https://www.insurancejournal.com/news/national/2026/10/07/888323.htm",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 358,
+      "headline": "National Flood Insurance Program’s Authority to Expire in December",
+      "source": "Insurance Journal",
+      "lane": "D",
+      "jurisdiction": "US",
+      "date": "2026-10-07T14:57:22Z",
+      "source_link": "https://www.insurancejournal.com/news/national/2026/10/07/888293.htm",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 359,
+      "headline": "Heffernan Insurance Acquires Walterry Brokers of Maryland",
+      "source": "Insurance Journal",
+      "lane": "D",
+      "jurisdiction": "US",
+      "date": "2026-10-07T14:11:54Z",
+      "source_link": "https://www.insurancejournal.com/news/east/2026/10/07/888302.htm",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 360,
+      "headline": "Arthur J. Gallagher & Co. Acquires Irish MGA, Ornella Underwriting Ltd.",
+      "source": "Insurance Journal",
+      "lane": "D",
+      "jurisdiction": "US",
+      "date": "2026-10-07T14:09:41Z",
+      "source_link": "https://www.insurancejournal.com/news/international/2026/10/07/888285.htm",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 361,
+      "headline": "Six Charged for Roles in ‘Smash-and-Grab’ Robberies of Jewelry Stores",
+      "source": "Insurance Journal",
+      "lane": "D",
+      "jurisdiction": "US",
+      "date": "2026-10-07T13:38:49Z",
+      "source_link": "https://www.insurancejournal.com/news/east/2026/10/07/888283.htm",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 362,
+      "headline": "Google Accused of Overcharging 20 Million Consumers in UK Class Action",
+      "source": "Insurance Journal",
+      "lane": "D",
+      "jurisdiction": "US",
+      "date": "2026-10-07T12:26:36Z",
+      "source_link": "https://www.insurancejournal.com/news/international/2026/10/07/888267.htm",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 334,
+      "headline": "The Federal Task Force to Combat Antisemitism Announces First Stop on The American Tour Against Hate",
+      "source": "DOJ press releases",
+      "lane": "A",
+      "jurisdiction": "US",
+      "date": "2026-10-07T12:00:00Z",
+      "source_link": "https://www.justice.gov/opa/pr/federal-task-force-combat-antisemitism-announces-first-stop-american-tour-against-hate",
+      "status": "NEW",
+      "gist": "What happened: The U.S. Department of Justice announced the first stop of an “American Tour Against Hate” organized by the Federal Task Force to Combat Antisemitism.\n\nWho/what is involved: The Federal Task Force to Combat Antisemitism and the Department of Justice’s Office of Public Affairs.\n\nStakes: Any insurance, financial, legal, regulatory, consumer, or operational consequences are unclear from the supplied text.\n\nNotable detail: The announcement was dated October 7, 2026.",
+      "summary_status": "COMPLETE",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": "2026-10-07T23:16:00Z"
+    },
+    {
+      "item_id": 333,
+      "headline": "Department of Justice Announces Phase Three of Compensation Process for Western Union Fraud Victims",
+      "source": "DOJ press releases",
+      "lane": "A",
+      "jurisdiction": "US",
+      "date": "2026-10-07T12:00:00Z",
+      "source_link": "https://www.justice.gov/opa/pr/department-justice-announces-phase-three-compensation-process-western-union-fraud-victims",
+      "status": "NEW",
+      "gist": "What happened: The U.S. Department of Justice announced Phase Three of a compensation process for Western Union fraud victims.\n\nWho/what is involved: The Department of Justice, Western Union, and people identified as fraud victims are involved.\n\nStakes: The process concerns potential compensation for affected victims; the amount, eligibility requirements, and legal or administrative consequences are unclear from the supplied text.\n\nNotable detail: The announcement was issued by the DOJ Office of Public Affairs on October 7, 2026.",
+      "summary_status": "COMPLETE",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": "2026-10-07T23:17:25Z"
+    },
+    {
+      "item_id": 332,
+      "headline": "Heal 360 Clinics and Owner Agree to Pay $20M to Resolve False Claims Act Allegations of Billing False Claims to the COVID-19 Uninsured Program for Services Not Rendered",
+      "source": "DOJ press releases",
+      "lane": "A",
+      "jurisdiction": "US",
+      "date": "2026-10-07T12:00:00Z",
+      "source_link": "https://www.justice.gov/opa/pr/heal-360-clinics-and-owner-agree-pay-20m-resolve-false-claims-act-allegations-billing-false",
+      "status": "NEW",
+      "gist": "What happened: Heal 360 Clinics and its owner agreed to pay $20 million to resolve False Claims Act allegations involving billing the COVID-19 Uninsured Program for services not rendered.\n\nWho/what is involved: Heal 360 Clinics, its owner, the U.S. Department of Justice, and the COVID-19 Uninsured Program.\n\nStakes: The agreement involves a $20 million payment and allegations concerning potentially improper federal program billing.\n\nNotable detail: The source is a DOJ press release dated October 7, 2026.",
+      "summary_status": "COMPLETE",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": "2026-10-07T23:18:14Z"
+    },
+    {
+      "item_id": 331,
+      "headline": "Florida Laboratory Vice President and Marketer Convicted of Medicare Fraud for COVID-19 Testing Scheme",
+      "source": "DOJ press releases",
+      "lane": "A",
+      "jurisdiction": "US",
+      "date": "2026-10-07T12:00:00Z",
+      "source_link": "https://www.justice.gov/opa/pr/florida-laboratory-vice-president-and-marketer-convicted-medicare-fraud-covid-19-testing",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 330,
+      "headline": "Man Arrested and Charged for Role in Plotting to Conduct a Mass-Shooting Event in Support of ISIS at the Mall of America",
+      "source": "DOJ press releases",
+      "lane": "A",
+      "jurisdiction": "US",
+      "date": "2026-10-07T12:00:00Z",
+      "source_link": "https://www.justice.gov/opa/pr/man-arrested-and-charged-role-plotting-conduct-mass-shooting-event-support-isis-mall-america",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 329,
+      "headline": "Board Chairman and Co-Owner of Puerto Rican Bank Sentenced in Multimillion-Dollar Wire Fraud Conspiracy",
+      "source": "DOJ press releases",
+      "lane": "A",
+      "jurisdiction": "US",
+      "date": "2026-10-07T12:00:00Z",
+      "source_link": "https://www.justice.gov/opa/pr/board-chairman-and-co-owner-puerto-rican-bank-sentenced-multimillion-dollar-wire-fraud",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 328,
+      "headline": "Known Cybersecurity Expert and Owner of Florida Ransomware Remediation Company Charged with Defrauding Clients",
+      "source": "DOJ press releases",
+      "lane": "A",
+      "jurisdiction": "US",
+      "date": "2026-10-07T12:00:00Z",
+      "source_link": "https://www.justice.gov/opa/pr/known-cybersecurity-expert-and-owner-florida-ransomware-remediation-company-charged",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 363,
+      "headline": "Iran Ramps Up Ship Attacks in Hormuz as Oil, Gas Flows Rise",
+      "source": "Insurance Journal",
+      "lane": "D",
+      "jurisdiction": "US",
+      "date": "2026-10-07T11:12:25Z",
+      "source_link": "https://www.insurancejournal.com/news/international/2026/10/07/888260.htm",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 364,
+      "headline": "Don’t Sweat the Heatwave, El Niño Is Cooking up Some Raucous Weather for California",
+      "source": "Insurance Journal",
+      "lane": "D",
+      "jurisdiction": "US",
+      "date": "2026-10-07T11:00:22Z",
+      "source_link": "https://www.insurancejournal.com/news/west/2026/10/07/888207.htm",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 365,
+      "headline": "Volkswagen Sets Aside £725 Million for UK Car Finance Payout",
+      "source": "Insurance Journal",
+      "lane": "D",
+      "jurisdiction": "US",
+      "date": "2026-10-07T10:29:09Z",
+      "source_link": "https://www.insurancejournal.com/news/international/2026/10/07/888255.htm",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 366,
+      "headline": "Gulf Coast on Alert for First Hurricane of 2026",
+      "source": "Insurance Journal",
+      "lane": "D",
+      "jurisdiction": "US",
+      "date": "2026-10-07T06:02:13Z",
+      "source_link": "https://www.insurancejournal.com/news/southcentral/2026/10/07/888247.htm",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 367,
+      "headline": "Weather Damage Turning Into Long-Term Debt for Homeowners: Report",
+      "source": "Insurance Journal",
+      "lane": "D",
+      "jurisdiction": "US",
+      "date": "2026-10-07T05:13:27Z",
+      "source_link": "https://www.insurancejournal.com/news/national/2026/10/07/888229.htm",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 368,
+      "headline": "McDonald’s Hit With Class Action Alleging AI-Powered Menu Price-Fixing",
+      "source": "Insurance Journal",
+      "lane": "D",
+      "jurisdiction": "US",
+      "date": "2026-10-07T05:12:47Z",
+      "source_link": "https://www.insurancejournal.com/news/national/2026/10/07/888226.htm",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 369,
+      "headline": "SpaceX Seeks Approval for Florida Gas Pipeline to Support Cape Canaveral Launches",
+      "source": "Insurance Journal",
+      "lane": "D",
+      "jurisdiction": "US",
+      "date": "2026-10-07T05:02:34Z",
+      "source_link": "https://www.insurancejournal.com/news/southeast/2026/10/07/888153.htm",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 370,
+      "headline": "Karen Clark Rolls Out Severe Convective Storm Model 5.0",
+      "source": "Insurance Journal",
+      "lane": "D",
+      "jurisdiction": "US",
+      "date": "2026-10-07T05:01:15Z",
+      "source_link": "https://www.insurancejournal.com/news/southeast/2026/10/07/888220.htm",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 371,
+      "headline": "Corgi Insurance Launches Fine Arts, Sports and Entertainment Coverage",
+      "source": "Insurance Journal",
+      "lane": "D",
+      "jurisdiction": "US",
+      "date": "2026-10-07T05:00:02Z",
+      "source_link": "https://www.insurancejournal.com/news/west/2026/10/07/887771.htm",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 372,
+      "headline": "Bermuda Insurance Executive and Mother Were on Missing Medical Flight to Boston",
+      "source": "Insurance Journal",
+      "lane": "D",
+      "jurisdiction": "US",
+      "date": "2026-10-07T00:39:00Z",
+      "source_link": "https://www.insurancejournal.com/news/east/2026/10/06/888238.htm",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 122,
@@ -199,7 +1003,11 @@
       "jurisdiction": "US",
       "date": "2026-10-07",
       "source_link": "https://smoke.example.test/claim?id=42&utm_source=smoke&utm_medium=test",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 104,
@@ -209,7 +1017,235 @@
       "jurisdiction": "US",
       "date": "2026-10-07",
       "source_link": "https://content.naic.org/example/coverage-hearing",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "FAILED",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": null
+    },
+    {
+      "item_id": 281,
+      "headline": "SEC Seeks Final Judgment Against Former Western Asset Co-CIO Ken Leech in Cherry Picking Case",
+      "source": "SEC litigation releases",
+      "lane": "A",
+      "jurisdiction": "US",
+      "date": "2026-10-06T20:30:24Z",
+      "source_link": "https://www.sec.gov/newsroom/press-releases/2026-103-sec-seeks-final-judgment-against-former-western-asset-co-cio-ken-leech-cherry-picking-case",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "FAILED",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": null
+    },
+    {
+      "item_id": 373,
+      "headline": "Thousands of European Wind, Solar Power Systems Exposed Online: Dutch Researchers",
+      "source": "Insurance Journal",
+      "lane": "D",
+      "jurisdiction": "US",
+      "date": "2026-10-06T17:29:08Z",
+      "source_link": "https://www.insurancejournal.com/news/international/2026/10/06/888195.htm",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 374,
+      "headline": "Missouri AG Secures $42K Judgment Against Contractor Accused of Fraud",
+      "source": "Insurance Journal",
+      "lane": "D",
+      "jurisdiction": "US",
+      "date": "2026-10-06T16:54:43Z",
+      "source_link": "https://www.insurancejournal.com/news/midwest/2026/10/06/888191.htm",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 375,
+      "headline": "Data Centers Pump $340M Into Rural Texas Projects",
+      "source": "Insurance Journal",
+      "lane": "D",
+      "jurisdiction": "US",
+      "date": "2026-10-06T16:51:01Z",
+      "source_link": "https://www.insurancejournal.com/news/southcentral/2026/10/06/888188.htm",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 376,
+      "headline": "AM Best Revises Outlook to Stable for Ohio’s Buckeye State Mutual",
+      "source": "Insurance Journal",
+      "lane": "D",
+      "jurisdiction": "US",
+      "date": "2026-10-06T16:32:26Z",
+      "source_link": "https://www.insurancejournal.com/news/midwest/2026/10/06/888182.htm",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 377,
+      "headline": "US Gulf Faces Heavy Rain Threat From Developing Tropical System",
+      "source": "Insurance Journal",
+      "lane": "D",
+      "jurisdiction": "US",
+      "date": "2026-10-06T16:29:12Z",
+      "source_link": "https://www.insurancejournal.com/news/southcentral/2026/10/06/888177.htm",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 378,
+      "headline": "People Moves: Hartford Names Smith as International Head of Distribution in UK; Augment Risk Taps Haynes From Carpenter for MGA Practice",
+      "source": "Insurance Journal",
+      "lane": "D",
+      "jurisdiction": "US",
+      "date": "2026-10-06T16:14:47Z",
+      "source_link": "https://www.insurancejournal.com/news/international/2026/10/06/888166.htm",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 379,
+      "headline": "Agency Network SIAA Acquires MGA Canopy Specialty Insurance",
+      "source": "Insurance Journal",
+      "lane": "D",
+      "jurisdiction": "US",
+      "date": "2026-10-06T15:51:58Z",
+      "source_link": "https://www.insurancejournal.com/news/national/2026/10/06/888155.htm",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 380,
+      "headline": "Markets/Coverages: Amwins Launches MGA illumin Specialty",
+      "source": "Insurance Journal",
+      "lane": "D",
+      "jurisdiction": "US",
+      "date": "2026-10-06T15:18:44Z",
+      "source_link": "https://www.insurancejournal.com/news/national/2026/10/06/888143.htm",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 381,
+      "headline": "Two Killed, Including Student, in School Bus Crash in Central Florida",
+      "source": "Insurance Journal",
+      "lane": "D",
+      "jurisdiction": "US",
+      "date": "2026-10-06T14:51:59Z",
+      "source_link": "https://www.insurancejournal.com/news/southeast/2026/10/06/888128.htm",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 382,
+      "headline": "UK Watchdog Opens First Online Safety Act Probe Into Meta",
+      "source": "Insurance Journal",
+      "lane": "D",
+      "jurisdiction": "US",
+      "date": "2026-10-06T14:48:34Z",
+      "source_link": "https://www.insurancejournal.com/news/international/2026/10/06/888130.htm",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 282,
+      "headline": "SEC to Host Virtual National Compliance Outreach Seminar for Investment Companies and Investment Advisers",
+      "source": "SEC litigation releases",
+      "lane": "A",
+      "jurisdiction": "US",
+      "date": "2026-10-06T14:37:55Z",
+      "source_link": "https://www.sec.gov/newsroom/press-releases/2026-102-sec-host-virtual-national-compliance-outreach-seminar-investment-companies-investment-advisers",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "FAILED",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": null
+    },
+    {
+      "item_id": 338,
+      "headline": "AIDS Healthcare Foundation Agrees to Pay $1.44M to Settle False Claims Act Allegations",
+      "source": "DOJ press releases",
+      "lane": "A",
+      "jurisdiction": "US",
+      "date": "2026-10-06T12:00:00Z",
+      "source_link": "https://www.justice.gov/opa/pr/aids-healthcare-foundation-agrees-pay-144m-settle-false-claims-act-allegations",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 337,
+      "headline": "Justice Department and USDA Reaffirm and Expand their Partnership to Protect Competition in Agricultural Inputs",
+      "source": "DOJ press releases",
+      "lane": "A",
+      "jurisdiction": "US",
+      "date": "2026-10-06T12:00:00Z",
+      "source_link": "https://www.justice.gov/opa/pr/justice-department-and-usda-reaffirm-and-expand-their-partnership-protect-competition",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 336,
+      "headline": "Former TD Bank Employee Pleads Guilty to Accepting Bribes,  Laundering $4.8 Million to Colombia",
+      "source": "DOJ press releases",
+      "lane": "A",
+      "jurisdiction": "US",
+      "date": "2026-10-06T12:00:00Z",
+      "source_link": "https://www.justice.gov/opa/pr/former-td-bank-employee-pleads-guilty-accepting-bribes-laundering-48-million-colombia",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 335,
+      "headline": "Former Federal Employee Pleads Guilty to Defrauding the Federal Government of Approximately $194 Million",
+      "source": "DOJ press releases",
+      "lane": "A",
+      "jurisdiction": "US",
+      "date": "2026-10-06T12:00:00Z",
+      "source_link": "https://www.justice.gov/opa/pr/former-federal-employee-pleads-guilty-defrauding-federal-government-approximately-194",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 103,
@@ -219,7 +1255,123 @@
       "jurisdiction": "US",
       "date": "2026-10-06",
       "source_link": "https://content.naic.org/example/catastrophe-bulletin",
-      "status": "NEW"
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "FAILED",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": null
+    },
+    {
+      "item_id": 283,
+      "headline": "SEC Coordinates with Global Financial Regulators to Raise Fraud Awareness During World Investor Week",
+      "source": "SEC litigation releases",
+      "lane": "A",
+      "jurisdiction": "US",
+      "date": "2026-10-05T12:47:36Z",
+      "source_link": "https://www.sec.gov/newsroom/press-releases/2026-101-sec-coordinates-global-financial-regulators-raise-fraud-awareness-during-world-investor-week",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "FAILED",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": null
+    },
+    {
+      "item_id": 345,
+      "headline": "Justice Department Announces Charges Involving 16 Aliens for Election Crimes",
+      "source": "DOJ press releases",
+      "lane": "A",
+      "jurisdiction": "US",
+      "date": "2026-10-05T12:00:00Z",
+      "source_link": "https://www.justice.gov/opa/pr/justice-department-announces-charges-involving-16-aliens-election-crimes",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 344,
+      "headline": "Weaponization Working Group Releases Report on Garland Memo That Chilled Parental Rights and Warned Parents Could Be Domestic Terrorists",
+      "source": "DOJ press releases",
+      "lane": "A",
+      "jurisdiction": "US",
+      "date": "2026-10-05T12:00:00Z",
+      "source_link": "https://www.justice.gov/opa/pr/weaponization-working-group-releases-report-garland-memo-chilled-parental-rights-and-warned",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 343,
+      "headline": "U.S. Department of Education and U.S. Department of Justice Reaffirm Parents Are Not Terrorists and Have the Right to Direct their Children’s Education",
+      "source": "DOJ press releases",
+      "lane": "A",
+      "jurisdiction": "US",
+      "date": "2026-10-05T12:00:00Z",
+      "source_link": "https://www.justice.gov/opa/pr/us-department-education-and-us-department-justice-reaffirm-parents-are-not-terrorists-and",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 342,
+      "headline": "U.S. Department of Justice Obtains Settlement on Behalf of National Guard Medic for Alleged Employment Discrimination by Texas Memory Care Facility",
+      "source": "DOJ press releases",
+      "lane": "A",
+      "jurisdiction": "US",
+      "date": "2026-10-05T12:00:00Z",
+      "source_link": "https://www.justice.gov/opa/pr/us-department-justice-obtains-settlement-behalf-national-guard-medic-alleged-employment",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 341,
+      "headline": "Justice Department Moves to Strip Citizenship from 40 Criminals in Largest Single-Period Filing Under the Trump Administration",
+      "source": "DOJ press releases",
+      "lane": "A",
+      "jurisdiction": "US",
+      "date": "2026-10-05T12:00:00Z",
+      "source_link": "https://www.justice.gov/opa/pr/justice-department-moves-strip-citizenship-40-criminals-largest-single-period",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 340,
+      "headline": "California Woman Arrested on Charges Alleging She Acted as Agent of China and Spied on Relatives of U.S. Based High-Ranking Taiwanese Government Official",
+      "source": "DOJ press releases",
+      "lane": "A",
+      "jurisdiction": "US",
+      "date": "2026-10-05T12:00:00Z",
+      "source_link": "https://www.justice.gov/opa/pr/california-woman-arrested-charges-alleging-she-acted-agent-china-and-spied-relatives-us",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 339,
+      "headline": "Justice Department Announces Actions Advancing Two Challenges to State and Local Natural Gas Bans in Colorado and Illinois",
+      "source": "DOJ press releases",
+      "lane": "A",
+      "jurisdiction": "US",
+      "date": "2026-10-05T12:00:00Z",
+      "source_link": "https://www.justice.gov/opa/pr/justice-department-announces-actions-advancing-two-challenges-state-and-local-natural-gas",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 102,
@@ -229,7 +1381,11 @@
       "jurisdiction": "US",
       "date": "2026-10-05",
       "source_link": "https://content.naic.org/example/market-conduct-order",
-      "status": "NEW"
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 101,
@@ -239,7 +1395,11 @@
       "jurisdiction": "US",
       "date": "2026-10-04",
       "source_link": "https://www.justice.gov/example/restitution-insurance",
-      "status": "NEW"
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "FAILED",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": null
     },
     {
       "item_id": 100,
@@ -249,7 +1409,81 @@
       "jurisdiction": "US",
       "date": "2026-10-03",
       "source_link": "https://www.justice.gov/example/claim-documents",
-      "status": "NEW"
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "FAILED",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": null
+    },
+    {
+      "item_id": 350,
+      "headline": "Coordinated Arrests and Charges Dismantle Hamas Terror Finance Network Raising Funds from the United States",
+      "source": "DOJ press releases",
+      "lane": "A",
+      "jurisdiction": "US",
+      "date": "2026-10-02T12:00:00Z",
+      "source_link": "https://www.justice.gov/opa/pr/coordinated-arrests-and-charges-dismantle-hamas-terror-finance-network-raising-funds-united",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 349,
+      "headline": "New Jersey Woman, Colombian Lover Convicted in $13M Federal Program Fraud Scheme",
+      "source": "DOJ press releases",
+      "lane": "A",
+      "jurisdiction": "US",
+      "date": "2026-10-02T12:00:00Z",
+      "source_link": "https://www.justice.gov/opa/pr/operation-thunder-hole-new-jersey-woman-colombian-lover-convicted-13m-federal-program-fraud",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 348,
+      "headline": "Doctor Convicted for Conspiring to Distribute Over 2 Million Stimulant Pills",
+      "source": "DOJ press releases",
+      "lane": "A",
+      "jurisdiction": "US",
+      "date": "2026-10-02T12:00:00Z",
+      "source_link": "https://www.justice.gov/opa/pr/doctor-convicted-conspiring-distribute-over-2-million-stimulant-pills",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 347,
+      "headline": "Social Adult Day Care Owner Pleads Guilty to $65M Medicaid Fraud",
+      "source": "DOJ press releases",
+      "lane": "A",
+      "jurisdiction": "US",
+      "date": "2026-10-02T12:00:00Z",
+      "source_link": "https://www.justice.gov/opa/pr/social-adult-day-care-owner-pleads-guilty-65m-medicaid-fraud",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 346,
+      "headline": "Apprehended Venezuelan Tren de Aragua Leader on FBI’s 10 Most Wanted Fugitives List Appears in Nebraska Court Following Homeland Security Task Force Investigation",
+      "source": "DOJ press releases",
+      "lane": "A",
+      "jurisdiction": "US",
+      "date": "2026-10-02T12:00:00Z",
+      "source_link": "https://www.justice.gov/opa/pr/apprehended-venezuelan-tren-de-aragua-leader-fbis-top-10-most-wanted-list-appears-nebraska",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 99,
@@ -259,7 +1493,81 @@
       "jurisdiction": "US",
       "date": "2026-10-02",
       "source_link": "https://www.justice.gov/example/premium-finance-charge",
-      "status": "NEW"
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "FAILED",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": null
+    },
+    {
+      "item_id": 284,
+      "headline": "SEC Proposal Would Address How Investment Advisers and Funds Can Custody Crypto Assets Under the Federal Securities Laws",
+      "source": "SEC litigation releases",
+      "lane": "A",
+      "jurisdiction": "US",
+      "date": "2026-10-01T16:16:07Z",
+      "source_link": "https://www.sec.gov/newsroom/press-releases/2026-100-sec-proposal-would-address-how-investment-advisers-funds-can-custody-crypto-assets-under-federal",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 285,
+      "headline": "SEC’s Division of Examinations Announces New Exam Handbook",
+      "source": "SEC litigation releases",
+      "lane": "A",
+      "jurisdiction": "US",
+      "date": "2026-10-01T15:03:35Z",
+      "source_link": "https://www.sec.gov/newsroom/press-releases/2026-99-secs-division-examinations-announces-new-exam-handbook",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 250,
+      "headline": "New York State Department of Financial Services and Wyoming Division of Banking Sign MOU to Enable Coordinated Oversight of Virtual Currency and Digital Asset Activities",
+      "source": "New York DFS press releases",
+      "lane": "C",
+      "jurisdiction": "NY",
+      "date": "2026-10-01T13:16:10Z",
+      "source_link": "https://www.dfs.ny.gov/reports_and_publications/press_releases/pr20261001",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 352,
+      "headline": "Department of Energy Employee Arrested in Washington State on Charges of Attempted Material Support to Houthis",
+      "source": "DOJ press releases",
+      "lane": "A",
+      "jurisdiction": "US",
+      "date": "2026-10-01T12:00:00Z",
+      "source_link": "https://www.justice.gov/opa/pr/department-energy-employee-arrested-washington-state-charges-attempted-material-support",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 351,
+      "headline": "Assistant Attorney General Colin M. McDonald Issues Memorandum on the National Fraud Enforcement Division’s Corporate Enforcement Priorities",
+      "source": "DOJ press releases",
+      "lane": "A",
+      "jurisdiction": "US",
+      "date": "2026-10-01T12:00:00Z",
+      "source_link": "https://www.justice.gov/opa/pr/assistant-attorney-general-colin-m-mcdonald-issues-memorandum-national-fraud-enforcement-0",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 98,
@@ -269,7 +1577,81 @@
       "jurisdiction": "US",
       "date": "2026-10-01",
       "source_link": "https://www.justice.gov/example/staged-claim-sentencing",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 286,
+      "headline": "SEC Charges Meyer Global Management and Its CEO With Defrauding Retail Investors in Private Funds That Held Interests in SpaceX and Other Pre-IPO Securities",
+      "source": "SEC litigation releases",
+      "lane": "A",
+      "jurisdiction": "US",
+      "date": "2026-09-30T18:30:01Z",
+      "source_link": "https://www.sec.gov/newsroom/press-releases/2026-98-sec-charges-meyer-global-management-its-ceo-defrauding-retail-investors-private-funds-held-interests",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 287,
+      "headline": "SEC Charges Two Individuals With Orchestrating Fraud Scheme That Targeted Veterans",
+      "source": "SEC litigation releases",
+      "lane": "A",
+      "jurisdiction": "US",
+      "date": "2026-09-30T16:42:15Z",
+      "source_link": "https://www.sec.gov/newsroom/press-releases/2026-97-sec-charges-two-individuals-orchestrating-fraud-scheme-targeted-veterans",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 288,
+      "headline": "SEC Proposes Amendments to Expand Responsible Retailization of Private Markets",
+      "source": "SEC litigation releases",
+      "lane": "A",
+      "jurisdiction": "US",
+      "date": "2026-09-30T15:45:00Z",
+      "source_link": "https://www.sec.gov/newsroom/press-releases/2026-96-sec-proposes-amendments-expand-responsible-retailization-private-markets",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 251,
+      "headline": "NYSIF Collaborates with Cities for Financial Empowerment Fund to Expand Safe Banking Access for Injured Workers",
+      "source": "New York DFS press releases",
+      "lane": "C",
+      "jurisdiction": "NY",
+      "date": "2026-09-29T17:14:25Z",
+      "source_link": "https://www.dfs.ny.gov/reports_and_publications/press_releases/pr20260929",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 289,
+      "headline": "SEC Charges Multiple Entities in Fraud Schemes Totaling at Least $15 Million That Used WhatsApp and Other Platforms to Lure Investors",
+      "source": "SEC litigation releases",
+      "lane": "A",
+      "jurisdiction": "US",
+      "date": "2026-09-29T13:55:53Z",
+      "source_link": "https://www.sec.gov/newsroom/press-releases/2026-95-sec-charges-multiple-entities-fraud-schemes-totaling-least-15-million-used-whatsapp-other-platforms",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 79,
@@ -279,7 +1661,25 @@
       "jurisdiction": "mixed",
       "date": "2026-09-29-sled-smith-agent-premium-forgery-charges",
       "source_link": "https://www.sled.sc.gov/sites/sled/files/SLED%202026%20News%20Release/2026-10-01%20%20SLED%20CHARGES%20DORCHESTER%20COUNTY%20MAN%20WITH%20INSURANCE%20FRAUD.pdf",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "FAILED",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": null
+    },
+    {
+      "item_id": 290,
+      "headline": "SEC Charges Registered Investment Adviser Zoe Financial for Failure to Disclose Conflict of Interest",
+      "source": "SEC litigation releases",
+      "lane": "A",
+      "jurisdiction": "US",
+      "date": "2026-09-28T17:46:30Z",
+      "source_link": "https://www.sec.gov/newsroom/press-releases/2026-94-sec-charges-registered-investment-adviser-zoe-financial-failure-disclose-conflict-interest",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 64,
@@ -289,7 +1689,11 @@
       "jurisdiction": "mixed",
       "date": "2026-09-24-montana-billings-stolen-lawnmower-felony-charge",
       "source_link": "https://csimt.gov/2026/09/24/state-auditor-james-brown-charges-billings-man-with-felony-criminal-insurance-fraud-for-allegedly-filing-false-claim-over-stolen-lawnmowers/",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 20,
@@ -299,7 +1703,39 @@
       "jurisdiction": "mixed",
       "date": "2026-09-24-delaware-doi-nieves-cordero-sentenced-client-funds-theft",
       "source_link": "https://news.delaware.gov/2026/09/24/delaware-department-of-insurance-announces-sentencing-of-former-insurance-agent-for-theft-of-client-funds/",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 291,
+      "headline": "SEC Publishes Updated Market Statistics, Highlighting Increase in IPOs and Proceeds Raised",
+      "source": "SEC litigation releases",
+      "lane": "A",
+      "jurisdiction": "US",
+      "date": "2026-09-23T18:27:00Z",
+      "source_link": "https://www.sec.gov/newsroom/press-releases/2026-93-sec-publishes-updated-market-statistics-highlighting-increase-ipos-proceeds-raised",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 292,
+      "headline": "SEC Charges South Florida Resident and His Company for Alleged Investment Scheme Defrauding Law Enforcement",
+      "source": "SEC litigation releases",
+      "lane": "A",
+      "jurisdiction": "US",
+      "date": "2026-09-23T16:00:00Z",
+      "source_link": "https://www.sec.gov/newsroom/press-releases/2026-92-sec-charges-south-florida-resident-his-company-alleged-investment-scheme-defrauding-law-enforcement",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 6,
@@ -309,7 +1745,39 @@
       "jurisdiction": "mixed",
       "date": "2026-09-23-mundy-52-count-indictment",
       "source_link": "https://tbinewsroom.com/2026/09/23/tbi-investigation-results-in-multiple-count-indictment-of-jamestown-funeral-home-owner/",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 252,
+      "headline": "Department of Financial Services Announces Return of Painting to Heirs of Family Persecuted by Nazi Regime",
+      "source": "New York DFS press releases",
+      "lane": "C",
+      "jurisdiction": "NY",
+      "date": "2026-09-22T18:04:13Z",
+      "source_link": "https://www.dfs.ny.gov/reports_and_publications/press_releases/pr20260922",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 293,
+      "headline": "SEC Censures OTC Link LLC for Repeated Compliance Failures Related to Regulation SCI",
+      "source": "SEC litigation releases",
+      "lane": "A",
+      "jurisdiction": "US",
+      "date": "2026-09-22T16:41:11Z",
+      "source_link": "https://www.sec.gov/newsroom/press-releases/2026-91-sec-censures-otc-link-llc-repeated-compliance-failures-related-regulation-sci",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 67,
@@ -319,7 +1787,11 @@
       "jurisdiction": "mixed",
       "date": "2026-09-22-oakes-farms-linked-manager-crop-insurance-fraud-plea",
       "source_link": "https://www.bradenton.com/news/local/crime/article312000000.html",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 56,
@@ -329,7 +1801,11 @@
       "jurisdiction": "mixed",
       "date": "2026-09-22-kansas-dwayne-wright-probation-forged-receipts-insurance-fraud",
       "source_link": "https://www.insurance.kansas.gov/Home/Components/News/News/319/16?widgetId=41",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 60,
@@ -339,7 +1815,25 @@
       "jurisdiction": "mixed",
       "date": "2026-09-22-frisbie-pleads-guilty-federal-crop-insurance-false-statement",
       "source_link": "https://www.insurancejournal.com/app/uploads/2026/09/Frisbie-felony-sheet.pdf",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 253,
+      "headline": "AI Safety: Governor Hochul Announces Next Steps to Regulate Major AI Developers and Protect New Yorkers",
+      "source": "New York DFS press releases",
+      "lane": "C",
+      "jurisdiction": "NY",
+      "date": "2026-09-21T13:40:39Z",
+      "source_link": "https://www.dfs.ny.gov/reports_and_publications/press_releases/pr20260921",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 28,
@@ -349,7 +1843,11 @@
       "jurisdiction": "mixed",
       "date": "2026-09-21-willis-charged-multi-county-auto-policy-identity-fraud",
       "source_link": "https://www.ncdoi.gov/news/press-releases/2026/09/21/charlotte-man-charged-multi-county-insurance-fraud-scheme",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 59,
@@ -359,7 +1857,39 @@
       "jurisdiction": "mixed",
       "date": "2026-09-21-gunter-licensed-agent-elder-life-policy-arrest",
       "source_link": "https://www.ncdoi.gov/news/press-releases/2026/09/21/licensed-agent-charged-identity-theft-additional-felonies",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 294,
+      "headline": "SEC Issues “Innovation Exemption” to Facilitate the Trading of Tokenized NMS Stock and Request for Comment",
+      "source": "SEC litigation releases",
+      "lane": "A",
+      "jurisdiction": "US",
+      "date": "2026-09-17T12:55:00Z",
+      "source_link": "https://www.sec.gov/newsroom/press-releases/2026-90-sec-issues-innovation-exemption-facilitate-trading-tokenized-nms-stock-request-comment",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 295,
+      "headline": "SEC Proposes Rescission of Shareholder Proposal Rule and Reforms to Proxy Solicitation Process",
+      "source": "SEC litigation releases",
+      "lane": "A",
+      "jurisdiction": "US",
+      "date": "2026-09-16T14:00:00Z",
+      "source_link": "https://www.sec.gov/newsroom/press-releases/2026-89-sec-proposes-rescission-shareholder-proposal-rule-reforms-proxy-solicitation-process",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 25,
@@ -369,7 +1899,11 @@
       "jurisdiction": "mixed",
       "date": "2026-09-16-tx-home-hardening-discounts",
       "source_link": "https://news.google.com/rss/articles/CBMiYkFVX3lxTE1lbElrSEh1VV9iZGduWmJiUi1WV2pJM29PMlBkdDl1MzIxUmM5emF6bi0yRDZGMWpDdGZKX0Qxb1BBV2dDRURoZDRlUEM4S2JwcHhDdUV4QndxT0dZdnk5WlJR?oc=5",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 27,
@@ -379,7 +1913,11 @@
       "jurisdiction": "mixed",
       "date": "2026-09-16-clyburn-charged-fake-doctor-note-progressive",
       "source_link": "https://www.ncdoi.gov/news/press-releases/2026/09/16/charlotte-man-faces-insurance-fraud-charge-over-false-doctors-note",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 24,
@@ -389,7 +1927,11 @@
       "jurisdiction": "mixed",
       "date": "2026-09-16-ca-auto-marital-status-proposal",
       "source_link": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxQNm9iMVNFdGZRV01paFY1ajZOUlByT1NDS25MMGlBeHAyLXZvQ0NVbkdvMUhHbWVzcGdLUVhRNUVmckNCWTc2czQtY1NYbUQ0c1Fhdmg4UUF1ZENCeFA4d09Cei1DMWJPZi0tT1QyUkJteTIxUWlzVXNMM2JjVXZBNjZrZ3B5QldZMmJv?oc=5",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 96,
@@ -399,7 +1941,11 @@
       "jurisdiction": "mixed",
       "date": "2026-09-15-usaa-garrison-tennessee-slab-leak-complaint",
       "source_link": "https://www.insurancebusinessmag.com/us/news/risk-compliance-legal/hidden-slab-leak-sparks-bad-faith-suit-against-usaa-590015.aspx",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 49,
@@ -409,7 +1955,53 @@
       "jurisdiction": "mixed",
       "date": "2026-09-15-kolenda-pleads-guilty-wire-fraud-prize-insurance",
       "source_link": "https://www.justice.gov/usao-ct/pr/operator-fraudulent-prize-insurance-business-pleads-guilty",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 296,
+      "headline": "SEC Grants Exemptive Relief from Certain Inline XBRL Filing or Submission Requirements",
+      "source": "SEC litigation releases",
+      "lane": "A",
+      "jurisdiction": "US",
+      "date": "2026-09-14T16:47:00Z",
+      "source_link": "https://www.sec.gov/newsroom/press-releases/2026-88-sec-grants-exemptive-relief-certain-inline-xbrl-filing-or-submission-requirements",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 254,
+      "headline": "State Comptroller DiNapoli and DFS Acting Superintendent Asrow Designate New Banking Development District to Support Community Banking in Inwood",
+      "source": "New York DFS press releases",
+      "lane": "C",
+      "jurisdiction": "NY",
+      "date": "2026-09-14T15:00:21Z",
+      "source_link": "https://www.dfs.ny.gov/reports_and_publications/press_releases/pr20260914",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 297,
+      "headline": "Joint Readout of Principals’ Meeting of U.S. and UK Authorities Regarding Central Counterparty Resolution",
+      "source": "SEC litigation releases",
+      "lane": "A",
+      "jurisdiction": "US",
+      "date": "2026-09-11T15:00:00Z",
+      "source_link": "https://www.sec.gov/newsroom/press-releases/2026-87-joint-readout-principals-meeting-us-uk-authorities-regarding-central-counterparty-resolution",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 33,
@@ -419,7 +2011,39 @@
       "jurisdiction": "mixed",
       "date": "2026-09-11-murray-mejia-186k-condo-repair-kickback-charges",
       "source_link": "https://www.insurancejournal.com/news/southeast/2026/09/17/885380.htm",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 298,
+      "headline": "SEC Charges Founder and His Two New Jersey-Based Companies in Alleged $16 Million Ponzi Scheme",
+      "source": "SEC litigation releases",
+      "lane": "A",
+      "jurisdiction": "US",
+      "date": "2026-09-10T17:45:22Z",
+      "source_link": "https://www.sec.gov/newsroom/press-releases/2026-86-sec-charges-founder-his-two-new-jersey-based-companies-alleged-16-million-ponzi-scheme",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 255,
+      "headline": "DFS Issues New Cybersecurity Guidance on Risk Assessments for Financial Services Entities",
+      "source": "New York DFS press releases",
+      "lane": "C",
+      "jurisdiction": "NY",
+      "date": "2026-09-10T13:33:30Z",
+      "source_link": "https://www.dfs.ny.gov/reports_and_publications/press_releases/pr20260910",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 26,
@@ -429,7 +2053,11 @@
       "jurisdiction": "mixed",
       "date": "2026-09-10-indiana-appeals-revives-chapman-nationwide-bad-faith",
       "source_link": "https://public.courts.in.gov/Decisions/api/Document/Opinion?Id=p90rTe4uVqLdN6YMYAvG2l_b73sU9xlibhS74bhh5MjOg_PJ7BsQgNXPOWZMIcCB0",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 66,
@@ -439,7 +2067,11 @@
       "jurisdiction": "mixed",
       "date": "2026-09-09-ny-dfs-auto-rate-prior-approval-proposal",
       "source_link": "https://www.dfs.ny.gov/reports_and_publications/press_releases/pr20260909",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 19,
@@ -449,7 +2081,11 @@
       "jurisdiction": "mixed",
       "date": "2026-09-09-earl-altered-medical-records-unum-claims-charge",
       "source_link": "https://www.ncdoi.gov/news/press-releases/2026/09/09/mecklenburg-county-woman-charged-medical-insurance-fraud",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 21,
@@ -459,7 +2095,25 @@
       "jurisdiction": "mixed",
       "date": "2026-09-09-arthurs-vgn-enterprise-charged-163561-premium-underpayment",
       "source_link": "https://www.suffolkcountyda.org/patchogue-employer-charged-with-workers-comp-insurance-fraud/",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 256,
+      "headline": "Department of Financial Services Announces 2027 Health Insurance Premium Rates, Saving New Yorkers $1.6 Billion",
+      "source": "New York DFS press releases",
+      "lane": "C",
+      "jurisdiction": "NY",
+      "date": "2026-09-04T13:31:00Z",
+      "source_link": "https://www.dfs.ny.gov/reports_and_publications/press_releases/pr20260904",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 94,
@@ -469,7 +2123,39 @@
       "jurisdiction": "mixed",
       "date": "2026-09-04-lemmen-sentenced-70-months-life-insurance-fraud",
       "source_link": "https://www.justice.gov/usao-ndin/pr/former-schererville-insurance-agent-sentenced-70-months-prison-life-insurance-fraud",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 299,
+      "headline": "SEC Proposes Rescission of Political Contribution Rule for Investment Advisers",
+      "source": "SEC litigation releases",
+      "lane": "A",
+      "jurisdiction": "US",
+      "date": "2026-09-03T20:30:00Z",
+      "source_link": "https://www.sec.gov/newsroom/press-releases/2026-85-sec-proposes-rescission-political-contribution-rule-investment-advisers",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 300,
+      "headline": "SEC Investor Advisory Committee to Host Sept. 10 Meeting",
+      "source": "SEC litigation releases",
+      "lane": "A",
+      "jurisdiction": "US",
+      "date": "2026-09-03T14:27:49Z",
+      "source_link": "https://www.sec.gov/newsroom/press-releases/2026-84-sec-investor-advisory-committee-host-sept-10-meeting",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 82,
@@ -479,7 +2165,11 @@
       "jurisdiction": "mixed",
       "date": "2026-09-02-tdi-price-optimization-guidance",
       "source_link": "https://www.tdi.texas.gov/news/2026/tdi09022026.html",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 31,
@@ -489,7 +2179,11 @@
       "jurisdiction": "mixed",
       "date": "2026-09-02-davis-adjuster-charged-chubb-claim-check-diversion",
       "source_link": "https://www.ncdoi.gov/news/press-releases/2026/09/02/cabarrus-county-woman-faces-insurance-fraud-charges",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 13,
@@ -499,7 +2193,67 @@
       "jurisdiction": "mixed",
       "date": "2026-09-02-bannerman-forged-1581-towing-invoice-charge",
       "source_link": "https://www.ncdoi.gov/news/press-releases/2026/09/02/guilford-county-man-arrested-multiple-fraud-related-charges",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 301,
+      "headline": "SEC Announces Agenda and Panelists for Roundtable on Preparations for 24-Hour Trading",
+      "source": "SEC litigation releases",
+      "lane": "A",
+      "jurisdiction": "US",
+      "date": "2026-09-01T19:17:39Z",
+      "source_link": "https://www.sec.gov/newsroom/press-releases/2026-83-sec-announces-agenda-panelists-roundtable-preparations-24-hour-trading",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 302,
+      "headline": "SEC Charges San Francisco Bay Area Private Fund Executives with Multimillion Dollar Ponzi-Like Scheme",
+      "source": "SEC litigation releases",
+      "lane": "A",
+      "jurisdiction": "US",
+      "date": "2026-09-01T17:52:32Z",
+      "source_link": "https://www.sec.gov/newsroom/press-releases/2026-82-sec-charges-san-francisco-bay-area-private-fund-executives-multimillion-dollar-ponzi-scheme",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 303,
+      "headline": "SEC Proposes to Modernize Rules for Registered Transfer Agents",
+      "source": "SEC litigation releases",
+      "lane": "A",
+      "jurisdiction": "US",
+      "date": "2026-09-01T14:57:00Z",
+      "source_link": "https://www.sec.gov/newsroom/press-releases/2026-81-sec-proposes-modernize-rules-registered-transfer-agents",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 304,
+      "headline": "SEC and FDA Announce MOU to Bolster Cooperation and Ensure Market Integrity",
+      "source": "SEC litigation releases",
+      "lane": "A",
+      "jurisdiction": "US",
+      "date": "2026-08-31T18:24:32Z",
+      "source_link": "https://www.sec.gov/newsroom/press-releases/2026-80-sec-fda-announce-mou-bolster-cooperation-ensure-market-integrity",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 65,
@@ -509,7 +2263,11 @@
       "jurisdiction": "mixed",
       "date": "2026-08-31-ncdoi-charlotte-brothers-plead-guilty-roofing-scam-sting",
       "source_link": "https://www.ncdoi.gov/news/press-releases/2026/08/31/charlotte-brothers-plead-guilty-wake-county-roofing-scam",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 15,
@@ -519,7 +2277,53 @@
       "jurisdiction": "mixed",
       "date": "2026-08-31-la-county-sues-state-farm-wildfire-claims",
       "source_link": "https://lacounty.gov/2026/08/31/los-angeles-county-sues-state-farm-for-unfair-business-practices-in-handling-2025-wildfire-claims/",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 305,
+      "headline": "SEC Proposes Amendments to Exchange Act Rule 3a12-8 to Add European Union Debt Obligations",
+      "source": "SEC litigation releases",
+      "lane": "A",
+      "jurisdiction": "US",
+      "date": "2026-08-28T17:33:00Z",
+      "source_link": "https://www.sec.gov/newsroom/press-releases/2026-79-sec-proposes-amendments-exchange-act-rule-3a12-8-add-european-union-debt-obligations",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 257,
+      "headline": "Governor Hochul and Queens County District Attorney Melinda Katz Announce Sentencings for Conspirators of Staged Car Crashes on New York City Highways",
+      "source": "New York DFS press releases",
+      "lane": "C",
+      "jurisdiction": "NY",
+      "date": "2026-08-27T19:57:59Z",
+      "source_link": "https://www.dfs.ny.gov/reports_and_publications/press_releases/pr20260827",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 258,
+      "headline": "NYS Department of State’s Division of Consumer Protection Warns New Yorkers of a Surge in AI Investment Scams",
+      "source": "New York DFS press releases",
+      "lane": "C",
+      "jurisdiction": "NY",
+      "date": "2026-08-27T16:44:36Z",
+      "source_link": "https://www.dfs.ny.gov/reports_and_publications/press_releases/pr20260826",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 44,
@@ -529,7 +2333,11 @@
       "jurisdiction": "mixed",
       "date": "2026-08-27-jones-arrest-four-restaurant-claims",
       "source_link": "https://www.ncdoi.gov/news/press-releases/2026/08/27/warren-county-man-charged-insurance-fraud-involving-restaurant-claims",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 12,
@@ -539,7 +2347,11 @@
       "jurisdiction": "mixed",
       "date": "2026-08-27-huiracocha-murillo-sentenced-nyc-staged-crashes",
       "source_link": "https://www.governor.ny.gov/news/governor-hochul-and-queens-county-district-attorney-melinda-katz-announce-sentencings",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 47,
@@ -549,7 +2361,11 @@
       "jurisdiction": "mixed",
       "date": "2026-08-26-nv-hawk-fire-onsite-assistance-bulletin",
       "source_link": "https://doi.nv.gov/News_Notices/Press_Releases/August_26,_2026_-_Nevada_Division_of_Insurance_mobilizes_to_provide_insurance_guidance_for_residents_affected_by_Hawk_Fire/",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 84,
@@ -559,7 +2375,11 @@
       "jurisdiction": "mixed",
       "date": "2026-08-25-ncdoi-hammonds-sowers-rental-storage-bumper-arrests",
       "source_link": "https://www.ncdoi.gov/news/press-releases/2026/08/25/two-mecklenburg-county-residents-charged-insurance-fraud-scheme",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 5,
@@ -569,7 +2389,11 @@
       "jurisdiction": "mixed",
       "date": "2026-08-24-florida-cfo-otrok-41-luxury-vehicle-applications",
       "source_link": "https://www.myfloridacfo.com/news/pressreleases/press-release-details/2026/08/24/chief-financial-officer-blaise-ingoglia-announces-arrest-following-vehicle-insurance-fraud-scheme",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 55,
@@ -579,7 +2403,11 @@
       "jurisdiction": "mixed",
       "date": "2026-08-24-conner-probation-preexisting-vehicle-damage",
       "source_link": "https://www.insurance.kansas.gov/Home/Components/News/News/310/16?widgetId=41",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 10,
@@ -589,7 +2417,11 @@
       "jurisdiction": "mixed",
       "date": "2026-08-21-hoyt-pleads-guilty-wire-fraud-premiums",
       "source_link": "https://www.justice.gov/usao-edva/pr/former-insurance-agent-pleads-guilty-wire-fraud",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 11,
@@ -599,7 +2431,11 @@
       "jurisdiction": "mixed",
       "date": "2026-08-20-florida-cfo-nunzio-life-insurance-fraud-arrests",
       "source_link": "https://www.myfloridacfo.com/news/pressreleases/press-release-details/2026/08/20/chief-financial-officer-blaise-ingoglia-announces-arrests-of-life-insurance-agent-and-her-husband-after-a-nearly--382-000-insurance-fraud-scheme",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 43,
@@ -609,7 +2445,11 @@
       "jurisdiction": "mixed",
       "date": "2026-08-19-michael-owen-sentenced-police-auto-insurance-fraud",
       "source_link": "https://www.justice.gov/usao-md/pr/former-prince-georges-county-police-officer-sentenced-connection-insurance-fraud-scheme",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 51,
@@ -619,7 +2459,11 @@
       "jurisdiction": "mixed",
       "date": "2026-08-19-alabama-supreme-court-state-farm-foor-discovery-order",
       "source_link": "https://www.insurancejournal.com/news/southeast/2026/08/19/882071.htm",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 87,
@@ -629,7 +2473,39 @@
       "jurisdiction": "mixed",
       "date": "2026-08-18-gutierrez-writ-release-state-farm-investigation",
       "source_link": "https://oklahomawatch.org/2026/01/12/families-speak-out-in-wake-of-news-of-state-farm-hail-scheme/",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 247,
+      "headline": "Governor Hochul Announces Attorney General James and DFS Acting Superintendent Asrow Secure Continued Western Union Serv…",
+      "source": "New York DFS press releases",
+      "lane": "C",
+      "jurisdiction": "NY",
+      "date": "2026-08-13T22:56:05Z",
+      "source_link": "https://www.dfs.ny.gov/reports_and_publications/press_releases/pr20260814",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 245,
+      "headline": "NYDFS Introduces Guidance and Proposed Regulation to Strengthen New York’s Surprise Medical Bill Resolution Process",
+      "source": "New York DFS press releases",
+      "lane": "C",
+      "jurisdiction": "NY",
+      "date": "2026-08-13T13:40:47Z",
+      "source_link": "https://www.dfs.ny.gov/reports_and_publications/press_releases/pr20260813",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 77,
@@ -639,7 +2515,11 @@
       "jurisdiction": "mixed",
       "date": "2026-08-12-florida-100m-workers-comp-fraud-charges",
       "source_link": "https://www.myfloridalegal.com/newsrelease/attorney-general-james-uthmeier-charges-seven-multi-million-dollar-workers-compensation",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 89,
@@ -649,7 +2529,11 @@
       "jurisdiction": "mixed",
       "date": "2026-08-11-swiss-re-h1-cat-loss-report",
       "source_link": "https://news.google.com/rss/articles/CBMi6AFBVV95cUxQZGRvQVp3b2JoMkxnRnVhNWhiOV9SQ3FtQUp3cTNEU0t3VHBUV0E2MjRURkVYSDJHZjR4QkZtQmdRMENjc0U0UThOQ2RLcUlzSE9DSmhmQWZ5ell2VEVRejhlb2dpMnhTamlfMlVmQjhvdVJXWF9TQUpnM0hOdVdiM3BFdFBjbGI1SHFwNnRsbHpWbGFGeEI4ZFpVSU9zbWVQMTRPWmI2UEZCa2E5OXFEMGhMcTlkN3dqdmphVGUxMGprbHF1UEpPQllndnZhdm1ZdkNZUnBZWnJqSTJlOUhqaHJsY3htVUZD?oc=5",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 86,
@@ -659,7 +2543,11 @@
       "jurisdiction": "mixed",
       "date": "2026-08-11-idaho-antone-fraudulent-dental-claim-plea",
       "source_link": "https://doi.idaho.gov/pressrelease/man-pleads-guilty-after-fraudulent-80000-dental-claim-exposed/",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 88,
@@ -669,7 +2557,11 @@
       "jurisdiction": "mixed",
       "date": "2026-08-06-idaho-cooper-convicted-preexisting-pickup-damage-claim",
       "source_link": "https://doi.idaho.gov/pressrelease/boise-man-convicted-for-filing-fraudulent-insurance-claim/",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 41,
@@ -679,7 +2571,11 @@
       "jurisdiction": "mixed",
       "date": "2026-07-29-lisette-patricio-final-sentence-homeowners-insurance-fraud",
       "source_link": "https://www.irs.gov/compliance/criminal-investigation/fifth-defendant-sentenced-for-bank-fraud-and-tax-offenses-arising-from-multiyear-homeowners-insurance-fraud-scheme",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 58,
@@ -689,7 +2585,11 @@
       "jurisdiction": "mixed",
       "date": "2026-07-28-ncdoi-robinson-lemonade-eviction-bankruptcy-claim-charge",
       "source_link": "https://www.ncdoi.gov/news/press-releases/2026/07/28/raleigh-woman-faces-insurance-fraud-charge",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 91,
@@ -699,7 +2599,11 @@
       "jurisdiction": "mixed",
       "date": "2026-07-23-ncdoi-edwards-progressive-duplicate-prior-owner-damage-charge",
       "source_link": "https://www.ncdoi.gov/news/press-releases/2026/07/23/virginia-man-faces-insurance-fraud-related-charges-wake-county",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 80,
@@ -709,7 +2613,11 @@
       "jurisdiction": "mixed",
       "date": "2026-07-20-iowa-revokes-norman-license-retired-postal-worker-annuity-fraud",
       "source_link": "https://iid.iowa.gov/press-release/2026-07-20/iowa-insurance-commissioner-revokes-license-and-orders-restitution-preying-retired-postal-workers",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 40,
@@ -719,7 +2627,11 @@
       "jurisdiction": "mixed",
       "date": "2026-07-15-florida-cfo-keith-159557-health-claims-arrest",
       "source_link": "https://www.myfloridacfo.com/news/pressreleases/press-release-details/2026/07/15/chief-financial-officer-blaise-ingoglia-announces-arrest-following-over--159-000-in-fraudulent-insurance-claims",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 50,
@@ -729,7 +2641,11 @@
       "jurisdiction": "mixed",
       "date": "2026-07-15-eight-sentenced-1-2m-travel-insurance-fraud",
       "source_link": "https://www.justice.gov/usao-sdin/pr/eight-sentenced-federal-prison-12-million-travel-insurance-fraud-scheme",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 2,
@@ -739,7 +2655,25 @@
       "jurisdiction": "mixed",
       "date": "2026-07-10-kenneth-tran-sentenced-road-rage-dashcam-fraud",
       "source_link": "https://www.insurance.ca.gov/0400-news/0100-press-releases/2026/release023-2026.cfm",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 243,
+      "headline": "New York State Department of Financial Services Builds on Nation-Leading Stablecoin Framework in New Proposed Regulation…",
+      "source": "New York DFS press releases",
+      "lane": "C",
+      "jurisdiction": "NY",
+      "date": "2026-06-09T13:26:15Z",
+      "source_link": "https://www.dfs.ny.gov/reports_and_publications/press_releases/pr20260609",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 42,
@@ -749,7 +2683,11 @@
       "jurisdiction": "mixed",
       "date": "2026-06-03-idaho-bailey-former-agent-sentenced-backdated-snowmobile-policy",
       "source_link": "https://doi.idaho.gov/pressrelease/idaho-insurance-department-secures-felony-fraud-conviction-against-former-agent/",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 22,
@@ -759,7 +2697,11 @@
       "jurisdiction": "mixed",
       "date": "2026-05-28-scdoi-reyes-guilty-plea-fraudulent-insurance-policies",
       "source_link": "https://legacy.example/stories/banito-reyes-south-carolina-fake-policies-unlicensed-producer-scheme",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 83,
@@ -769,7 +2711,11 @@
       "jurisdiction": "mixed",
       "date": "2026-05-28-idaho-richman-agent-forged-consumer-signatures-sentenced",
       "source_link": "https://doi.idaho.gov/pressrelease/insurance-agent-sentenced-for-forging-consumer-signatures/",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 18,
@@ -779,7 +2725,11 @@
       "jurisdiction": "mixed",
       "date": "2026-05-27-california-doi-all-you-can-claim-staged-collisions-arraignment",
       "source_link": "https://legacy.example/stories/jhoiner-rodriguez-celis-upland-staged-collisions-innocent-driver",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 46,
@@ -789,7 +2739,11 @@
       "jurisdiction": "mixed",
       "date": "2026-05-26-lindberg-12-year-sentence-1-655b-restitution",
       "source_link": "https://www.justice.gov/opa/pr/owner-multinational-investment-company-sentenced-2b-fraud-money-laundering-and-bribery",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 73,
@@ -799,7 +2753,11 @@
       "jurisdiction": "mixed",
       "date": "2026-05-25-richard-hill-allstate-federal-hail-denial-complaint",
       "source_link": "https://www.insurancebusinessmag.com/us/news/risk-compliance-legal/homeowner-drags-allstates-mckinsey-claims-program-back-into-court-576566.aspx",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 37,
@@ -809,7 +2767,11 @@
       "jurisdiction": "mixed",
       "date": "2026-05-14-indiana-appeals-reinstates-cosme-erie-breach-award",
       "source_link": "https://law.justia.com/cases/indiana/court-of-appeals/2026/25a-ct-01439.html",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 32,
@@ -819,7 +2781,11 @@
       "jurisdiction": "mixed",
       "date": "2026-05-06-colin-jackson-convicted-auto-insurance-fraud",
       "source_link": "https://www.justice.gov/usao-ndca/pr/colin-jackson-convicted-participating-scheme-defraud-automobile-insurance-company",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 72,
@@ -829,7 +2795,11 @@
       "jurisdiction": "mixed",
       "date": "2026-05-01-sdny-allows-renergy-third-party-bad-faith-amendment",
       "source_link": "https://law.justia.com/cases/federal/district-courts/new-york/nysdce/1:2025cv05073/644453/75/",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 1,
@@ -839,7 +2809,11 @@
       "jurisdiction": "mixed",
       "date": "2026-04-16-ca-operation-bear-claw-convictions",
       "source_link": "https://www.insurance.ca.gov/0400-news/0100-press-releases/2026/release017-2026.cfm",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 34,
@@ -849,7 +2823,11 @@
       "jurisdiction": "mixed",
       "date": "2026-04-03-iowa-starr-charged-unlicensed-public-adjusting-false-invoices",
       "source_link": "https://iid.iowa.gov/press-release/2026-04-03/rockwell-man-faces-charges-public-adjusting-without-license-and-insurance-fraud",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 69,
@@ -859,7 +2837,11 @@
       "jurisdiction": "mixed",
       "date": "2026-03-31-paula-johnson-files-travelers-bad-faith-suit-sd-illinois",
       "source_link": "https://www.salvilaw.com/press-release/travelers-bad-faith-lawsuit-dry-ice-death/",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 92,
@@ -869,7 +2851,11 @@
       "jurisdiction": "mixed",
       "date": "2026-03-11-california-doi-hassan-towing-5-9m-workers-comp-premium-fraud-arrests",
       "source_link": "https://legacy.example/stories/hassan-brothers-southern-california-towing-workers-comp-payroll-fraud",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 85,
@@ -879,7 +2865,11 @@
       "jurisdiction": "mixed",
       "date": "2026-02-19-idaho-evans-lenon-classic-vehicle-fire-policy-fraud-pleas",
       "source_link": "https://doi.idaho.gov/pressrelease/idaho-cracks-down-on-insurance-fraud-two-idaho-men-sentenced-in-200k-scheme/",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 35,
@@ -889,7 +2879,11 @@
       "jurisdiction": "mixed",
       "date": "2026-02-18-lloyd-strong-sentenced-20-years-aca-enrollment-fraud",
       "source_link": "https://www.irs.gov/compliance/criminal-investigation/president-of-insurance-brokerage-firm-and-ceo-of-marketing-company-sentenced-in-233m-affordable-care-act-enrollment-fraud-scheme-that-preyed-on-vulnerable-consumers",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 16,
@@ -899,7 +2893,11 @@
       "jurisdiction": "mixed",
       "date": "2026-01-28-alabama-dentist-charged-office-explosion-arson-insurance-fraud",
       "source_link": "https://www.insurancejournal.com/news/southeast/2026/01/28/855897.htm",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 68,
@@ -909,7 +2907,11 @@
       "jurisdiction": "mixed",
       "date": "2024-10-30-antoine-clark-guilty-operation-sideswipe",
       "source_link": "https://www.justice.gov/usao-edla/pr/new-orleans-man-guilty-staged-automobile-accident-conspiracy",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 9,
@@ -919,7 +2921,11 @@
       "jurisdiction": "mixed",
       "date": "2024-06-28-blair-sentenced-internet-photo-property-claims",
       "source_link": "https://doi.sc.gov/1035/Notable-Cases",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 53,
@@ -929,7 +2935,11 @@
       "jurisdiction": "mixed",
       "date": "2024-05-20-ocarroll-sentenced-mail-fraud-insurance-annuity-clients",
       "source_link": "https://www.justice.gov/usao-edva/pr/north-chesterfield-insurance-agent-sentenced-defrauding-employer-and-clients",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 97,
@@ -939,7 +2949,11 @@
       "jurisdiction": "mixed",
       "date": "2023-03-2024-05-totten-elderly-client-premium-advance-mail-fraud",
       "source_link": "https://www.justice.gov/usao-az/pr/former-arizona-licensed-insurance-agent-sentenced-prison-defrauding-elderly-clients",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 14,
@@ -949,7 +2963,11 @@
       "jurisdiction": "mixed",
       "date": "2021-09-2023-01-peebles-staged-auto-accidents-mail-fraud",
       "source_link": "https://www.justice.gov/usao-edmo/pr/man-admits-staging-auto-accidents-commit-insurance-fraud",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 81,
@@ -959,7 +2977,11 @@
       "jurisdiction": "mixed",
       "date": "2021-06-24-2022-06-23-champlain-towers-1b-class-settlement",
       "source_link": "https://ctsreceivership.com/wp-content/uploads/2022/05/Amended-Exhibit-1-CLASS-ACTION-SETTLMENT-AGREEMENT.pdf",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 23,
@@ -969,7 +2991,11 @@
       "jurisdiction": "mixed",
       "date": "2020-2023-boy-scouts-abuse-2-46b-insurer-funded-bankruptcy-trust",
       "source_link": "https://cases.omniagentsolutions.com/caseoverview?clientId=3552",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 4,
@@ -979,7 +3005,11 @@
       "jurisdiction": "mixed",
       "date": "2019-2025-hopper-self-inflicted-amputation-insurance-sentence",
       "source_link": "https://www.cps.gov.uk/south-west/news/surgeon-jailed-fraud-after-lying-about-self-inflicted-injuries-led-his-leg",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 76,
@@ -989,7 +3019,11 @@
       "jurisdiction": "mixed",
       "date": "2019-2023-birchmore-sentenced-unauthorized-life-insurance-policies",
       "source_link": "https://www.oversight.gov/former-insurance-agent-sentenced-prison-defrauding-victims-creating-life-insurance-policies-their",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 8,
@@ -999,7 +3033,11 @@
       "jurisdiction": "mixed",
       "date": "2018-2024-collisions-2024-12-19-mcnabb-sentenced",
       "source_link": "https://www.insurance.ca.gov/0400-news/0100-press-releases/2024/release064-2024.cfm",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 45,
@@ -1009,7 +3047,11 @@
       "jurisdiction": "mixed",
       "date": "2018-2022-satterfield-nautilus-lloyds-4-3m-insurance-settlement-judgment",
       "source_link": "https://law.justia.com/cases/federal/district-courts/south-carolina/scdce/2:2022cv01307/271422/78/",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 95,
@@ -1019,7 +3061,11 @@
       "jurisdiction": "mixed",
       "date": "2018-2021-usa-gymnastics-nassar-380m-insurer-funded-bankruptcy-settlement",
       "source_link": "https://usagym.org/settlement-with-survivors-approved-by-court-usa-gymnastics-to-exit-bankruptcy/",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 90,
@@ -1029,7 +3075,11 @@
       "jurisdiction": "mixed",
       "date": "2018-2020-ninio-rental-car-identity-policies-2024-arraignments",
       "source_link": "https://www.insurance.ca.gov/0400-news/0100-press-releases/2024/release003-2024.cfm",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 36,
@@ -1039,7 +3089,11 @@
       "jurisdiction": "mixed",
       "date": "2018-04-2024-11-martin-life-sentence-odom-life-insurance-murder",
       "source_link": "https://ww3.ca2.uscourts.gov/decisions/OPN/24-3013_complete_opn.pdf",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 71,
@@ -1049,7 +3103,11 @@
       "jurisdiction": "mixed",
       "date": "2017-2023-2024-wasserman-fastlife-elderly-investor-sentence",
       "source_link": "https://www.justice.gov/usao-mdfl/pr/insurance-agent-sentenced-15-years-federal-prison-defrauding-elderly-investors-and-tax",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 70,
@@ -1059,7 +3117,11 @@
       "jurisdiction": "mixed",
       "date": "2017-2020-pge-wildfire-11b-insurance-subrogation-bankruptcy-settlement",
       "source_link": "https://investor.pgecorp.com/news-events/press-releases/press-release-details/2019/PGE-Executes-Definitive-Agreement-Resolving-Insurance-Subrogation-Claims-Relating-to-2017-and-2018-Wildfires/default.aspx",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 62,
@@ -1069,7 +3131,11 @@
       "jurisdiction": "mixed",
       "date": "2017-10-01-2020-09-30-mgm-las-vegas-shooting-800m-settlement",
       "source_link": "https://www.insurancejournal.com/news/national/2020/10/05/585278.htm",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 30,
@@ -1079,7 +3145,11 @@
       "jurisdiction": "mixed",
       "date": "2016-2021-cigna-ma-diagnosis-codes-2023-172m-settlement",
       "source_link": "https://oig.hhs.gov/fraud/enforcement/cigna-group-to-pay-172-million-to-resolve-false-claims-act/",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 17,
@@ -1089,7 +3159,11 @@
       "jurisdiction": "mixed",
       "date": "2015-04-09-2021-03-11-elmezayen-wharf-life-insurance-sentence",
       "source_link": "https://www.justice.gov/usao-cdca/pr/hawthorne-man-sentenced-212-years-prison-scheming-collect-insurance-proceeds",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 57,
@@ -1099,7 +3173,11 @@
       "jurisdiction": "mixed",
       "date": "2014-2025-kentucky-tobacco-crop-insurance-fraud-sentences",
       "source_link": "https://www.irs.gov/compliance/criminal-investigation/seven-farmers-and-a-tobacco-warehouse-manager-sentenced-for-crop-insurance-fraud-scheme",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 38,
@@ -1109,7 +3187,11 @@
       "jurisdiction": "mixed",
       "date": "2014-2017-saad-snows-clam-box-arson-wire-fraud-sentence",
       "source_link": "https://www.justice.gov/usao-ri/pr/restaurant-owner-sentenced-15-years-prison-arson-and-wire-fraud-charges",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 3,
@@ -1119,7 +3201,11 @@
       "jurisdiction": "mixed",
       "date": "2013-2018-staged-trip-fall-2023-sentencing",
       "source_link": "https://www.justice.gov/usao-sdny/pr/new-york-litigation-funder-convicted-trip-and-fall-fraud-scheme-sentenced-36-months",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 39,
@@ -1129,7 +3215,11 @@
       "jurisdiction": "mixed",
       "date": "2013-2015-fata-unnecessary-chemotherapy-45-year-sentence",
       "source_link": "https://www.fbi.gov/contact-us/field-offices/detroit/news/press-releases/detroit-area-doctor-sentenced-to-45-years-in-prison-for-providing-medically-unnecessary-chemotherapy-to-patients",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 74,
@@ -1139,7 +3229,11 @@
       "jurisdiction": "mixed",
       "date": "2012-2025-daley-elderly-life-insurance-annuity-client-fraud-sentence",
       "source_link": "https://www.irs.gov/compliance/criminal-investigation/montgomery-county-man-sentenced-to-federal-prison-for-defrauding-elderly-victims-of-hundreds-of-thousands-of-dollars",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 75,
@@ -1149,7 +3243,11 @@
       "jurisdiction": "mixed",
       "date": "2012-12-14-2022-02-15-remington-sandy-hook-73m-insurer-settlement",
       "source_link": "https://law.justia.com/cases/connecticut/supreme-court/2019/sc19832.html",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 7,
@@ -1159,7 +3257,11 @@
       "jurisdiction": "mixed",
       "date": "2011-10-01-faked-death-2019-sentencing",
       "source_link": "https://www.justice.gov/usao-mn/pr/moldovan-national-sentenced-41-months-prison-faking-his-death-2-million-insurance-payout",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 54,
@@ -1169,7 +3271,11 @@
       "jurisdiction": "mixed",
       "date": "2009-2018-kaiser-ma-risk-adjustment-2026-556m-settlement",
       "source_link": "https://www.justice.gov/opa/pr/kaiser-permanente-affiliates-pay-556m-resolve-false-claims-act-allegations",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 52,
@@ -1179,7 +3285,11 @@
       "jurisdiction": "mixed",
       "date": "2002-2008-canoe-faked-death-life-insurance-convictions",
       "source_link": "http://news.bbc.co.uk/2/hi/uk_news/england/tees/7520803.stm",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 63,
@@ -1189,7 +3299,11 @@
       "jurisdiction": "mixed",
       "date": "2000-duck-hunt-disappearance-2020-appeal-life-insurance-conspiracy",
       "source_link": "https://law.justia.com/cases/florida/first-district-court-of-appeal/2020/19-0498.html",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 48,
@@ -1199,7 +3313,11 @@
       "jurisdiction": "mixed",
       "date": "1999-2005-homeless-men-life-insurance-murders-2012-california-supreme-court",
       "source_link": "https://scocal.stanford.edu/opinion/people-v-rutterschmidt-34188/",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 61,
@@ -1209,7 +3327,11 @@
       "jurisdiction": "mixed",
       "date": "1999-2004-frankel-looted-insurers-sec-action-federal-sentence",
       "source_link": "https://www.sec.gov/enforcement-litigation/litigation-releases/lr-16719",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     },
     {
       "item_id": 78,
@@ -1219,7 +3341,11 @@
       "jurisdiction": "mixed",
       "date": "1990s-national-heritage-life-insurance-looting-2015-appeal-affirmed",
       "source_link": "https://www.justice.gov/usao-mdfl/pr/court-appeals-affirms-sholam-weisss-convictions-racketeering-fraud-and-money-laundering",
-      "status": "PROMOTED"
+      "status": "PROMOTED",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
     }
   ],
   "stories": [
@@ -2570,6 +4696,24 @@
       "active": true
     },
     {
+      "source_id": 14,
+      "name": "California DOI news",
+      "lane": "C",
+      "jurisdiction": "CA",
+      "source_url": "https://www.insurance.ca.gov/0400-news/0100-press-releases",
+      "source_type": "web",
+      "active": true
+    },
+    {
+      "source_id": 16,
+      "name": "CourtListener opinions",
+      "lane": "B",
+      "jurisdiction": "US",
+      "source_url": "https://www.courtlistener.com/opinion",
+      "source_type": "web",
+      "active": true
+    },
+    {
       "source_id": 1,
       "name": "DOJ and U.S. Attorneys",
       "lane": "A",
@@ -2579,11 +4723,38 @@
       "active": true
     },
     {
+      "source_id": 9,
+      "name": "DOJ press releases",
+      "lane": "A",
+      "jurisdiction": "US",
+      "source_url": "https://www.justice.gov/news/press-releases",
+      "source_type": "web",
+      "active": true
+    },
+    {
       "source_id": 7,
       "name": "Existing dashboard catalog",
       "lane": "legacy",
       "jurisdiction": "mixed",
       "source_url": "https://9dcw.github.io/Stories-dashboard",
+      "source_type": "web",
+      "active": true
+    },
+    {
+      "source_id": 10,
+      "name": "FBI news",
+      "lane": "A",
+      "jurisdiction": "US",
+      "source_url": "https://www.fbi.gov/news/press-releases",
+      "source_type": "web",
+      "active": true
+    },
+    {
+      "source_id": 18,
+      "name": "Insurance Journal",
+      "lane": "D",
+      "jurisdiction": "US",
+      "source_url": "https://www.insurancejournal.com/news",
       "source_type": "web",
       "active": true
     },
@@ -2606,6 +4777,42 @@
       "active": true
     },
     {
+      "source_id": 15,
+      "name": "NAIC newsroom",
+      "lane": "C",
+      "jurisdiction": "US",
+      "source_url": "https://content.naic.org/newsroom",
+      "source_type": "web",
+      "active": true
+    },
+    {
+      "source_id": 12,
+      "name": "New Jersey DOBI press releases",
+      "lane": "C",
+      "jurisdiction": "NJ",
+      "source_url": "https://www.nj.gov/dobi/pressreleases/2026.html",
+      "source_type": "web",
+      "active": true
+    },
+    {
+      "source_id": 13,
+      "name": "New York DFS press releases",
+      "lane": "C",
+      "jurisdiction": "NY",
+      "source_url": "https://www.dfs.ny.gov/reports_and_publications/press_releases",
+      "source_type": "web",
+      "active": true
+    },
+    {
+      "source_id": 11,
+      "name": "SEC litigation releases",
+      "lane": "A",
+      "jurisdiction": "US",
+      "source_url": "https://www.sec.gov/litigation/litreleases",
+      "source_type": "web",
+      "active": true
+    },
+    {
       "source_id": 8,
       "name": "Smoke Test Source",
       "lane": "TEST",
@@ -2620,6 +4827,15 @@
       "lane": "A",
       "jurisdiction": "US",
       "source_url": "https://content.naic.org/",
+      "source_type": "web",
+      "active": true
+    },
+    {
+      "source_id": 17,
+      "name": "U.S. Supreme Court opinions",
+      "lane": "B",
+      "jurisdiction": "US",
+      "source_url": "https://www.supremecourt.gov/opinions/slipopinion.aspx",
       "source_type": "web",
       "active": true
     }

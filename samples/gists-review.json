@@ -1,0 +1,21 @@
+{
+  "prompt_version": "gist_v1",
+  "purpose": "Review fixture for rapid candidate scanning",
+  "gists": [
+    {
+      "category": "enforcement",
+      "headline": "Agency announces settlement",
+      "gist": "What happened: The department announced a $2 million settlement with Example Insurance. Who/what is involved: The insurer and the department. Stakes: Affected policyholders may receive refunds. Notable detail: The settlement was announced Tuesday."
+    },
+    {
+      "category": "regulatory",
+      "headline": "Regulator issues bulletin on producer disclosures",
+      "gist": "What happened: A regulator issued a bulletin describing disclosure requirements for insurance producers. Who/what is involved: Producers and the regulator. Stakes: Producers may need to change compliance procedures. Notable detail: The bulletin addresses disclosures made before a sale."
+    },
+    {
+      "category": "court/legal",
+      "headline": "Court enters order in coverage dispute",
+      "gist": "What happened: A court entered an order resolving a procedural issue in an insurance coverage dispute. Who/what is involved: The policyholder and insurer. Stakes: The order determines the next step in the litigation. Notable detail: The underlying coverage question remains separate from this order."
+    }
+  ]
+}

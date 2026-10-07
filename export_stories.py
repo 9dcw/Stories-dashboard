@@ -22,6 +22,10 @@ def export_json(db_path: str | Path, output_path: str | Path, generated_at: str 
             "date": row["published_at"] or row["first_seen_at"],
             "source_link": row["raw_url"],
             "status": row["status"],
+            "gist": row["gist"],
+            "summary_status": row["summary_status"],
+            "summary_prompt_version": row["summary_prompt_version"],
+            "summarized_at": row["summarized_at"],
         })
     stories = []
     for row in store.list_stories():

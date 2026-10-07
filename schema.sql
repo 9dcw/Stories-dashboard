@@ -9,7 +9,13 @@ CREATE TABLE IF NOT EXISTS sources (
     source_type TEXT NOT NULL DEFAULT 'web',
     active INTEGER NOT NULL DEFAULT 1 CHECK (active IN (0, 1)),
     created_at TEXT NOT NULL,
-    notes TEXT NOT NULL DEFAULT ''
+    notes TEXT NOT NULL DEFAULT '',
+    collector_type TEXT NOT NULL DEFAULT '',
+    poll_url TEXT NOT NULL DEFAULT '',
+    collector_config TEXT NOT NULL DEFAULT '{}',
+    last_checked_at TEXT,
+    last_success_at TEXT,
+    last_error TEXT
 );
 
 CREATE TABLE IF NOT EXISTS items (
@@ -38,4 +44,17 @@ CREATE TABLE IF NOT EXISTS story_projects (
 
 CREATE INDEX IF NOT EXISTS idx_items_first_seen ON items(first_seen_at DESC);
 CREATE INDEX IF NOT EXISTS idx_items_status ON items(status);
+CREATE TABLE IF NOT EXISTS candidate_notes (
+    item_id INTEGER PRIMARY KEY REFERENCES items(item_id) ON DELETE CASCADE,
+    gist TEXT NOT NULL DEFAULT '',
+    summary_status TEXT NOT NULL DEFAULT 'PENDING' CHECK (summary_status IN ('PENDING', 'COMPLETE', 'FAILED', 'SKIPPED')),
+    summary_prompt_version TEXT NOT NULL DEFAULT '',
+    summarized_at TEXT,
+    extracted_char_count INTEGER,
+    input_char_count INTEGER,
+    extraction_method TEXT NOT NULL DEFAULT '',
+    summary_error TEXT NOT NULL DEFAULT ''
+);
+
 CREATE INDEX IF NOT EXISTS idx_story_projects_updated ON story_projects(updated_at DESC);
+CREATE INDEX IF NOT EXISTS idx_candidate_notes_status ON candidate_notes(summary_status);

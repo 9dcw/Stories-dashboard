@@ -24,6 +24,9 @@ def parser() -> argparse.ArgumentParser:
     source = sub.add_parser("add-source")
     source.add_argument("name"); source.add_argument("lane"); source.add_argument("jurisdiction"); source.add_argument("source_url")
     source.add_argument("--source-type", default="web"); source.add_argument("--notes", default="")
+    source.add_argument("--collector-type", default="")
+    source.add_argument("--poll-url")
+    source.add_argument("--collector-config", default="{}")
     item = sub.add_parser("add-item")
     item.add_argument("source_id", type=int); item.add_argument("headline"); item.add_argument("raw_url"); item.add_argument("--published-at")
     listing = sub.add_parser("list-items"); listing.add_argument("--limit", type=int, default=25); listing.add_argument("--status")
@@ -38,7 +41,7 @@ def main() -> None:
     args = parser().parse_args()
     store = StoryStore(args.db)
     if args.command == "add-source":
-        print(store.add_source(args.name, args.lane, args.jurisdiction, args.source_url, args.source_type, notes=args.notes))
+        print(store.add_source(args.name, args.lane, args.jurisdiction, args.source_url, args.source_type, notes=args.notes, collector_type=args.collector_type, poll_url=args.poll_url, collector_config=args.collector_config))
     elif args.command == "add-item":
         print(store.add_item(args.source_id, args.headline, args.raw_url, args.published_at).item_id)
     elif args.command == "list-items":
