@@ -4,6 +4,13 @@ from pathlib import Path
 from export_stories import export_json
 from gist import MAX_INPUT_CHARS, PROMPT_VERSION, build_bounded_input, extract_html_text, parse_summary_output
 from story_store import StoryStore
+from export_stories import public_source_url
+
+
+def test_placeholder_source_urls_are_not_published():
+    assert public_source_url("https://www.insurancejournal.com/example/business-interruption") == ""
+    assert public_source_url("https://legacy.example/stories/old-item") == ""
+    assert public_source_url("https://www.justice.gov/real/press-release") == "https://www.justice.gov/real/press-release"
 
 
 HTML_FIXTURE = """

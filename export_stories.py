@@ -9,6 +9,14 @@ from pathlib import Path
 from story_store import StoryStore
 
 
+def public_source_url(value: str) -> str:
+    """Do not publish known placeholder provenance as clickable source links."""
+    lowered = value.lower()
+    if "/example/" in lowered or "legacy.example" in lowered or "smoke.example.test" in lowered:
+        return ""
+    return value
+
+
 def export_json(db_path: str | Path, output_path: str | Path, generated_at: str | None = None) -> Path:
     store = StoryStore(db_path)
     candidates = []
@@ -21,7 +29,7 @@ def export_json(db_path: str | Path, output_path: str | Path, generated_at: str 
             "lane": row["lane"],
             "jurisdiction": row["jurisdiction"],
             "date": row["published_at"] or row["first_seen_at"],
-            "source_link": row["raw_url"],
+            "source_link": public_source_url(row["raw_url"]),
             "status": row["status"],
             "gist": row["gist"],
             "summary_status": row["summary_status"],
@@ -36,7 +44,7 @@ def export_json(db_path: str | Path, output_path: str | Path, generated_at: str 
             "status": row["status"],
             "source": row["source_name"],
             "origin_item_id": row["origin_item_id"],
-            "origin_url": row["origin_url"],
+            "origin_url": public_source_url(row["origin_url"]),
             "google_doc_url": row["google_doc_url"],
             "telegram_thread_url": row["telegram_thread_url"],
             "research_folder_url": row["research_folder_url"],

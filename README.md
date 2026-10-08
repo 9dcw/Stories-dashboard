@@ -10,7 +10,7 @@ Live site: https://9dcw.github.io/Stories-dashboard/
 - `data/stories.json` is a generated read model consumed by GitHub Pages.
 - `story_store.py` contains URL canonicalization and deterministic database operations.
 - `scripts/story_cli.py` provides the small manual CLI.
-- `scripts/seed_data.py` creates the schema, imports the existing dashboard catalog, and adds 24 candidate fixtures plus intentional URL variations.
+- `scripts/seed_data.py` creates the schema and imports the existing dashboard catalog. Synthetic candidate fixtures are opt-in with `--include-fixtures` and must not be used for a published catalog.
 - `scripts/refresh.sh` regenerates the JSON snapshot from SQLite.
 - GitHub Pages deploys the committed snapshot; it does not read Google Sheets or SQLite.
 

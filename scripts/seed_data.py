@@ -67,7 +67,7 @@ def ensure_source(store: StoryStore, name: str, lane: str, jurisdiction: str, ur
     return store.add_source(name, lane, jurisdiction, url, notes=notes)
 
 
-def seed() -> StoryStore:
+def seed(*, include_fixtures: bool = False) -> StoryStore:
     store = StoryStore(DB)
     source_ids = {}
     for name, lane, jurisdiction, url in SOURCES:
@@ -79,7 +79,11 @@ def seed() -> StoryStore:
         imported = set()
         for index, story in enumerate(legacy.get("stories", [])):
             story_key = story.get("id") or f"legacy-{index}"
-            source_url = first_url(story.get("source", "")) or first_url(story.get("origin_url", "")) or f"https://legacy.example/stories/{story_key}"
+            source_url = first_url(story.get("source", "")) or first_url(story.get("origin_url", ""))
+            # Do not manufacture clickable legacy.example URLs for stories whose
+            # original source URL was not preserved in the old snapshot.
+            if not source_url:
+                continue
             item = store.add_item(legacy_source, story.get("title") or story_key, source_url, story.get("eventKey"))
             if item.item_id in imported:
                 continue
@@ -87,28 +91,34 @@ def seed() -> StoryStore:
             story_id = store.promote_item(item, story.get("title") or story_key, story.get("stage") or story.get("status") or "ACTIVE")
             store.update_story_links(story_id, google_doc_url=story.get("doc") or "", telegram_thread_url=story.get("telegramTopicLink") or story.get("telegram") or "", research_folder_url=story.get("phase2Folder") or story.get("phase3Folder") or "")
 
-    item_ids = []
-    for index, (source_index, headline, url) in enumerate(CANDIDATES, start=1):
-        source_name = SOURCES[source_index][0]
-        item = store.add_item(source_ids[source_name], headline, url, published_at=f"2026-10-{index:02d}", first_seen_at=f"2026-10-{index:02d}T12:00:00Z")
-        item_ids.append(item)
-    # Intentional tracking and slash variations; these must remain one row each.
-    for index in (0, 5, 10):
-        source_index, headline, url = CANDIDATES[index]
-        source_name = SOURCES[source_index][0]
-        store.add_item(source_ids[source_name], headline + " (tracking variation)", url + ("/" if not url.endswith("/") else "") + "?utm_source=seed&utm_campaign=stage1#top", published_at=f"2026-10-{index + 1:02d}")
+    if include_fixtures:
+        item_ids = []
+        for index, (source_index, headline, url) in enumerate(CANDIDATES, start=1):
+            source_name = SOURCES[source_index][0]
+            item = store.add_item(source_ids[source_name], headline, url, published_at=f"2026-10-{index:02d}", first_seen_at=f"2026-10-{index:02d}T12:00:00Z")
+            item_ids.append(item)
+        # Intentional tracking and slash variations; these must remain one row each.
+        for index in (0, 5, 10):
+            source_index, headline, url = CANDIDATES[index]
+            source_name = SOURCES[source_index][0]
+            store.add_item(source_ids[source_name], headline + " (tracking variation)", url + ("/" if not url.endswith("/") else "") + "?utm_source=seed&utm_campaign=stage1#top", published_at=f"2026-10-{index + 1:02d}")
 
-    for number, item in enumerate((item_ids[0], item_ids[6], item_ids[12], item_ids[18]), start=1):
-        story_id = store.promote_item(item, f"Seed promoted story {number}")
-        store.update_story_links(
-            story_id,
-            google_doc_url=f"https://docs.google.com/document/d/stage1-seed-{number}",
-            telegram_thread_url=f"https://t.me/c/3984316484/{100 + number}?thread={99 + number}&topic",
-            research_folder_url=f"https://drive.google.com/drive/folders/stage1-seed-{number}",
-        )
+        for number, item in enumerate((item_ids[0], item_ids[6], item_ids[12], item_ids[18]), start=1):
+            story_id = store.promote_item(item, f"Seed promoted story {number}")
+            store.update_story_links(
+                story_id,
+                google_doc_url=f"https://docs.google.com/document/d/stage1-seed-{number}",
+                telegram_thread_url=f"https://t.me/c/3984316484/{100 + number}?thread={99 + number}&topic",
+                research_folder_url=f"https://drive.google.com/drive/folders/stage1-seed-{number}",
+            )
     return store
 
 
 if __name__ == "__main__":
-    store = seed()
+    import argparse
+
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--include-fixtures", action="store_true", help="Add synthetic test candidates; never use for the published catalog")
+    args = parser.parse_args()
+    store = seed(include_fixtures=args.include_fixtures)
     print(f"Seeded {len(store.list_items())} unique items and {len(store.list_stories())} story projects in {DB}")
