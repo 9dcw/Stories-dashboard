@@ -27,7 +27,8 @@ CREATE TABLE IF NOT EXISTS items (
     url_hash TEXT NOT NULL UNIQUE,
     published_at TEXT,
     first_seen_at TEXT NOT NULL,
-    status TEXT NOT NULL DEFAULT 'NEW' CHECK (status IN ('NEW', 'PROMOTED', 'IGNORED'))
+    status TEXT NOT NULL DEFAULT 'NEW' CHECK (status IN ('NEW', 'PROMOTED', 'IGNORED')),
+    validation_reason TEXT NOT NULL DEFAULT ''
 );
 
 CREATE TABLE IF NOT EXISTS story_projects (
@@ -59,3 +60,53 @@ CREATE TABLE IF NOT EXISTS candidate_notes (
 
 CREATE INDEX IF NOT EXISTS idx_story_projects_updated ON story_projects(updated_at DESC);
 CREATE INDEX IF NOT EXISTS idx_candidate_notes_status ON candidate_notes(summary_status);
+CREATE TABLE IF NOT EXISTS candidate_validation_cache (
+    cache_key TEXT PRIMARY KEY,
+    decision TEXT NOT NULL,
+    reason TEXT NOT NULL,
+    headline TEXT NOT NULL DEFAULT '',
+    checked_at TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS source_candidates (
+    candidate_id INTEGER PRIMARY KEY,
+    name TEXT NOT NULL,
+    organization TEXT NOT NULL DEFAULT '',
+    jurisdiction TEXT NOT NULL,
+    lane TEXT NOT NULL,
+    proposed_url TEXT NOT NULL,
+    normalized_url TEXT NOT NULL UNIQUE,
+    collector_type TEXT NOT NULL DEFAULT '',
+    poll_url TEXT NOT NULL DEFAULT '',
+    collector_config TEXT NOT NULL DEFAULT '{}',
+    publication_type TEXT NOT NULL DEFAULT '',
+    discovered_at TEXT NOT NULL,
+    status TEXT NOT NULL DEFAULT 'PROPOSED' CHECK (status IN ('PROPOSED','APPROVED','REJECTED','ENROLLED')),
+    validation_status TEXT NOT NULL DEFAULT 'UNTESTED',
+    validation_result TEXT NOT NULL DEFAULT '{}',
+    reason TEXT NOT NULL DEFAULT '',
+    last_checked_at TEXT,
+    enrolled_source_id INTEGER REFERENCES sources(source_id)
+);
+CREATE INDEX IF NOT EXISTS idx_source_candidates_status ON source_candidates(status);
+CREATE TABLE IF NOT EXISTS discovery_targets (
+    target_id INTEGER PRIMARY KEY,
+    name TEXT NOT NULL,
+    lane TEXT NOT NULL,
+    jurisdiction TEXT NOT NULL,
+    query TEXT NOT NULL DEFAULT '',
+    metadata TEXT NOT NULL DEFAULT '{}',
+    last_selected_at TEXT,
+    selection_count INTEGER NOT NULL DEFAULT 0,
+    UNIQUE(name, lane, jurisdiction)
+);
+CREATE TABLE IF NOT EXISTS discovery_runs (
+    run_id INTEGER PRIMARY KEY,
+    started_at TEXT NOT NULL,
+    completed_at TEXT,
+    targets_checked INTEGER NOT NULL DEFAULT 0,
+    proposals_created INTEGER NOT NULL DEFAULT 0,
+    sources_validated INTEGER NOT NULL DEFAULT 0,
+    sources_failed INTEGER NOT NULL DEFAULT 0,
+    summary TEXT NOT NULL DEFAULT '{}'
+);

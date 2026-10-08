@@ -118,7 +118,17 @@ git commit -m "chore: refresh story discovery snapshot"
 git push origin main
 ```
 
-The Pages workflow only deploys the committed JSON snapshot. SQLite remains authoritative; the UI never writes back to it and no UI file is treated as a database.
+The Pages read model also contains an enrolled-source management section. It includes active and disabled rows, source IDs, publication/feed URLs, lane, jurisdiction, last successful poll, publications discovered in the last 30 days, latest errors, and Telegram share links. The links only prepopulate a message for manual review; they do not implement a bot, token, authentication, or backend action.
+
+Disable or enable sources through the existing CLI:
+
+```bash
+python3 scripts/story_cli.py disable-source SOURCE_ID
+python3 scripts/story_cli.py enable-source SOURCE_ID
+python3 scripts/story_cli.py export --output data/stories.json
+```
+
+The disable/enable operations only change `sources.active`. Disabling stops future `--all` polling while preserving all existing items and story records. The dashboard always exports both active and disabled sources.
 
 ## JSON shape
 
@@ -161,3 +171,24 @@ python3 scripts/story_cli.py export --output data/stories.json
 ```
 
 The machine-readable result is shaped like `{"items_checked":12,"summaries_created":10,"summaries_failed":2}`. Failed extraction or summarization is recorded on the item and does not stop the batch. Candidate cards show the generated display headline prominently, retain the publisher's original headline in an expandable detail, and include source, date, gist, summary state, search support, and source link. `samples/gists-review.json` contains a small review fixture demonstrating the intended compact format; the production review set should be expanded to 30–50 representative candidates before prompt acceptance.
+
+## Stage 4 automated source discovery
+
+Stage 4 is an independent proposal workflow. It does not run as part of daily ingestion and it never enrolls a source without explicit approval.
+
+- `source_discovery.py` rotates small target batches, consumes compact JSON search results, validates listing/feed URLs through the existing collectors, and records diagnostics in SQLite.
+- `source_candidates`, `discovery_targets`, and `discovery_runs` persist proposals, prior decisions, and coverage rotation state. Duplicate URLs are suppressed against both `sources` and prior proposals, including rejected proposals.
+- `scripts/source_discovery.py` supports `prompt`, `run`, `list`, `approve`, `reject`, `test`, `enroll`, and `coverage`. Equivalent review commands are also available from `scripts/story_cli.py`.
+- `discovery/pilot_sources.json` contains the initial 20-institution pilot across lanes A-D; `discovery/coverage_targets.json` supplies rotating target categories.
+- The Pages export now includes `source_proposals` and `coverage`, rendered in a separate read-only review section. Approval and enrollment remain CLI-only.
+
+```bash
+python3 scripts/source_discovery.py run --input discovery/pilot_sources.json
+python3 scripts/source_discovery.py list --status PROPOSED
+python3 scripts/source_discovery.py coverage
+python3 scripts/story_cli.py approve-source CANDIDATE_ID
+python3 scripts/story_cli.py enroll-source CANDIDATE_ID
+python3 scripts/story_cli.py export --output data/stories.json
+```
+
+Discovery failures are recorded per proposal and do not interrupt `scripts/daily_refresh.py`. Enrolled sources are ordinary rows in `sources` and therefore participate in the existing polling, gist, and export workflow. The discovery process performs listing tests only; it does not backfill historical publications.

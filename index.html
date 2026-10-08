@@ -9,11 +9,20 @@
 <body>
 <main class="shell">
   <header class="topbar"><div><p class="eyebrow">INSURANCE STORY DESK</p><h1>Stories</h1><p class="subtitle">Review candidates. Open the work.</p></div><button class="icon-button" id="themeToggle" aria-label="Toggle dark mode">☼</button></header>
+  <nav class="jump-nav" aria-label="Dashboard sections">
+    <a href="#candidateSection">Candidates</a>
+    <a href="#recentSection">Recent</a>
+    <a class="jump-nav-primary" href="#sourceManagementSection">Sources</a>
+    <a href="#sourceReviewSection">Discovery review</a>
+    <a href="#promotedSection">Promoted</a>
+  </nav>
   <section class="hero-card"><div class="hero-copy"><span class="status-dot"></span><span id="storyCount">Loading registry…</span><h2>What are you working on?</h2><p>SQLite is authoritative; this page is a generated read-only snapshot.</p></div><div class="search-wrap"><span class="search-icon">⌕</span><input id="searchInput" type="search" placeholder="Search titles, sources, lanes…" autocomplete="off"><button id="clearSearch" class="clear-search" aria-label="Clear search">×</button></div></section>
   <nav class="filters" id="filters" aria-label="Filter stories"></nav>
   <section class="section" id="candidateSection"><div class="section-heading"><h2>Candidate items</h2><span class="muted" id="candidateCount"></span></div><div class="candidate-grid" id="candidateGrid"></div></section>
   <section class="section" id="recentSection" hidden><div class="section-heading"><h2>Recent promoted stories</h2><button class="text-button" id="clearRecent">Clear</button></div><div class="story-grid" id="recentGrid"></div></section>
-  <section class="section"><div class="section-heading"><h2 id="resultsHeading">Promoted stories</h2><span class="muted" id="resultsCount"></span></div><div class="story-grid" id="storyGrid"></div><div class="empty-state" id="emptyState" hidden><div class="empty-icon">⌕</div><h3>No matching stories</h3><p>Try a different search or stage.</p></div></section>
+  <section class="section" id="sourceManagementSection"><div class="section-heading"><h2>Source Management</h2><span class="muted" id="sourceManagementCount"></span></div><div class="source-management-controls"><input id="sourceManagementSearch" type="search" placeholder="Search sources, jurisdictions, lanes…" autocomplete="off"><select id="sourceManagementLane"><option value="">All lanes</option><option value="A">Lane A</option><option value="B">Lane B</option><option value="C">Lane C</option><option value="D">Lane D</option></select><select id="sourceManagementStatus"><option value="">All statuses</option><option value="active">Active</option><option value="disabled">Disabled</option></select></div><div class="source-management-grid" id="sourceManagementGrid"></div></section>
+  <section class="section" id="sourceReviewSection"><div class="section-heading"><h2>Source discovery review</h2><span class="muted" id="sourceProposalCount"></span></div><div class="coverage-grid" id="coverageGrid"></div><div class="source-proposal-grid" id="sourceProposalGrid"></div></section>
+  <section class="section" id="promotedSection"><div class="section-heading"><h2 id="resultsHeading">Promoted stories</h2><span class="muted" id="resultsCount"></span></div><div class="story-grid" id="storyGrid"></div><div class="empty-state" id="emptyState" hidden><div class="empty-icon">⌕</div><h3>No matching stories</h3><p>Try a different search or stage.</p></div></section>
   <footer><span id="updatedAt">Registry loading…</span><a href="https://github.com/9dcw/Stories-dashboard" target="_blank" rel="noreferrer">Edit dashboard ↗</a></footer>
 </main><script src="./app.js" defer></script>
 </body></html>

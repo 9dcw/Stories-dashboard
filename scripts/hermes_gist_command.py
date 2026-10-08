@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import os
+import json
+import re
 import subprocess
 import sys
 
@@ -23,6 +25,12 @@ if completed.returncode:
     raise SystemExit(completed.returncode)
 lines = [line for line in completed.stdout.splitlines() if not line.startswith("session_id:")]
 result = "\n".join(lines).strip()
+match = re.search(r"(\{.*\})\s*$", result, re.DOTALL)
+if match:
+    try:
+        result = json.dumps(json.loads(match.group(1)), ensure_ascii=False, separators=(",", ":"))
+    except json.JSONDecodeError:
+        pass
 if not result:
     raise SystemExit("Hermes returned no gist")
 print(result)

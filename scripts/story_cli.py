@@ -34,6 +34,13 @@ def parser() -> argparse.ArgumentParser:
     promote = sub.add_parser("promote"); promote.add_argument("item_id", type=int); promote.add_argument("title"); promote.add_argument("--status", default="ACTIVE")
     links = sub.add_parser("update-links"); links.add_argument("story_id", type=int); links.add_argument("--google-doc-url"); links.add_argument("--telegram-thread-url"); links.add_argument("--research-folder-url"); links.add_argument("--status")
     export = sub.add_parser("export"); export.add_argument("--output", type=Path, default=DEFAULT_JSON); export.add_argument("--generated-at")
+    proposals = sub.add_parser("source-proposals"); proposals.add_argument("--status")
+    approve = sub.add_parser("approve-source"); approve.add_argument("candidate_id", type=int)
+    reject = sub.add_parser("reject-source"); reject.add_argument("candidate_id", type=int)
+    enroll = sub.add_parser("enroll-source"); enroll.add_argument("candidate_id", type=int)
+    coverage = sub.add_parser("source-coverage")
+    disable = sub.add_parser("disable-source"); disable.add_argument("source_id", type=int)
+    enable = sub.add_parser("enable-source"); enable.add_argument("source_id", type=int)
     return p
 
 
@@ -55,6 +62,22 @@ def main() -> None:
         store.update_story_links(args.story_id, google_doc_url=args.google_doc_url, telegram_thread_url=args.telegram_thread_url, research_folder_url=args.research_folder_url, status=args.status)
     elif args.command == "export":
         print(export_json(args.db, args.output, args.generated_at))
+    elif args.command == "source-proposals":
+        import json
+        print(json.dumps(store.list_source_candidates(args.status), separators=(",", ":")))
+    elif args.command == "approve-source":
+        store.update_source_candidate(args.candidate_id, status="APPROVED"); print(args.candidate_id)
+    elif args.command == "reject-source":
+        store.update_source_candidate(args.candidate_id, status="REJECTED"); print(args.candidate_id)
+    elif args.command == "enroll-source":
+        print(store.enroll_source_candidate(args.candidate_id))
+    elif args.command == "source-coverage":
+        import json
+        print(json.dumps(store.coverage_report(), separators=(",", ":")))
+    elif args.command == "disable-source":
+        store.set_source_active(args.source_id, False)
+    elif args.command == "enable-source":
+        store.set_source_active(args.source_id, True)
 
 
 if __name__ == "__main__":

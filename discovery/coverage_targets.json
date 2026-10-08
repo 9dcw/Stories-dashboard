@@ -1,0 +1,14 @@
+[
+ {"name":"Federal enforcement","lane":"A","jurisdiction":"US","query":"site:gov insurance fraud investigation press release RSS"},
+ {"name":"District prosecutors","lane":"A","jurisdiction":"SDNY","query":"site:justice.gov/usao insurance fraud press release"},
+ {"name":"State attorneys general","lane":"A","jurisdiction":"NY","query":"state attorney general insurance fraud press release"},
+ {"name":"Federal appellate opinions","lane":"B","jurisdiction":"US","query":"official appellate opinions insurance coverage"},
+ {"name":"State supreme opinions","lane":"B","jurisdiction":"NJ","query":"state supreme court opinions insurance"},
+ {"name":"State appellate opinions","lane":"B","jurisdiction":"CA","query":"state court appellate opinions insurance"},
+ {"name":"State insurance departments","lane":"C","jurisdiction":"NJ","query":"department of insurance press releases orders"},
+ {"name":"Market conduct and rates","lane":"C","jurisdiction":"NY","query":"insurance department market conduct examination bulletin"},
+ {"name":"Insolvency and guaranty funds","lane":"C","jurisdiction":"FL","query":"insurance guaranty fund rehabilitation notices"},
+ {"name":"Fire and arson","lane":"D","jurisdiction":"US","query":"fire marshal arson investigation press releases"},
+ {"name":"Local public safety","lane":"D","jurisdiction":"NYC","query":"fire department public safety news"},
+ {"name":"Emergency management","lane":"D","jurisdiction":"CA","query":"emergency management disaster releases"}
+]

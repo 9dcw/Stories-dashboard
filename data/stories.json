@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-08T20:29:17Z",
+  "generated_at": "2026-10-08T22:25:16Z",
   "recent_candidates": [
     {
       "item_id": 400,
@@ -2127,8 +2127,15 @@
       "lane": "C",
       "jurisdiction": "US",
       "source_url": "https://www.sec.gov/",
+      "publication_url": "https://www.sec.gov/",
       "source_type": "web",
-      "active": true
+      "collector_type": "",
+      "active": true,
+      "last_success_at": null,
+      "last_error": "",
+      "publications_last_30_days": 0,
+      "telegram_action_label": "Disable via Telegram",
+      "telegram_action_url": "https://t.me/share/url?url=https%3A%2F%2Fwww.sec.gov%2F&text=Disable+source+4+%28Administrative+records%29+in+the+stories-dashboard+source+registry.+Stop+future+polling+but+preserve+all+existing+records.+Update+and+publish+the+dashboard."
     },
     {
       "source_id": 3,
@@ -2136,8 +2143,15 @@
       "lane": "B",
       "jurisdiction": "US",
       "source_url": "https://www.courtlistener.com/",
+      "publication_url": "https://www.courtlistener.com/",
       "source_type": "web",
-      "active": true
+      "collector_type": "",
+      "active": true,
+      "last_success_at": null,
+      "last_error": "",
+      "publications_last_30_days": 0,
+      "telegram_action_label": "Disable via Telegram",
+      "telegram_action_url": "https://t.me/share/url?url=https%3A%2F%2Fwww.courtlistener.com%2F&text=Disable+source+3+%28Appellate+opinions%29+in+the+stories-dashboard+source+registry.+Stop+future+polling+but+preserve+all+existing+records.+Update+and+publish+the+dashboard."
     },
     {
       "source_id": 14,
@@ -2145,8 +2159,15 @@
       "lane": "C",
       "jurisdiction": "CA",
       "source_url": "https://www.insurance.ca.gov/0400-news/0100-press-releases",
+      "publication_url": "https://www.insurance.ca.gov/0400-news/0100-press-releases",
       "source_type": "web",
-      "active": true
+      "collector_type": "html_list",
+      "active": true,
+      "last_success_at": "2026-10-08T20:20:32Z",
+      "last_error": "",
+      "publications_last_30_days": 0,
+      "telegram_action_label": "Disable via Telegram",
+      "telegram_action_url": "https://t.me/share/url?url=https%3A%2F%2Fwww.insurance.ca.gov%2F0400-news%2F0100-press-releases&text=Disable+source+14+%28California+DOI+news%29+in+the+stories-dashboard+source+registry.+Stop+future+polling+but+preserve+all+existing+records.+Update+and+publish+the+dashboard."
     },
     {
       "source_id": 16,
@@ -2154,8 +2175,15 @@
       "lane": "B",
       "jurisdiction": "US",
       "source_url": "https://www.courtlistener.com/opinion",
+      "publication_url": "https://www.courtlistener.com/opinion",
       "source_type": "web",
-      "active": true
+      "collector_type": "html_list",
+      "active": true,
+      "last_success_at": null,
+      "last_error": "HTTP Error 403: Forbidden",
+      "publications_last_30_days": 0,
+      "telegram_action_label": "Disable via Telegram",
+      "telegram_action_url": "https://t.me/share/url?url=https%3A%2F%2Fwww.courtlistener.com%2Fopinion&text=Disable+source+16+%28CourtListener+opinions%29+in+the+stories-dashboard+source+registry.+Stop+future+polling+but+preserve+all+existing+records.+Update+and+publish+the+dashboard."
     },
     {
       "source_id": 1,
@@ -2163,8 +2191,15 @@
       "lane": "A",
       "jurisdiction": "US",
       "source_url": "https://www.justice.gov/",
+      "publication_url": "https://www.justice.gov/",
       "source_type": "web",
-      "active": true
+      "collector_type": "",
+      "active": true,
+      "last_success_at": null,
+      "last_error": "",
+      "publications_last_30_days": 0,
+      "telegram_action_label": "Disable via Telegram",
+      "telegram_action_url": "https://t.me/share/url?url=https%3A%2F%2Fwww.justice.gov%2F&text=Disable+source+1+%28DOJ+and+U.S.+Attorneys%29+in+the+stories-dashboard+source+registry.+Stop+future+polling+but+preserve+all+existing+records.+Update+and+publish+the+dashboard."
     },
     {
       "source_id": 9,
@@ -2172,8 +2207,15 @@
       "lane": "A",
       "jurisdiction": "US",
       "source_url": "https://www.justice.gov/news/press-releases",
+      "publication_url": "https://www.justice.gov/news/rss?m=1&type=press_release",
       "source_type": "web",
-      "active": true
+      "collector_type": "rss",
+      "active": true,
+      "last_success_at": "2026-10-08T20:20:32Z",
+      "last_error": "",
+      "publications_last_30_days": 33,
+      "telegram_action_label": "Disable via Telegram",
+      "telegram_action_url": "https://t.me/share/url?url=https%3A%2F%2Fwww.justice.gov%2Fnews%2Frss%3Fm%3D1%26type%3Dpress_release&text=Disable+source+9+%28DOJ+press+releases%29+in+the+stories-dashboard+source+registry.+Stop+future+polling+but+preserve+all+existing+records.+Update+and+publish+the+dashboard."
     },
     {
       "source_id": 7,
@@ -2181,8 +2223,15 @@
       "lane": "legacy",
       "jurisdiction": "mixed",
       "source_url": "https://9dcw.github.io/Stories-dashboard",
+      "publication_url": "https://9dcw.github.io/Stories-dashboard",
       "source_type": "web",
-      "active": true
+      "collector_type": "",
+      "active": true,
+      "last_success_at": null,
+      "last_error": "",
+      "publications_last_30_days": 21,
+      "telegram_action_label": "Disable via Telegram",
+      "telegram_action_url": "https://t.me/share/url?url=https%3A%2F%2F9dcw.github.io%2FStories-dashboard&text=Disable+source+7+%28Existing+dashboard+catalog%29+in+the+stories-dashboard+source+registry.+Stop+future+polling+but+preserve+all+existing+records.+Update+and+publish+the+dashboard."
     },
     {
       "source_id": 10,
@@ -2190,8 +2239,15 @@
       "lane": "A",
       "jurisdiction": "US",
       "source_url": "https://www.fbi.gov/news/press-releases",
+      "publication_url": "https://www.fbi.gov/news/RSS",
       "source_type": "web",
-      "active": true
+      "collector_type": "rss",
+      "active": true,
+      "last_success_at": null,
+      "last_error": "XML or text declaration not at start of entity: line 2, column 0",
+      "publications_last_30_days": 0,
+      "telegram_action_label": "Disable via Telegram",
+      "telegram_action_url": "https://t.me/share/url?url=https%3A%2F%2Fwww.fbi.gov%2Fnews%2FRSS&text=Disable+source+10+%28FBI+news%29+in+the+stories-dashboard+source+registry.+Stop+future+polling+but+preserve+all+existing+records.+Update+and+publish+the+dashboard."
     },
     {
       "source_id": 18,
@@ -2199,8 +2255,15 @@
       "lane": "D",
       "jurisdiction": "US",
       "source_url": "https://www.insurancejournal.com/news",
+      "publication_url": "https://www.insurancejournal.com/rss/news",
       "source_type": "web",
-      "active": true
+      "collector_type": "rss",
+      "active": true,
+      "last_success_at": "2026-10-08T20:20:33Z",
+      "last_error": "",
+      "publications_last_30_days": 30,
+      "telegram_action_label": "Disable via Telegram",
+      "telegram_action_url": "https://t.me/share/url?url=https%3A%2F%2Fwww.insurancejournal.com%2Frss%2Fnews&text=Disable+source+18+%28Insurance+Journal%29+in+the+stories-dashboard+source+registry.+Stop+future+polling+but+preserve+all+existing+records.+Update+and+publish+the+dashboard."
     },
     {
       "source_id": 6,
@@ -2208,8 +2271,15 @@
       "lane": "D",
       "jurisdiction": "US",
       "source_url": "https://www.insurancejournal.com/",
+      "publication_url": "https://www.insurancejournal.com/",
       "source_type": "web",
-      "active": true
+      "collector_type": "",
+      "active": true,
+      "last_success_at": null,
+      "last_error": "",
+      "publications_last_30_days": 0,
+      "telegram_action_label": "Disable via Telegram",
+      "telegram_action_url": "https://t.me/share/url?url=https%3A%2F%2Fwww.insurancejournal.com%2F&text=Disable+source+6+%28Insurance+trade+press%29+in+the+stories-dashboard+source+registry.+Stop+future+polling+but+preserve+all+existing+records.+Update+and+publish+the+dashboard."
     },
     {
       "source_id": 5,
@@ -2217,8 +2287,15 @@
       "lane": "D",
       "jurisdiction": "US",
       "source_url": "https://www.fbi.gov/",
+      "publication_url": "https://www.fbi.gov/",
       "source_type": "web",
-      "active": true
+      "collector_type": "",
+      "active": true,
+      "last_success_at": null,
+      "last_error": "",
+      "publications_last_30_days": 0,
+      "telegram_action_label": "Disable via Telegram",
+      "telegram_action_url": "https://t.me/share/url?url=https%3A%2F%2Fwww.fbi.gov%2F&text=Disable+source+5+%28Local+public+safety%29+in+the+stories-dashboard+source+registry.+Stop+future+polling+but+preserve+all+existing+records.+Update+and+publish+the+dashboard."
     },
     {
       "source_id": 15,
@@ -2226,8 +2303,15 @@
       "lane": "C",
       "jurisdiction": "US",
       "source_url": "https://content.naic.org/newsroom",
+      "publication_url": "https://content.naic.org/newsroom",
       "source_type": "web",
-      "active": true
+      "collector_type": "html_list",
+      "active": true,
+      "last_success_at": null,
+      "last_error": "HTTP Error 403: Forbidden",
+      "publications_last_30_days": 0,
+      "telegram_action_label": "Disable via Telegram",
+      "telegram_action_url": "https://t.me/share/url?url=https%3A%2F%2Fcontent.naic.org%2Fnewsroom&text=Disable+source+15+%28NAIC+newsroom%29+in+the+stories-dashboard+source+registry.+Stop+future+polling+but+preserve+all+existing+records.+Update+and+publish+the+dashboard."
     },
     {
       "source_id": 12,
@@ -2235,8 +2319,15 @@
       "lane": "C",
       "jurisdiction": "NJ",
       "source_url": "https://www.nj.gov/dobi/pressreleases/2026.html",
+      "publication_url": "https://www.nj.gov/dobi/pressreleases/2026.html",
       "source_type": "web",
-      "active": true
+      "collector_type": "html_list",
+      "active": true,
+      "last_success_at": "2026-10-08T20:20:34Z",
+      "last_error": "",
+      "publications_last_30_days": 0,
+      "telegram_action_label": "Disable via Telegram",
+      "telegram_action_url": "https://t.me/share/url?url=https%3A%2F%2Fwww.nj.gov%2Fdobi%2Fpressreleases%2F2026.html&text=Disable+source+12+%28New+Jersey+DOBI+press+releases%29+in+the+stories-dashboard+source+registry.+Stop+future+polling+but+preserve+all+existing+records.+Update+and+publish+the+dashboard."
     },
     {
       "source_id": 13,
@@ -2244,8 +2335,15 @@
       "lane": "C",
       "jurisdiction": "NY",
       "source_url": "https://www.dfs.ny.gov/reports_and_publications/press_releases",
+      "publication_url": "https://www.dfs.ny.gov/reports_and_publications/press_releases",
       "source_type": "web",
-      "active": true
+      "collector_type": "html_list",
+      "active": true,
+      "last_success_at": "2026-10-08T20:20:34Z",
+      "last_error": "",
+      "publications_last_30_days": 6,
+      "telegram_action_label": "Disable via Telegram",
+      "telegram_action_url": "https://t.me/share/url?url=https%3A%2F%2Fwww.dfs.ny.gov%2Freports_and_publications%2Fpress_releases&text=Disable+source+13+%28New+York+DFS+press+releases%29+in+the+stories-dashboard+source+registry.+Stop+future+polling+but+preserve+all+existing+records.+Update+and+publish+the+dashboard."
     },
     {
       "source_id": 11,
@@ -2253,17 +2351,31 @@
       "lane": "A",
       "jurisdiction": "US",
       "source_url": "https://www.sec.gov/litigation/litreleases",
+      "publication_url": "https://www.sec.gov/news/pressreleases.rss",
       "source_type": "web",
-      "active": true
+      "collector_type": "rss",
+      "active": true,
+      "last_success_at": "2026-10-08T20:20:34Z",
+      "last_error": "",
+      "publications_last_30_days": 18,
+      "telegram_action_label": "Disable via Telegram",
+      "telegram_action_url": "https://t.me/share/url?url=https%3A%2F%2Fwww.sec.gov%2Fnews%2Fpressreleases.rss&text=Disable+source+11+%28SEC+litigation+releases%29+in+the+stories-dashboard+source+registry.+Stop+future+polling+but+preserve+all+existing+records.+Update+and+publish+the+dashboard."
     },
     {
       "source_id": 8,
       "name": "Smoke Test Source",
       "lane": "TEST",
       "jurisdiction": "US",
-      "source_url": "https://smoke.example.test/",
+      "source_url": "",
+      "publication_url": "",
       "source_type": "web",
-      "active": true
+      "collector_type": "",
+      "active": true,
+      "last_success_at": null,
+      "last_error": "",
+      "publications_last_30_days": 0,
+      "telegram_action_label": "Disable via Telegram",
+      "telegram_action_url": "https://t.me/share/url?url=&text=Disable+source+8+%28Smoke+Test+Source%29+in+the+stories-dashboard+source+registry.+Stop+future+polling+but+preserve+all+existing+records.+Update+and+publish+the+dashboard."
     },
     {
       "source_id": 2,
@@ -2271,8 +2383,15 @@
       "lane": "A",
       "jurisdiction": "US",
       "source_url": "https://content.naic.org/",
+      "publication_url": "https://content.naic.org/",
       "source_type": "web",
-      "active": true
+      "collector_type": "",
+      "active": true,
+      "last_success_at": null,
+      "last_error": "",
+      "publications_last_30_days": 0,
+      "telegram_action_label": "Disable via Telegram",
+      "telegram_action_url": "https://t.me/share/url?url=https%3A%2F%2Fcontent.naic.org%2F&text=Disable+source+2+%28State+insurance+departments%29+in+the+stories-dashboard+source+registry.+Stop+future+polling+but+preserve+all+existing+records.+Update+and+publish+the+dashboard."
     },
     {
       "source_id": 17,
@@ -2280,8 +2399,770 @@
       "lane": "B",
       "jurisdiction": "US",
       "source_url": "https://www.supremecourt.gov/opinions/slipopinion.aspx",
+      "publication_url": "https://www.supremecourt.gov/opinions/slipopinion.aspx",
       "source_type": "web",
-      "active": true
+      "collector_type": "html_list",
+      "active": true,
+      "last_success_at": "2026-10-08T20:20:34Z",
+      "last_error": "",
+      "publications_last_30_days": 0,
+      "telegram_action_label": "Disable via Telegram",
+      "telegram_action_url": "https://t.me/share/url?url=https%3A%2F%2Fwww.supremecourt.gov%2Fopinions%2Fslipopinion.aspx&text=Disable+source+17+%28U.S.+Supreme+Court+opinions%29+in+the+stories-dashboard+source+registry.+Stop+future+polling+but+preserve+all+existing+records.+Update+and+publish+the+dashboard."
     }
-  ]
+  ],
+  "source_proposals": [
+    {
+      "candidate_id": 35,
+      "name": "New York City Police Department news",
+      "organization": "New York City Police Department",
+      "jurisdiction": "NYC",
+      "lane": "D",
+      "source_url": "https://www.nyc.gov/site/nypd/news/news.page",
+      "publication_type": "Public-safety releases",
+      "collector_type": "html_list",
+      "status": "PROPOSED",
+      "validation_status": "VALID",
+      "reason": "Local public-safety and incident publications relevant to liability."
+    },
+    {
+      "candidate_id": 34,
+      "name": "Pennsylvania Office of State Fire Commissioner newsroom",
+      "organization": "Pennsylvania Office of State Fire Commissioner",
+      "jurisdiction": "PA",
+      "lane": "D",
+      "source_url": "https://www.pa.gov/agencies/osfc/newsroom",
+      "publication_type": "Fire-safety releases",
+      "collector_type": "html_list",
+      "status": "PROPOSED",
+      "validation_status": "VALID",
+      "reason": "State fire-safety and public-safety announcements."
+    },
+    {
+      "candidate_id": 33,
+      "name": "USFA fire investigation articles",
+      "organization": "U.S. Fire Administration",
+      "jurisdiction": "US",
+      "lane": "D",
+      "source_url": "https://www.usfa.fema.gov/blog/fire-investigation/",
+      "publication_type": "Fire investigation articles",
+      "collector_type": "html_list",
+      "status": "PROPOSED",
+      "validation_status": "VALID",
+      "reason": "Recurring fire-investigation publication category."
+    },
+    {
+      "candidate_id": 32,
+      "name": "ATF arson press releases",
+      "organization": "Bureau of Alcohol, Tobacco, Firearms and Explosives",
+      "jurisdiction": "US",
+      "lane": "D",
+      "source_url": "https://www.atf.gov/news/press-releases",
+      "publication_type": "Arson investigation releases",
+      "collector_type": "html_list",
+      "status": "PROPOSED",
+      "validation_status": "INACCESSIBLE",
+      "reason": "Federal arson and fire investigation releases."
+    },
+    {
+      "candidate_id": 31,
+      "name": "Chicago Fire Department Office of Fire Investigation",
+      "organization": "City of Chicago Fire Department",
+      "jurisdiction": "IL",
+      "lane": "D",
+      "source_url": "https://www.chicago.gov/city/en/depts/cfd/provdrs/OFI.html",
+      "publication_type": "Fire investigation publications",
+      "collector_type": "html_list",
+      "status": "PROPOSED",
+      "validation_status": "VALID",
+      "reason": "Local fire investigation and arson-related public information."
+    },
+    {
+      "candidate_id": 30,
+      "name": "Oregon Division of Financial Regulation news",
+      "organization": "Oregon Division of Financial Regulation",
+      "jurisdiction": "OR",
+      "lane": "C",
+      "source_url": "https://dfr.oregon.gov/news/Pages/index.aspx",
+      "publication_type": "Regulatory news releases",
+      "collector_type": "html_list",
+      "status": "PROPOSED",
+      "validation_status": "VALID",
+      "reason": "State insurance market and regulatory releases."
+    },
+    {
+      "candidate_id": 29,
+      "name": "California DOI senior protection releases",
+      "organization": "California Department of Insurance",
+      "jurisdiction": "CA",
+      "lane": "C",
+      "source_url": "https://seniors.insurance.ca.gov/pr/",
+      "publication_type": "Consumer-protection releases",
+      "collector_type": "html_list",
+      "status": "PROPOSED",
+      "validation_status": "VALID",
+      "reason": "Insurance consumer-protection and annuity disclosure publications."
+    },
+    {
+      "candidate_id": 28,
+      "name": "Washington OIC news RSS",
+      "organization": "Washington OIC",
+      "jurisdiction": "WA",
+      "lane": "C",
+      "source_url": "https://www.insurance.wa.gov/taxonomy/term/328/feed",
+      "publication_type": "Regulatory RSS feed",
+      "collector_type": "rss",
+      "status": "PROPOSED",
+      "validation_status": "ARCHIVE_OR_NAVIGATION",
+      "reason": "Official recurring feed endpoint discovered from the OIC site."
+    },
+    {
+      "candidate_id": 27,
+      "name": "Washington Office of the Insurance Commissioner news",
+      "organization": "Washington OIC",
+      "jurisdiction": "WA",
+      "lane": "C",
+      "source_url": "https://www.insurance.wa.gov/about-us/news",
+      "publication_type": "Regulatory news",
+      "collector_type": "html_list",
+      "status": "PROPOSED",
+      "validation_status": "VALID",
+      "reason": "Insurance regulation and consumer-market publications."
+    },
+    {
+      "candidate_id": 26,
+      "name": "South Carolina Department of Insurance NewsFlash",
+      "organization": "South Carolina Department of Insurance",
+      "jurisdiction": "SC",
+      "lane": "C",
+      "source_url": "https://www.doi.sc.gov/m/NewsFlash",
+      "publication_type": "Regulatory news",
+      "collector_type": "html_list",
+      "status": "PROPOSED",
+      "validation_status": "VALID",
+      "reason": "State insurance regulatory announcements."
+    },
+    {
+      "candidate_id": 25,
+      "name": "CourtListener RECAP archive",
+      "organization": "Free Law Project",
+      "jurisdiction": "US",
+      "lane": "B",
+      "source_url": "https://www.courtlistener.com/recap/",
+      "publication_type": "Docket and opinion index",
+      "collector_type": "html_list",
+      "status": "PROPOSED",
+      "validation_status": "INACCESSIBLE",
+      "reason": "Secondary searchable index for accessible federal filings."
+    },
+    {
+      "candidate_id": 24,
+      "name": "Pennsylvania Courts opinions",
+      "organization": "Pennsylvania Courts",
+      "jurisdiction": "PA",
+      "lane": "B",
+      "source_url": "https://www.pacourts.us/courts/supreme-court/court-opinions",
+      "publication_type": "Official court opinions",
+      "collector_type": "html_list",
+      "status": "PROPOSED",
+      "validation_status": "VALID",
+      "reason": "State supreme court opinion listing."
+    },
+    {
+      "candidate_id": 23,
+      "name": "Ohio Supreme Court opinions",
+      "organization": "Supreme Court of Ohio",
+      "jurisdiction": "OH",
+      "lane": "B",
+      "source_url": "https://www.supremecourt.ohio.gov/rod/docs/",
+      "publication_type": "Official court opinions",
+      "collector_type": "html_list",
+      "status": "PROPOSED",
+      "validation_status": "VALID",
+      "reason": "Official state supreme court opinion repository."
+    },
+    {
+      "candidate_id": 22,
+      "name": "Supreme Court of California opinions",
+      "organization": "Supreme Court of California",
+      "jurisdiction": "CA",
+      "lane": "B",
+      "source_url": "https://supreme.courts.ca.gov/opinions",
+      "publication_type": "Official court opinions",
+      "collector_type": "html_list",
+      "status": "PROPOSED",
+      "validation_status": "VALID",
+      "reason": "Official state supreme court opinions."
+    },
+    {
+      "candidate_id": 21,
+      "name": "Illinois Courts opinions",
+      "organization": "Illinois Courts",
+      "jurisdiction": "IL",
+      "lane": "B",
+      "source_url": "https://www.illinoiscourts.gov/top-level-opinions/",
+      "publication_type": "Official court opinions",
+      "collector_type": "html_list",
+      "status": "PROPOSED",
+      "validation_status": "VALID",
+      "reason": "State appellate opinion index."
+    },
+    {
+      "candidate_id": 20,
+      "name": "South Carolina Attorney General news",
+      "organization": "South Carolina Attorney General",
+      "jurisdiction": "SC",
+      "lane": "A",
+      "source_url": "https://www.scag.gov/news/",
+      "publication_type": "State enforcement releases",
+      "collector_type": "html_list",
+      "status": "PROPOSED",
+      "validation_status": "INACTIVE",
+      "reason": "State prosecutions and investigations."
+    },
+    {
+      "candidate_id": 19,
+      "name": "New York Attorney General press releases",
+      "organization": "New York Attorney General",
+      "jurisdiction": "NY",
+      "lane": "A",
+      "source_url": "https://ag.ny.gov/press-releases",
+      "publication_type": "State enforcement releases",
+      "collector_type": "html_list",
+      "status": "PROPOSED",
+      "validation_status": "VALID",
+      "reason": "Official state enforcement and consumer-protection releases."
+    },
+    {
+      "candidate_id": 18,
+      "name": "IRS-CI highlights",
+      "organization": "IRS Criminal Investigation",
+      "jurisdiction": "US",
+      "lane": "A",
+      "source_url": "https://www.irs.gov/newsroom/irs-ci-highlights",
+      "publication_type": "Investigation releases",
+      "collector_type": "html_list",
+      "status": "PROPOSED",
+      "validation_status": "VALID",
+      "reason": "Recurring criminal investigation publications."
+    },
+    {
+      "candidate_id": 17,
+      "name": "HHS OIG enforcement actions",
+      "organization": "HHS Office of Inspector General",
+      "jurisdiction": "US",
+      "lane": "A",
+      "source_url": "https://oig.hhs.gov/fraud/enforcement/",
+      "publication_type": "Fraud enforcement releases",
+      "collector_type": "html_list",
+      "status": "PROPOSED",
+      "validation_status": "VALID",
+      "reason": "Federal healthcare fraud investigations and enforcement."
+    },
+    {
+      "candidate_id": 16,
+      "name": "DOJ Criminal Division press room",
+      "organization": "U.S. Department of Justice Criminal Division",
+      "jurisdiction": "US",
+      "lane": "A",
+      "source_url": "https://www.justice.gov/criminal/press-room",
+      "publication_type": "Federal enforcement releases",
+      "collector_type": "html_list",
+      "status": "PROPOSED",
+      "validation_status": "VALID",
+      "reason": "Criminal Division prosecutions and fraud enforcement."
+    },
+    {
+      "candidate_id": 15,
+      "name": "California Office of Emergency Services news",
+      "organization": "California OES",
+      "jurisdiction": "CA",
+      "lane": "D",
+      "source_url": "https://www.caloes.ca.gov/news/",
+      "publication_type": "Emergency-management releases",
+      "collector_type": "html_list",
+      "status": "PROPOSED",
+      "validation_status": "VALID",
+      "reason": "Disasters, emergency response, and liability-relevant events."
+    },
+    {
+      "candidate_id": 14,
+      "name": "New Jersey Office of Attorney General news",
+      "organization": "New Jersey OAG",
+      "jurisdiction": "NJ",
+      "lane": "D",
+      "source_url": "https://www.njoag.gov/news/",
+      "publication_type": "Public-safety releases",
+      "collector_type": "html_list",
+      "status": "PROPOSED",
+      "validation_status": "FAILED",
+      "reason": "State prosecutions and public-safety events."
+    },
+    {
+      "candidate_id": 13,
+      "name": "New York City Fire Department news",
+      "organization": "NYC Fire Department",
+      "jurisdiction": "NYC",
+      "lane": "D",
+      "source_url": "https://www.nyc.gov/site/fdny/news/news.page",
+      "publication_type": "Public-safety releases",
+      "collector_type": "html_list",
+      "status": "PROPOSED",
+      "validation_status": "VALID",
+      "reason": "Local fire events and investigations."
+    },
+    {
+      "candidate_id": 12,
+      "name": "ATF arson investigations",
+      "organization": "Bureau of Alcohol, Tobacco, Firearms and Explosives",
+      "jurisdiction": "US",
+      "lane": "D",
+      "source_url": "https://www.atf.gov/news",
+      "publication_type": "Investigation releases",
+      "collector_type": "html_list",
+      "status": "PROPOSED",
+      "validation_status": "FAILED",
+      "reason": "Arson and fire investigations."
+    },
+    {
+      "candidate_id": 11,
+      "name": "U.S. Fire Administration news",
+      "organization": "Federal Emergency Management Agency",
+      "jurisdiction": "US",
+      "lane": "D",
+      "source_url": "https://www.usfa.fema.gov/blog/",
+      "publication_type": "Fire-safety publications",
+      "collector_type": "html_list",
+      "status": "PROPOSED",
+      "validation_status": "VALID",
+      "reason": "Fire patterns and public-safety developments relevant to claims."
+    },
+    {
+      "candidate_id": 10,
+      "name": "Florida Office of Insurance Regulation news",
+      "organization": "Florida OIR",
+      "jurisdiction": "FL",
+      "lane": "C",
+      "source_url": "https://www.floir.com/news",
+      "publication_type": "Regulatory releases",
+      "collector_type": "html_list",
+      "status": "PROPOSED",
+      "validation_status": "FAILED",
+      "reason": "Rate, solvency, and insurance-market notices."
+    },
+    {
+      "candidate_id": 9,
+      "name": "Texas Department of Insurance news",
+      "organization": "Texas Department of Insurance",
+      "jurisdiction": "TX",
+      "lane": "C",
+      "source_url": "https://www.tdi.texas.gov/news/",
+      "publication_type": "Regulatory releases",
+      "collector_type": "html_list",
+      "status": "PROPOSED",
+      "validation_status": "VALID",
+      "reason": "State insurance market and regulatory publications."
+    },
+    {
+      "candidate_id": 8,
+      "name": "New Jersey DOBI press releases",
+      "organization": "NJ Department of Banking and Insurance",
+      "jurisdiction": "NJ",
+      "lane": "C",
+      "source_url": "https://www.nj.gov/dobi/pressreleases/",
+      "publication_type": "Regulatory releases",
+      "collector_type": "html_list",
+      "status": "PROPOSED",
+      "validation_status": "NO_PUBLICATIONS",
+      "reason": "Insurance regulation and market conduct."
+    },
+    {
+      "candidate_id": 7,
+      "name": "Justia U.S. law opinions index",
+      "organization": "Justia",
+      "jurisdiction": "US",
+      "lane": "B",
+      "source_url": "https://law.justia.com/cases/",
+      "publication_type": "Opinion index",
+      "collector_type": "html_list",
+      "status": "PROPOSED",
+      "validation_status": "FAILED",
+      "reason": "Secondary index improving discovery recall."
+    },
+    {
+      "candidate_id": 6,
+      "name": "California Courts opinions",
+      "organization": "California Courts",
+      "jurisdiction": "CA",
+      "lane": "B",
+      "source_url": "https://www.courts.ca.gov/opinions.htm",
+      "publication_type": "Official opinions",
+      "collector_type": "html_list",
+      "status": "PROPOSED",
+      "validation_status": "VALID",
+      "reason": "State appellate opinions."
+    },
+    {
+      "candidate_id": 5,
+      "name": "New Jersey Courts opinions",
+      "organization": "New Jersey Judiciary",
+      "jurisdiction": "NJ",
+      "lane": "B",
+      "source_url": "https://www.njcourts.gov/publications/opinions",
+      "publication_type": "Official opinions",
+      "collector_type": "html_list",
+      "status": "PROPOSED",
+      "validation_status": "FAILED",
+      "reason": "State appellate opinions and court publications."
+    },
+    {
+      "candidate_id": 4,
+      "name": "New York Attorney General press releases",
+      "organization": "New York AG",
+      "jurisdiction": "NY",
+      "lane": "A",
+      "source_url": "https://ag.ny.gov/press-release",
+      "publication_type": "Enforcement releases",
+      "collector_type": "html_list",
+      "status": "PROPOSED",
+      "validation_status": "FAILED",
+      "reason": "State enforcement and consumer-protection investigations."
+    },
+    {
+      "candidate_id": 3,
+      "name": "IRS Criminal Investigation news",
+      "organization": "Internal Revenue Service CI",
+      "jurisdiction": "US",
+      "lane": "A",
+      "source_url": "https://www.irs.gov/compliance/criminal-investigation",
+      "publication_type": "Investigation releases",
+      "collector_type": "html_list",
+      "status": "PROPOSED",
+      "validation_status": "VALID",
+      "reason": "Tax fraud and financial crime investigations."
+    },
+    {
+      "candidate_id": 2,
+      "name": "USAO Southern District of New York",
+      "organization": "U.S. Attorney's Office SDNY",
+      "jurisdiction": "SDNY",
+      "lane": "A",
+      "source_url": "https://www.justice.gov/usao-sdny/pr",
+      "publication_type": "Press releases",
+      "collector_type": "html_list",
+      "status": "PROPOSED",
+      "validation_status": "NO_PUBLICATIONS",
+      "reason": "District-level prosecutions and investigations."
+    },
+    {
+      "candidate_id": 1,
+      "name": "DOJ press releases",
+      "organization": "U.S. Department of Justice",
+      "jurisdiction": "US",
+      "lane": "A",
+      "source_url": "https://www.justice.gov/news",
+      "publication_type": "RSS press releases",
+      "collector_type": "rss",
+      "status": "PROPOSED",
+      "validation_status": "VALID",
+      "reason": "Federal enforcement and investigation releases."
+    }
+  ],
+  "coverage": {
+    "active_by_lane": [
+      {
+        "lane": "A",
+        "count": 5
+      },
+      {
+        "lane": "B",
+        "count": 3
+      },
+      {
+        "lane": "C",
+        "count": 5
+      },
+      {
+        "lane": "D",
+        "count": 3
+      },
+      {
+        "lane": "TEST",
+        "count": 1
+      },
+      {
+        "lane": "legacy",
+        "count": 1
+      }
+    ],
+    "active_by_jurisdiction": [
+      {
+        "jurisdiction": "CA",
+        "count": 1
+      },
+      {
+        "jurisdiction": "NJ",
+        "count": 1
+      },
+      {
+        "jurisdiction": "NY",
+        "count": 1
+      },
+      {
+        "jurisdiction": "US",
+        "count": 14
+      },
+      {
+        "jurisdiction": "mixed",
+        "count": 1
+      }
+    ],
+    "proposal_status": [
+      {
+        "status": "PROPOSED",
+        "count": 35
+      }
+    ],
+    "poll_health": [
+      {
+        "name": "Administrative records",
+        "lane": "C",
+        "jurisdiction": "US",
+        "last_success_at": null,
+        "last_error": null,
+        "publications": 0
+      },
+      {
+        "name": "Appellate opinions",
+        "lane": "B",
+        "jurisdiction": "US",
+        "last_success_at": null,
+        "last_error": null,
+        "publications": 0
+      },
+      {
+        "name": "California DOI news",
+        "lane": "C",
+        "jurisdiction": "CA",
+        "last_success_at": "2026-10-08T20:20:32Z",
+        "last_error": "",
+        "publications": 10
+      },
+      {
+        "name": "CourtListener opinions",
+        "lane": "B",
+        "jurisdiction": "US",
+        "last_success_at": null,
+        "last_error": "HTTP Error 403: Forbidden",
+        "publications": 0
+      },
+      {
+        "name": "DOJ and U.S. Attorneys",
+        "lane": "A",
+        "jurisdiction": "US",
+        "last_success_at": null,
+        "last_error": null,
+        "publications": 0
+      },
+      {
+        "name": "DOJ press releases",
+        "lane": "A",
+        "jurisdiction": "US",
+        "last_success_at": "2026-10-08T20:20:32Z",
+        "last_error": "",
+        "publications": 33
+      },
+      {
+        "name": "Existing dashboard catalog",
+        "lane": "legacy",
+        "jurisdiction": "mixed",
+        "last_success_at": null,
+        "last_error": null,
+        "publications": 97
+      },
+      {
+        "name": "FBI news",
+        "lane": "A",
+        "jurisdiction": "US",
+        "last_success_at": null,
+        "last_error": "XML or text declaration not at start of entity: line 2, column 0",
+        "publications": 0
+      },
+      {
+        "name": "Insurance Journal",
+        "lane": "D",
+        "jurisdiction": "US",
+        "last_success_at": "2026-10-08T20:20:33Z",
+        "last_error": "",
+        "publications": 30
+      },
+      {
+        "name": "Insurance trade press",
+        "lane": "D",
+        "jurisdiction": "US",
+        "last_success_at": null,
+        "last_error": null,
+        "publications": 0
+      },
+      {
+        "name": "Local public safety",
+        "lane": "D",
+        "jurisdiction": "US",
+        "last_success_at": null,
+        "last_error": null,
+        "publications": 0
+      },
+      {
+        "name": "NAIC newsroom",
+        "lane": "C",
+        "jurisdiction": "US",
+        "last_success_at": null,
+        "last_error": "HTTP Error 403: Forbidden",
+        "publications": 0
+      },
+      {
+        "name": "New Jersey DOBI press releases",
+        "lane": "C",
+        "jurisdiction": "NJ",
+        "last_success_at": "2026-10-08T20:20:34Z",
+        "last_error": "",
+        "publications": 11
+      },
+      {
+        "name": "New York DFS press releases",
+        "lane": "C",
+        "jurisdiction": "NY",
+        "last_success_at": "2026-10-08T20:20:34Z",
+        "last_error": "",
+        "publications": 16
+      },
+      {
+        "name": "SEC litigation releases",
+        "lane": "A",
+        "jurisdiction": "US",
+        "last_success_at": "2026-10-08T20:20:34Z",
+        "last_error": "",
+        "publications": 25
+      },
+      {
+        "name": "Smoke Test Source",
+        "lane": "TEST",
+        "jurisdiction": "US",
+        "last_success_at": null,
+        "last_error": null,
+        "publications": 0
+      },
+      {
+        "name": "State insurance departments",
+        "lane": "A",
+        "jurisdiction": "US",
+        "last_success_at": null,
+        "last_error": null,
+        "publications": 0
+      },
+      {
+        "name": "U.S. Supreme Court opinions",
+        "lane": "B",
+        "jurisdiction": "US",
+        "last_success_at": "2026-10-08T20:20:34Z",
+        "last_error": "",
+        "publications": 0
+      }
+    ],
+    "coverage_gaps": [
+      {
+        "lane": "A",
+        "jurisdiction": "NY",
+        "targets": 1,
+        "unvisited_targets": 0
+      },
+      {
+        "lane": "A",
+        "jurisdiction": "SDNY",
+        "targets": 1,
+        "unvisited_targets": 0
+      },
+      {
+        "lane": "A",
+        "jurisdiction": "US",
+        "targets": 1,
+        "unvisited_targets": 0
+      },
+      {
+        "lane": "B",
+        "jurisdiction": "CA",
+        "targets": 1,
+        "unvisited_targets": 0
+      },
+      {
+        "lane": "B",
+        "jurisdiction": "NJ",
+        "targets": 1,
+        "unvisited_targets": 0
+      },
+      {
+        "lane": "B",
+        "jurisdiction": "US",
+        "targets": 1,
+        "unvisited_targets": 0
+      },
+      {
+        "lane": "C",
+        "jurisdiction": "FL",
+        "targets": 1,
+        "unvisited_targets": 0
+      },
+      {
+        "lane": "C",
+        "jurisdiction": "NJ",
+        "targets": 1,
+        "unvisited_targets": 0
+      },
+      {
+        "lane": "C",
+        "jurisdiction": "NY",
+        "targets": 1,
+        "unvisited_targets": 0
+      },
+      {
+        "lane": "D",
+        "jurisdiction": "CA",
+        "targets": 1,
+        "unvisited_targets": 0
+      },
+      {
+        "lane": "D",
+        "jurisdiction": "NYC",
+        "targets": 1,
+        "unvisited_targets": 0
+      },
+      {
+        "lane": "D",
+        "jurisdiction": "US",
+        "targets": 1,
+        "unvisited_targets": 0
+      }
+    ],
+    "discovery_runs": [
+      {
+        "run_id": 2,
+        "started_at": "2026-10-08T22:05:40Z",
+        "completed_at": "2026-10-08T22:05:54Z",
+        "targets_checked": 12,
+        "proposals_created": 20,
+        "sources_validated": 20,
+        "sources_failed": 3,
+        "summary": "{\"discoveries_received\": 20, \"duplicates_skipped\": 0, \"proposals_created\": 20, \"sources_failed\": 3, \"sources_validated\": 20, \"targets_checked\": 12}"
+      },
+      {
+        "run_id": 1,
+        "started_at": "2026-10-08T21:56:46Z",
+        "completed_at": "2026-10-08T21:56:58Z",
+        "targets_checked": 10,
+        "proposals_created": 15,
+        "sources_validated": 15,
+        "sources_failed": 6,
+        "summary": "{\"discoveries_received\": 20, \"duplicates_skipped\": 5, \"proposals_created\": 15, \"sources_failed\": 6, \"sources_validated\": 15, \"targets_checked\": 10}"
+      }
+    ]
+  }
 }

@@ -73,8 +73,8 @@ def test_export_has_read_model_sections_and_is_deterministic(tmp_path):
 
     assert first == second
     payload = json.loads(first)
-    assert set(payload) == {"generated_at", "recent_candidates", "stories", "sources"}
-    assert payload["recent_candidates"][0]["headline"] == "Regulatory item"
+    assert {"generated_at", "recent_candidates", "stories", "sources", "source_proposals", "coverage"} <= set(payload)
+    assert payload["recent_candidates"] == []
     assert payload["stories"][0]["title"] == "Regulatory story"
     assert payload["sources"][0]["name"] == "Regulator"
 

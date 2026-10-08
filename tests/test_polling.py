@@ -29,9 +29,13 @@ def test_rss_and_html_collectors_normalize_candidates(tmp_path):
 
     result = poll_sources(store, source_ids=[rss_id, html_id], fetcher=responses.__getitem__)
 
-    assert result == {"sources_checked": 2, "sources_failed": 0, "items_seen": 4, "items_inserted": 4, "items_skipped_existing": 0}
+    assert result["sources_checked"] == 2
+    assert result["sources_failed"] == 0
+    assert result["items_inserted"] == 2
+    assert result["rejected_old"] == 0
+    assert result["ambiguous"] == 2
     rows = store.list_items()
-    assert {row["headline"] for row in rows} == {"First release", "Second release", "Notice one", "Notice two"}
+    assert {row["headline"] for row in rows} == {"First release", "Notice one"}
     assert next(row for row in rows if row["headline"] == "First release")["published_at"] == "2026-10-07T12:00:00Z"
 
 
@@ -42,10 +46,11 @@ def test_repeated_polling_is_idempotent_and_tracking_variants_deduplicate(tmp_pa
     first = poll_sources(store, source_ids=[rss_id], fetcher=responses.__getitem__)
     second = poll_sources(store, source_ids=[rss_id], fetcher=responses.__getitem__)
 
-    assert first["items_inserted"] == 2
+    assert first["items_inserted"] == 1
+    assert first["ambiguous"] == 1
     assert second["items_inserted"] == 0
-    assert second["items_skipped_existing"] == 2
-    assert len(store.list_items()) == 2
+    assert second["ambiguous"] == 1
+    assert len(store.list_items()) == 1
 
 
 def test_one_source_failure_does_not_stop_remaining_sources(tmp_path):
@@ -64,6 +69,23 @@ def test_one_source_failure_does_not_stop_remaining_sources(tmp_path):
     source = next(row for row in store.list_sources() if row["source_id"] == rss_id)
     assert source["last_error"] == "feed unavailable"
     assert source["last_success_at"] is None
+
+
+def test_transient_source_failure_is_retried_with_bound(tmp_path):
+    store, rss_id, _ = make_store(tmp_path)
+    calls = []
+
+    def fetch(url):
+        calls.append(url)
+        if len(calls) == 1:
+            raise OSError("temporary outage")
+        return RSS
+
+    result = poll_sources(store, source_ids=[rss_id], fetcher=fetch, retry_attempts=2)
+    assert result["sources_failed"] == 0
+    assert result["items_inserted"] == 1
+    assert calls.count("https://example.gov/feed") == 2
+    assert len(calls) >= 2
 
 
 def test_feed_parser_accepts_leading_whitespace_before_xml_declaration():
@@ -97,3 +119,35 @@ def test_json_collector_and_candidate_shape():
     )
 
     assert candidates == [Candidate(9, "Order", "https://example.gov/orders/1", "2026-10-08")]
+
+
+def test_validation_rejects_archive_navigation_and_generic_headlines():
+    from collectors import validate_candidate
+
+    source = {"source_id": 2, "poll_url": "https://agency.gov/notices", "collector_config": "{}"}
+    assert validate_candidate(source, Candidate(2, "Learn more", "https://agency.gov/notices/2026", "2026-10-08"), now="2026-10-08T12:00:00Z").decision == "navigation_archive"
+    assert validate_candidate(source, Candidate(2, "Order 12", "https://agency.gov/order/12", "2026-08-01"), now="2026-10-08T12:00:00Z").decision == "old"
+    accepted = validate_candidate(source, Candidate(2, "Commissioner issues Order 12", "https://agency.gov/order/12", "2026-10-08"), now="2026-10-08T12:00:00Z")
+    assert accepted.decision == "accepted"
+
+
+def test_html_collector_recovers_headline_from_listing_heading_and_date():
+    from collectors import collect_html_list
+
+    html = """<section class='release'><h2>Commissioner issues emergency order</h2>
+      <a href='/order/12'>Learn more</a><span class='date'>October 8, 2026</span></section>"""
+    candidates = collect_html_list(
+        {"source_id": 2, "poll_url": "https://agency.gov/notices", "collector_config": "{}"}, html
+    )
+    assert candidates[0].headline == "Commissioner issues emergency order"
+    assert candidates[0].published_at == "2026-10-08T00:00:00Z"
+
+
+def test_poll_report_has_all_quality_buckets_and_ten_source_registry(tmp_path):
+    from polling_sources import STAGE2_SOURCES
+
+    assert len(STAGE2_SOURCES) == 10
+    expected = {"candidates_extracted", "rejected_navigation_archive", "rejected_old", "accepted_publications", "ambiguous"}
+    store, rss_id, html_id = make_store(tmp_path)
+    result = poll_sources(store, source_ids=[rss_id, html_id], fetcher={"https://example.gov/feed": RSS, "https://agency.gov/notices": HTML}.__getitem__)
+    assert expected <= result.keys()
