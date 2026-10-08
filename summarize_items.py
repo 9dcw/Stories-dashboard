@@ -9,7 +9,7 @@ import subprocess
 from pathlib import Path
 from typing import Callable
 
-from gist import MAX_INPUT_CHARS, PROMPT_VERSION, build_bounded_input, extract_html_text, fetch_url, prompt_for
+from gist import MAX_INPUT_CHARS, PROMPT_VERSION, build_bounded_input, extract_html_text, fetch_url, parse_summary_output, prompt_for
 from story_store import StoryStore
 
 
@@ -48,10 +48,12 @@ def summarize_items(store: StoryStore, *, item_ids: list[int] | None = None, for
                 raise ValueError("extracted text is too short")
             if summarizer is None:
                 raise ValueError("no summarizer configured; set STORY_GIST_COMMAND or pass a summarizer")
-            gist = summarizer(prompt_for(bounded.input_text)).strip()
+            output = parse_summary_output(summarizer(prompt_for(bounded.input_text)))
+            display_headline = output["display_headline"] or item["headline"]
+            gist = output["gist"]
             if not gist:
                 raise ValueError("summarizer returned empty output")
-            store.save_summary(item["item_id"], gist=gist, summary_status="COMPLETE", summary_prompt_version=PROMPT_VERSION,
+            store.save_summary(item["item_id"], display_headline=display_headline, gist=gist, summary_status="COMPLETE", summary_prompt_version=PROMPT_VERSION,
                                extracted_char_count=bounded.extracted_char_count, input_char_count=bounded.input_char_count,
                                extraction_method=method)
             result["summaries_created"] += 1

@@ -16,6 +16,7 @@ def export_json(db_path: str | Path, output_path: str | Path, generated_at: str 
         candidates.append({
             "item_id": row["item_id"],
             "headline": row["headline"],
+            "display_headline": row["display_headline"],
             "source": row["source_name"],
             "lane": row["lane"],
             "jurisdiction": row["jurisdiction"],

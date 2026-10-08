@@ -2,17 +2,20 @@
 from __future__ import annotations
 
 import html
+import json
 import re
 from dataclasses import dataclass
 from html.parser import HTMLParser
 from urllib.request import Request, urlopen
 
 MAX_INPUT_CHARS = 12000
-PROMPT_VERSION = "gist_v1"
-GIST_PROMPT = """You create a neutral, factual gist of one insurance-related source item for rapid human scanning.
+PROMPT_VERSION = "gist_v2"
+GIST_PROMPT = """You create a neutral, factual display headline and gist of one insurance-related source item for rapid human scanning.
 Use only the supplied source metadata and text. Do not judge interest, score, rank, recommend, or suggest promotion.
 Do not invent facts. If a field is unsupported, omit it or say unclear.
-Return 50-100 words in this compact format:
+Return only valid JSON with exactly these string fields: {"display_headline":"...","gist":"..."}
+The display_headline should usually be 8-18 words and state the concrete event, action, ruling, allegation, proposal, or change. Identify the important actor when known, include useful insurance or regulatory context, and preserve central dollar amounts, injuries, penalties, coverage issues, or unusual conduct. Avoid generic agency language, clickbait, interpretation, outrage, significance judgments, and speculation.
+The gist should be 50-100 words in this compact format:
 What happened: [concrete event]
 Who/what is involved: [people, entities, or subject]
 Stakes: [money, legal, regulatory, consumer, or operational consequence if supported]
@@ -94,3 +97,21 @@ def build_bounded_input(item: dict, extracted_text: str, max_chars: int = MAX_IN
 
 def prompt_for(input_text: str) -> str:
     return GIST_PROMPT + input_text
+
+
+def parse_summary_output(output: str) -> dict[str, str]:
+    """Parse the model's single-call JSON, tolerating a markdown code fence."""
+    value = output.strip()
+    fenced = re.search(r"```(?:json)?\s*(.*?)\s*```", value, re.I | re.S)
+    if fenced:
+        value = fenced.group(1).strip()
+    try:
+        parsed = json.loads(value)
+    except json.JSONDecodeError:
+        return {"display_headline": "", "gist": output.strip()}
+    if not isinstance(parsed, dict):
+        raise ValueError("summarizer output must be a JSON object")
+    return {
+        "display_headline": str(parsed.get("display_headline") or "").strip(),
+        "gist": str(parsed.get("gist") or "").strip(),
+    }

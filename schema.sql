@@ -46,6 +46,7 @@ CREATE INDEX IF NOT EXISTS idx_items_first_seen ON items(first_seen_at DESC);
 CREATE INDEX IF NOT EXISTS idx_items_status ON items(status);
 CREATE TABLE IF NOT EXISTS candidate_notes (
     item_id INTEGER PRIMARY KEY REFERENCES items(item_id) ON DELETE CASCADE,
+    display_headline TEXT NOT NULL DEFAULT '',
     gist TEXT NOT NULL DEFAULT '',
     summary_status TEXT NOT NULL DEFAULT 'PENDING' CHECK (summary_status IN ('PENDING', 'COMPLETE', 'FAILED', 'SKIPPED')),
     summary_prompt_version TEXT NOT NULL DEFAULT '',

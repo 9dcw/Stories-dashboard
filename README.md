@@ -147,10 +147,10 @@ The tests cover URL normalization, deterministic duplicate rejection, promotion,
 
 Stage 3 adds a bounded, per-item semantic compression layer without scoring or promotion:
 
-- `candidate_notes` stores the gist, `summary_status`, `gist_v1` prompt version, extraction counts/method, timestamps, and errors.
-- `gist.py` fetches ordinary HTML, removes common navigation/site furniture, and builds a deterministic bounded input (default maximum: 12,000 characters).
-- `summarize_items.py` processes one item or all pending items. It isolates failures and skips completed summaries unless `--force` is supplied.
-- The summarizer is intentionally a local command boundary: set `STORY_GIST_COMMAND` to a command that reads the gist prompt from stdin and writes the gist to stdout. No hosted API or new server is added by this repository.
+- `candidate_notes` stores the generated `display_headline` and gist, `summary_status`, `gist_v2` prompt version, extraction counts/method, timestamps, and errors.
+- `gist.py` fetches ordinary HTML, removes common navigation/site furniture, builds a deterministic bounded input (default maximum: 12,000 characters), and parses the single-call JSON response containing both `display_headline` and `gist`.
+- `summarize_items.py` processes one item or all pending items. It isolates failures and skips completed summaries unless `--force` is supplied; legacy completed summaries without a display headline are eligible for regeneration.
+- The summarizer is intentionally a local command boundary: set `STORY_GIST_COMMAND` to a command that reads the prompt from stdin and writes the JSON result to stdout. No hosted API or new server is added by this repository.
 
 Examples:
 
@@ -160,4 +160,4 @@ STORY_GIST_COMMAND='your-local-gist-command' python3 scripts/summarize_items.py 
 python3 scripts/story_cli.py export --output data/stories.json
 ```
 
-The machine-readable result is shaped like `{"items_checked":12,"summaries_created":10,"summaries_failed":2}`. Failed extraction or summarization is recorded on the item and does not stop the batch. Candidate cards show headline, source, date, gist, summary state, and source link. `samples/gists-review.json` contains a small review fixture demonstrating the intended compact format; the production review set should be expanded to 30–50 representative candidates before prompt acceptance.
+The machine-readable result is shaped like `{"items_checked":12,"summaries_created":10,"summaries_failed":2}`. Failed extraction or summarization is recorded on the item and does not stop the batch. Candidate cards show the generated display headline prominently, retain the publisher's original headline in an expandable detail, and include source, date, gist, summary state, search support, and source link. `samples/gists-review.json` contains a small review fixture demonstrating the intended compact format; the production review set should be expanded to 30–50 representative candidates before prompt acceptance.

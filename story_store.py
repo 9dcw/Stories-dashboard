@@ -84,6 +84,9 @@ class StoryStore:
     def _initialize(self) -> None:
         with self._connect() as connection:
             connection.executescript(SCHEMA_PATH.read_text())
+            note_columns = {row[1] for row in connection.execute("PRAGMA table_info(candidate_notes)")}
+            if "display_headline" not in note_columns:
+                connection.execute("ALTER TABLE candidate_notes ADD COLUMN display_headline TEXT NOT NULL DEFAULT ''")
             columns = {row[1] for row in connection.execute("PRAGMA table_info(sources)")}
             migrations = {
                 "collector_type": "TEXT NOT NULL DEFAULT ''",
@@ -175,7 +178,7 @@ class StoryStore:
 
     def list_items(self, limit: int | None = None, status: str | None = None) -> list[dict]:
         query = """SELECT i.*, s.name AS source_name, s.lane, s.jurisdiction,
-                         COALESCE(n.gist, '') AS gist, COALESCE(n.summary_status, 'PENDING') AS summary_status,
+                         COALESCE(n.display_headline, '') AS display_headline, COALESCE(n.gist, '') AS gist, COALESCE(n.summary_status, 'PENDING') AS summary_status,
                          n.summary_prompt_version, n.summarized_at, n.extracted_char_count,
                          n.input_char_count, n.extraction_method, COALESCE(n.summary_error, '') AS summary_error
                   FROM items i JOIN sources s ON s.source_id = i.source_id
@@ -196,7 +199,7 @@ class StoryStore:
         with self._connect() as connection:
             row = connection.execute(
                 """SELECT i.*, s.name AS source_name, s.lane, s.jurisdiction,
-                          COALESCE(n.gist, '') AS gist, COALESCE(n.summary_status, 'PENDING') AS summary_status,
+                          COALESCE(n.display_headline, '') AS display_headline, COALESCE(n.gist, '') AS gist, COALESCE(n.summary_status, 'PENDING') AS summary_status,
                           n.summary_prompt_version, n.summarized_at, n.extracted_char_count,
                           n.input_char_count, n.extraction_method, COALESCE(n.summary_error, '') AS summary_error
                    FROM items i JOIN sources s ON s.source_id = i.source_id
@@ -209,10 +212,12 @@ class StoryStore:
 
     def list_unsummarized_items(self, limit: int | None = None) -> list[dict]:
         query = """SELECT i.*, s.name AS source_name, s.lane, s.jurisdiction,
-                          COALESCE(n.summary_status, 'PENDING') AS summary_status
+                          COALESCE(n.summary_status, 'PENDING') AS summary_status,
+                          COALESCE(n.display_headline, '') AS display_headline
                    FROM items i JOIN sources s ON s.source_id = i.source_id
                    LEFT JOIN candidate_notes n ON n.item_id = i.item_id
                    WHERE COALESCE(n.summary_status, 'PENDING') != 'COMPLETE'
+                      OR (COALESCE(n.summary_status, 'PENDING') = 'COMPLETE' AND COALESCE(n.display_headline, '') = '')
                    ORDER BY COALESCE(i.published_at, i.first_seen_at) DESC, i.item_id DESC"""
         params: list[object] = []
         if limit is not None:
@@ -221,7 +226,7 @@ class StoryStore:
         with self._connect() as connection:
             return [dict(row) for row in connection.execute(query, params)]
 
-    def save_summary(self, item_id: int | Item, *, gist: str = "", summary_status: str = "COMPLETE",
+    def save_summary(self, item_id: int | Item, *, display_headline: str = "", gist: str = "", summary_status: str = "COMPLETE",
                      summary_prompt_version: str = "", summarized_at: str | None = None,
                      extracted_char_count: int | None = None, input_char_count: int | None = None,
                      extraction_method: str = "", summary_error: str = "") -> None:
@@ -232,15 +237,15 @@ class StoryStore:
             if connection.execute("SELECT 1 FROM items WHERE item_id = ?", (item_id,)).fetchone() is None:
                 raise ValueError(f"Unknown item_id: {item_id}")
             connection.execute("""INSERT INTO candidate_notes
-                (item_id, gist, summary_status, summary_prompt_version, summarized_at,
+                (item_id, display_headline, gist, summary_status, summary_prompt_version, summarized_at,
                  extracted_char_count, input_char_count, extraction_method, summary_error)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-                ON CONFLICT(item_id) DO UPDATE SET gist=excluded.gist,
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ON CONFLICT(item_id) DO UPDATE SET display_headline=excluded.display_headline, gist=excluded.gist,
                   summary_status=excluded.summary_status, summary_prompt_version=excluded.summary_prompt_version,
                   summarized_at=excluded.summarized_at, extracted_char_count=excluded.extracted_char_count,
                   input_char_count=excluded.input_char_count, extraction_method=excluded.extraction_method,
                   summary_error=excluded.summary_error""",
-                (item_id, gist, summary_status, summary_prompt_version,
+                (item_id, display_headline, gist, summary_status, summary_prompt_version,
                  summarized_at or (utc_now() if summary_status == "COMPLETE" else None),
                  extracted_char_count, input_char_count, extraction_method, summary_error))
 
