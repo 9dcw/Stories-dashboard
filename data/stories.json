@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-07T23:19:34Z",
+  "generated_at": "2026-10-08T00:47:19Z",
   "recent_candidates": [
     {
       "item_id": 29,
@@ -612,10 +612,10 @@
       "date": "2026-10-07T22:18:41Z",
       "source_link": "https://www.dfs.ny.gov/reports_and_publications/press_releases/pr20260701",
       "status": "NEW",
-      "gist": "",
-      "summary_status": "PENDING",
-      "summary_prompt_version": null,
-      "summarized_at": null
+      "gist": "What happened: Governor Kathy Hochul issued guidance concerning implementation of reforms intended to lower auto insurance premiums for New York residents.\n\nWho/what is involved: Governor Hochul and the New York State Department of Financial Services.\n\nStakes: The guidance relates to auto-insurance pricing and potential premium effects for New York consumers.\n\nNotable detail: The source is identified as a New York DFS press release dated July 1, 2026.",
+      "summary_status": "COMPLETE",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": "2026-10-08T00:43:16Z"
     },
     {
       "item_id": 353,
@@ -668,10 +668,10 @@
       "date": "2026-10-07T15:16:58Z",
       "source_link": "https://www.insurancejournal.com/news/international/2026/10/07/888325.htm",
       "status": "NEW",
-      "gist": "",
-      "summary_status": "PENDING",
-      "summary_prompt_version": null,
-      "summarized_at": null
+      "gist": "What happened: Sanlam has made a $1.2 billion bid for Santam, according to the source headline.\n\nWho/what is involved: Sanlam and Santam, both insurance companies.\n\nStakes: The proposed transaction could affect Sanlam’s ability to deploy capital and the ownership or strategic direction of Santam.\n\nNotable detail: The stated rationale is that the bid would give Sanlam “more freedom to deploy capital.”",
+      "summary_status": "COMPLETE",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": "2026-10-08T00:43:07Z"
     },
     {
       "item_id": 357,
@@ -682,10 +682,10 @@
       "date": "2026-10-07T15:14:31Z",
       "source_link": "https://www.insurancejournal.com/news/national/2026/10/07/888323.htm",
       "status": "NEW",
-      "gist": "",
-      "summary_status": "PENDING",
-      "summary_prompt_version": null,
-      "summarized_at": null
+      "gist": "What happened: Aviva is set to enter the U.S. specialty insurance market in the fourth quarter.\n\nWho/what is involved: Aviva and the U.S. specialty insurance market.\n\nStakes: The market-entry timing indicates a planned expansion into a U.S. insurance segment; financial, regulatory, and consumer consequences are unclear from the supplied information.\n\nNotable detail: The announcement is categorized under Markets/Coverages and was published by Insurance Journal on October 7, 2026.",
+      "summary_status": "COMPLETE",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": "2026-10-08T00:43:46Z"
     },
     {
       "item_id": 358,
@@ -696,10 +696,10 @@
       "date": "2026-10-07T14:57:22Z",
       "source_link": "https://www.insurancejournal.com/news/national/2026/10/07/888293.htm",
       "status": "NEW",
-      "gist": "",
-      "summary_status": "PENDING",
-      "summary_prompt_version": null,
-      "summarized_at": null
+      "gist": "What happened: The National Flood Insurance Program’s authority is scheduled to expire in December 2026.\n\nWho/what is involved: The National Flood Insurance Program (NFIP).\n\nStakes: The program faces a potential lapse in legal authority in December, creating a regulatory and operational issue.\n\nNotable detail: The source item was published by Insurance Journal on October 7, 2026.",
+      "summary_status": "COMPLETE",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": "2026-10-08T00:44:27Z"
     },
     {
       "item_id": 359,
@@ -710,10 +710,10 @@
       "date": "2026-10-07T14:11:54Z",
       "source_link": "https://www.insurancejournal.com/news/east/2026/10/07/888302.htm",
       "status": "NEW",
-      "gist": "",
-      "summary_status": "PENDING",
-      "summary_prompt_version": null,
-      "summarized_at": null
+      "gist": "What happened: Heffernan Insurance acquired Walterry Brokers of Maryland, according to the supplied source title.\n\nWho/what is involved: Heffernan Insurance and Walterry Brokers of Maryland, both identified in the headline.\n\nStakes: The transaction’s financial, legal, regulatory, consumer, and operational consequences are unclear from the supplied text.\n\nNotable detail: Insurance Journal published the item on October 7, 2026, at 14:11:54 UTC.",
+      "summary_status": "COMPLETE",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": "2026-10-08T00:45:05Z"
     },
     {
       "item_id": 360,
@@ -724,10 +724,10 @@
       "date": "2026-10-07T14:09:41Z",
       "source_link": "https://www.insurancejournal.com/news/international/2026/10/07/888285.htm",
       "status": "NEW",
-      "gist": "",
-      "summary_status": "PENDING",
-      "summary_prompt_version": null,
-      "summarized_at": null
+      "gist": "What happened: Arthur J. Gallagher & Co. acquired Ornella Underwriting Ltd., an Irish managing general agent (MGA).\n\nWho/what is involved: Arthur J. Gallagher & Co. and Ornella Underwriting Ltd., which operates in Ireland as an MGA.\n\nStakes: The transaction changes ownership of Ornella Underwriting Ltd. and may affect the organization of its insurance-related operations.\n\nNotable detail: The acquisition was reported by Insurance Journal on October 7, 2026.",
+      "summary_status": "COMPLETE",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": "2026-10-08T00:45:45Z"
     },
     {
       "item_id": 361,
@@ -738,10 +738,10 @@
       "date": "2026-10-07T13:38:49Z",
       "source_link": "https://www.insurancejournal.com/news/east/2026/10/07/888283.htm",
       "status": "NEW",
-      "gist": "",
-      "summary_status": "PENDING",
-      "summary_prompt_version": null,
-      "summarized_at": null
+      "gist": "What happened: Six people were charged for alleged roles in “smash-and-grab” robberies targeting jewelry stores.\n\nWho/what is involved: The charged individuals and the jewelry stores involved in the robberies.\n\nStakes: The charges create legal consequences for the defendants and may involve losses or damage connected to the targeted businesses.\n\nNotable detail: The source item identifies the incidents as “smash-and-grab” robberies and was published by Insurance Journal on October 7, 2026.",
+      "summary_status": "COMPLETE",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": "2026-10-08T00:46:24Z"
     },
     {
       "item_id": 362,
@@ -752,10 +752,10 @@
       "date": "2026-10-07T12:26:36Z",
       "source_link": "https://www.insurancejournal.com/news/international/2026/10/07/888267.htm",
       "status": "NEW",
-      "gist": "",
-      "summary_status": "PENDING",
-      "summary_prompt_version": null,
-      "summarized_at": null
+      "gist": "What happened: Google was accused of overcharging consumers in a class-action lawsuit in the United Kingdom.\n\nWho/what is involved: Google and approximately 20 million UK consumers are identified in the source item.\n\nStakes: The allegations may involve consumer financial losses and potential legal consequences, but the source text does not specify an amount or ruling.\n\nNotable detail: The item was reported by Insurance Journal on October 7, 2026.",
+      "summary_status": "COMPLETE",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": "2026-10-08T00:47:05Z"
     },
     {
       "item_id": 334,
@@ -808,10 +808,10 @@
       "date": "2026-10-07T12:00:00Z",
       "source_link": "https://www.justice.gov/opa/pr/florida-laboratory-vice-president-and-marketer-convicted-medicare-fraud-covid-19-testing",
       "status": "NEW",
-      "gist": "",
-      "summary_status": "PENDING",
-      "summary_prompt_version": null,
-      "summarized_at": null
+      "gist": "What happened: A Florida laboratory vice president and a marketer were convicted of Medicare fraud connected to a COVID-19 testing scheme.\n\nWho/what is involved: The defendants, a Florida laboratory, Medicare, and the U.S. Department of Justice.\n\nStakes: The matter carries legal and regulatory consequences involving alleged fraud against Medicare; specific financial amounts and penalties are unclear.\n\nNotable detail: The source is a DOJ Office of Public Affairs press release dated October 7, 2026.",
+      "summary_status": "COMPLETE",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": "2026-10-08T00:42:48Z"
     },
     {
       "item_id": 330,
@@ -822,10 +822,10 @@
       "date": "2026-10-07T12:00:00Z",
       "source_link": "https://www.justice.gov/opa/pr/man-arrested-and-charged-role-plotting-conduct-mass-shooting-event-support-isis-mall-america",
       "status": "NEW",
-      "gist": "",
-      "summary_status": "PENDING",
-      "summary_prompt_version": null,
-      "summarized_at": null
+      "gist": "What happened: A man was arrested and charged in connection with an alleged plan to carry out a mass shooting at the Mall of America in support of ISIS.\n\nWho/what is involved: The man, the U.S. Department of Justice, ISIS, and the Mall of America.\n\nStakes: The matter carries criminal and public-safety implications. Specific insurance-related consequences are unclear.\n\nNotable detail: The alleged target was the Mall of America.",
+      "summary_status": "COMPLETE",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": "2026-10-08T00:43:25Z"
     },
     {
       "item_id": 329,
@@ -836,10 +836,10 @@
       "date": "2026-10-07T12:00:00Z",
       "source_link": "https://www.justice.gov/opa/pr/board-chairman-and-co-owner-puerto-rican-bank-sentenced-multimillion-dollar-wire-fraud",
       "status": "NEW",
-      "gist": "",
-      "summary_status": "PENDING",
-      "summary_prompt_version": null,
-      "summarized_at": null
+      "gist": "What happened: A board chairman and co-owner of a Puerto Rican bank was sentenced in connection with a multimillion-dollar wire fraud conspiracy, according to a U.S. Department of Justice press release dated October 7, 2026.\n\nWho/what is involved: The individual, the Puerto Rican bank, and the alleged wire fraud conspiracy.\n\nStakes: Multimillion-dollar financial losses and criminal consequences are indicated; specific penalties are unclear.\n\nNotable detail: The source identifies the person as both board chairman and co-owner.",
+      "summary_status": "COMPLETE",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": "2026-10-08T00:44:08Z"
     },
     {
       "item_id": 328,
@@ -850,10 +850,10 @@
       "date": "2026-10-07T12:00:00Z",
       "source_link": "https://www.justice.gov/opa/pr/known-cybersecurity-expert-and-owner-florida-ransomware-remediation-company-charged",
       "status": "NEW",
-      "gist": "",
-      "summary_status": "PENDING",
-      "summary_prompt_version": null,
-      "summarized_at": null
+      "gist": "What happened: The U.S. Department of Justice announced charges against a known cybersecurity expert and the owner of a Florida ransomware-remediation company for allegedly defrauding clients.\n\nWho/what is involved: The individual, the Florida-based ransomware-remediation company, and its clients are involved.\n\nStakes: The matter carries legal consequences for the accused and potential financial or consumer consequences for affected clients.\n\nNotable detail: The company’s stated field was ransomware remediation.",
+      "summary_status": "COMPLETE",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": "2026-10-08T00:44:45Z"
     },
     {
       "item_id": 363,
@@ -1200,10 +1200,10 @@
       "date": "2026-10-06T12:00:00Z",
       "source_link": "https://www.justice.gov/opa/pr/aids-healthcare-foundation-agrees-pay-144m-settle-false-claims-act-allegations",
       "status": "NEW",
-      "gist": "",
-      "summary_status": "PENDING",
-      "summary_prompt_version": null,
-      "summarized_at": null
+      "gist": "What happened: AIDS Healthcare Foundation agreed to pay $1.44 million to settle allegations under the federal False Claims Act.\n\nWho/what is involved: AIDS Healthcare Foundation and the U.S. Department of Justice, which issued the press release.\n\nStakes: The agreement involves a $1.44 million payment resolving the stated False Claims Act allegations.\n\nNotable detail: The announcement was published by the DOJ Office of Public Affairs on October 6, 2026.",
+      "summary_status": "COMPLETE",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": "2026-10-08T00:45:24Z"
     },
     {
       "item_id": 337,
@@ -1214,10 +1214,10 @@
       "date": "2026-10-06T12:00:00Z",
       "source_link": "https://www.justice.gov/opa/pr/justice-department-and-usda-reaffirm-and-expand-their-partnership-protect-competition",
       "status": "NEW",
-      "gist": "",
-      "summary_status": "PENDING",
-      "summary_prompt_version": null,
-      "summarized_at": null
+      "gist": "What happened: The U.S. Department of Justice and U.S. Department of Agriculture reaffirmed and expanded a partnership concerning competition in agricultural inputs.\n\nWho/what is involved: The Justice Department, USDA, and competition in agricultural-input markets.\n\nStakes: Potentially regulatory and operational implications for agricultural-input competition; specific consequences are unclear from the supplied text.\n\nNotable detail: The announcement was issued by the Justice Department’s Office of Public Affairs on October 6, 2026.",
+      "summary_status": "COMPLETE",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": "2026-10-08T00:46:05Z"
     },
     {
       "item_id": 336,
@@ -1228,10 +1228,10 @@
       "date": "2026-10-06T12:00:00Z",
       "source_link": "https://www.justice.gov/opa/pr/former-td-bank-employee-pleads-guilty-accepting-bribes-laundering-48-million-colombia",
       "status": "NEW",
-      "gist": "",
-      "summary_status": "PENDING",
-      "summary_prompt_version": null,
-      "summarized_at": null
+      "gist": "What happened: A former TD Bank employee pleaded guilty to accepting bribes and laundering $4.8 million to Colombia.\n\nWho/what is involved: The former employee, TD Bank, the U.S. Department of Justice, and funds transferred to Colombia.\n\nStakes: The matter involves criminal proceedings related to bribery and money laundering, with $4.8 million identified in the allegation.\n\nNotable detail: The guilty plea was announced by the DOJ’s Office of Public Affairs on October 6, 2026.",
+      "summary_status": "COMPLETE",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": "2026-10-08T00:46:44Z"
     },
     {
       "item_id": 335,
@@ -1536,10 +1536,10 @@
       "date": "2026-10-01T13:16:10Z",
       "source_link": "https://www.dfs.ny.gov/reports_and_publications/press_releases/pr20261001",
       "status": "NEW",
-      "gist": "",
-      "summary_status": "PENDING",
-      "summary_prompt_version": null,
-      "summarized_at": null
+      "gist": "What happened: The New York State Department of Financial Services and Wyoming Division of Banking signed a memorandum of understanding to enable coordinated oversight of virtual currency and digital asset activities.\n\nWho/what is involved: New York DFS, Wyoming Division of Banking, and entities engaged in virtual currency or digital asset activities.\n\nStakes: The agreement may support coordinated regulatory oversight across the two states.\n\nNotable detail: The MOU was announced in a New York DFS press release dated October 1, 2026.",
+      "summary_status": "COMPLETE",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": "2026-10-08T00:43:55Z"
     },
     {
       "item_id": 352,
@@ -1634,10 +1634,10 @@
       "date": "2026-09-29T17:14:25Z",
       "source_link": "https://www.dfs.ny.gov/reports_and_publications/press_releases/pr20260929",
       "status": "NEW",
-      "gist": "",
-      "summary_status": "PENDING",
-      "summary_prompt_version": null,
-      "summarized_at": null
+      "gist": "What happened: NYSIF announced a collaboration with the Cities for Financial Empowerment Fund to expand access to safe banking services for injured workers.  \nWho/what is involved: The New York State Insurance Fund, Cities for Financial Empowerment Fund, and injured workers.  \nStakes: The effort concerns workers’ access to safer financial services.  \nNotable detail: The announcement appeared in a New York Department of Financial Services press release dated September 29, 2026.",
+      "summary_status": "COMPLETE",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": "2026-10-08T00:44:36Z"
     },
     {
       "item_id": 289,
@@ -1690,10 +1690,10 @@
       "date": "2026-09-24-montana-billings-stolen-lawnmower-felony-charge",
       "source_link": "https://csimt.gov/2026/09/24/state-auditor-james-brown-charges-billings-man-with-felony-criminal-insurance-fraud-for-allegedly-filing-false-claim-over-stolen-lawnmowers/",
       "status": "PROMOTED",
-      "gist": "",
-      "summary_status": "PENDING",
-      "summary_prompt_version": null,
-      "summarized_at": null
+      "gist": "What happened: Montana’s State Auditor charged Billings resident Adam Walker with felony criminal insurance fraud, alleging he filed a false claim for a truck, trailer, and four lawnmowers reported stolen in 2023. State Farm paid $100,000; investigators later found the claim unsupported.\n\nWho/what is involved: Walker, State Auditor James Brown’s office, State Farm, and the reported stolen equipment.\n\nStakes: A conviction could bring up to 20 years in prison and/or a $50,000 fine.\n\nNotable detail: Investigators found claimed mower values averaged $21,700 versus marketplace asking prices of about $6,600.",
+      "summary_status": "COMPLETE",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": "2026-10-08T00:42:25Z"
     },
     {
       "item_id": 20,
@@ -1704,10 +1704,10 @@
       "date": "2026-09-24-delaware-doi-nieves-cordero-sentenced-client-funds-theft",
       "source_link": "https://news.delaware.gov/2026/09/24/delaware-department-of-insurance-announces-sentencing-of-former-insurance-agent-for-theft-of-client-funds/",
       "status": "PROMOTED",
-      "gist": "",
-      "summary_status": "PENDING",
-      "summary_prompt_version": null,
-      "summarized_at": null
+      "gist": "What happened: The Delaware Department of Insurance announced the sentencing of former insurance agent Nieves Cordero for theft of client funds.  \nWho/what is involved: Cordero, the Delaware Department of Insurance, and insurance clients, identified in the supplied headline as Spanish-speaking.  \nStakes: Clients’ premium or other insurance-related funds were involved, with a criminal sentencing as the legal consequence.  \nNotable detail: The item concerns an Apple Insurance agent.",
+      "summary_status": "COMPLETE",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": "2026-10-08T00:42:36Z"
     },
     {
       "item_id": 291,
@@ -1746,10 +1746,10 @@
       "date": "2026-09-23-mundy-52-count-indictment",
       "source_link": "https://tbinewsroom.com/2026/09/23/tbi-investigation-results-in-multiple-count-indictment-of-jamestown-funeral-home-owner/",
       "status": "PROMOTED",
-      "gist": "",
-      "summary_status": "PENDING",
-      "summary_prompt_version": null,
-      "summarized_at": null
+      "gist": "What happened: Tennessee investigators’ inquiry into Mundy Funeral Home led to a Fentress County grand jury indictment against owner Chadrick “Chad” Mundy on 52 counts, including alleged fraudulent burial-policy insurance claims and mishandling of cremated remains.\n\nWho/what is involved: Mundy, the funeral home, the Tennessee Bureau of Investigation, and elderly or vulnerable clients.\n\nStakes: The charges involve alleged insurance fraud, theft, financial exploitation, and offenses concerning remains; Mundy was arrested on an $80,000 bond.\n\nNotable detail: The allegations are accusations, and he is presumed innocent unless convicted.",
+      "summary_status": "COMPLETE",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": "2026-10-08T00:42:57Z"
     },
     {
       "item_id": 252,
@@ -1760,10 +1760,10 @@
       "date": "2026-09-22T18:04:13Z",
       "source_link": "https://www.dfs.ny.gov/reports_and_publications/press_releases/pr20260922",
       "status": "NEW",
-      "gist": "",
-      "summary_status": "PENDING",
-      "summary_prompt_version": null,
-      "summarized_at": null
+      "gist": "What happened: The New York Department of Financial Services announced the return of a painting to the heirs of a family persecuted by the Nazi regime.\n\nWho/what is involved: New York DFS, the painting, and the family’s heirs.\n\nStakes: The matter involves the recovery and return of property connected to historical persecution, with potential legal and consumer-protection implications.\n\nNotable detail: The announcement was issued by New York DFS on September 22, 2026.",
+      "summary_status": "COMPLETE",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": "2026-10-08T00:45:15Z"
     },
     {
       "item_id": 293,
@@ -1830,10 +1830,10 @@
       "date": "2026-09-21T13:40:39Z",
       "source_link": "https://www.dfs.ny.gov/reports_and_publications/press_releases/pr20260921",
       "status": "NEW",
-      "gist": "",
-      "summary_status": "PENDING",
-      "summary_prompt_version": null,
-      "summarized_at": null
+      "gist": "What happened: Governor Kathy Hochul announced next steps to regulate major artificial-intelligence developers and protect New Yorkers, according to a New York Department of Financial Services press release.\n\nWho/what is involved: Governor Hochul, the New York Department of Financial Services, major AI developers, and New York residents.\n\nStakes: The announcement concerns potential regulatory measures and protections for New Yorkers; specific legal, financial, or operational consequences are unclear.\n\nNotable detail: The source is dated September 21, 2026.",
+      "summary_status": "COMPLETE",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": "2026-10-08T00:45:55Z"
     },
     {
       "item_id": 28,
@@ -1844,10 +1844,10 @@
       "date": "2026-09-21-willis-charged-multi-county-auto-policy-identity-fraud",
       "source_link": "https://www.ncdoi.gov/news/press-releases/2026/09/21/charlotte-man-charged-multi-county-insurance-fraud-scheme",
       "status": "PROMOTED",
-      "gist": "",
-      "summary_status": "PENDING",
-      "summary_prompt_version": null,
-      "summarized_at": null
+      "gist": "What happened: A Charlotte man was charged in an alleged multi-county insurance fraud scheme involving adding strangers to auto policies and using false identities to buy vehicles.\n\nWho/what is involved: The accused man, unnamed individuals added to auto policies, vehicles, and the North Carolina Department of Insurance.\n\nStakes: The case involves alleged insurance fraud, identity misuse, and potential criminal consequences.\n\nNotable detail: The alleged activity involved auto policies across multiple counties.",
+      "summary_status": "COMPLETE",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": "2026-10-08T00:43:36Z"
     },
     {
       "item_id": 59,
@@ -1858,10 +1858,10 @@
       "date": "2026-09-21-gunter-licensed-agent-elder-life-policy-arrest",
       "source_link": "https://www.ncdoi.gov/news/press-releases/2026/09/21/licensed-agent-charged-identity-theft-additional-felonies",
       "status": "PROMOTED",
-      "gist": "",
-      "summary_status": "PENDING",
-      "summary_prompt_version": null,
-      "summarized_at": null
+      "gist": "What happened: A licensed insurance agent was charged with identity theft and additional felonies after allegedly using an elderly client’s bank details to purchase a life-insurance policy in her name.\nWho/what is involved: The licensed agent, an elderly client, her bank information, and a life-insurance policy.\nStakes: The allegations involve potential criminal liability and unauthorized use of a consumer’s financial information.\nNotable detail: The incident is identified in an existing dashboard catalog entry dated September 21, 2026.",
+      "summary_status": "COMPLETE",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": "2026-10-08T00:44:17Z"
     },
     {
       "item_id": 294,
@@ -1914,10 +1914,10 @@
       "date": "2026-09-16-clyburn-charged-fake-doctor-note-progressive",
       "source_link": "https://www.ncdoi.gov/news/press-releases/2026/09/16/charlotte-man-faces-insurance-fraud-charge-over-false-doctors-note",
       "status": "PROMOTED",
-      "gist": "",
-      "summary_status": "PENDING",
-      "summary_prompt_version": null,
-      "summarized_at": null
+      "gist": "What happened: A Charlotte driver was charged with insurance fraud after allegedly submitting a fake doctor’s note to seek reimbursement for missed work.\n\nWho/what is involved: The unidentified Charlotte man, an insurance claim involving Progressive, and the North Carolina Department of Insurance.\n\nStakes: The matter carries potential criminal and insurance-related consequences; the specific amount sought and status of the claim are unclear.\n\nNotable detail: The alleged supporting document was a false doctor’s note.",
+      "summary_status": "COMPLETE",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": "2026-10-08T00:44:54Z"
     },
     {
       "item_id": 24,
@@ -1942,10 +1942,10 @@
       "date": "2026-09-15-usaa-garrison-tennessee-slab-leak-complaint",
       "source_link": "https://www.insurancebusinessmag.com/us/news/risk-compliance-legal/hidden-slab-leak-sparks-bad-faith-suit-against-usaa-590015.aspx",
       "status": "PROMOTED",
-      "gist": "",
-      "summary_status": "PENDING",
-      "summary_prompt_version": null,
-      "summarized_at": null
+      "gist": "What happened: Tennessee homeowners sued USAA and Garrison Property and Casualty, alleging the insurers mishandled and denied a claim involving a hidden wastewater leak beneath their home’s foundation.\n\nWho/what is involved: The homeowners, USAA, Garrison, EFI Global, and Foundation Systems Engineering.\n\nStakes: The complaint seeks at least $87,530, including repair, living-expense, diagnostic, and engineering costs, plus potential statutory penalties, fees, and other damages.\n\nNotable detail: The homeowners allege they lacked a functional kitchen and laundry and had limited bathroom access; the allegations have not been tested in court.",
+      "summary_status": "COMPLETE",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": "2026-10-08T00:45:36Z"
     },
     {
       "item_id": 49,
@@ -1984,10 +1984,10 @@
       "date": "2026-09-14T15:00:21Z",
       "source_link": "https://www.dfs.ny.gov/reports_and_publications/press_releases/pr20260914",
       "status": "NEW",
-      "gist": "",
-      "summary_status": "PENDING",
-      "summary_prompt_version": null,
-      "summarized_at": null
+      "gist": "What happened: New York officials designated a new Banking Development District in Inwood to support community banking.\n\nWho/what is involved: State Comptroller DiNapoli, DFS Acting Superintendent Asrow, the New York Department of Financial Services, and the Inwood community.\n\nStakes: The designation is intended to support community banking; specific financial, regulatory, or consumer consequences are unclear.\n\nNotable detail: The DFS press release was published September 14, 2026.",
+      "summary_status": "COMPLETE",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": "2026-10-08T00:46:33Z"
     },
     {
       "item_id": 297,
@@ -2012,10 +2012,10 @@
       "date": "2026-09-11-murray-mejia-186k-condo-repair-kickback-charges",
       "source_link": "https://www.insurancejournal.com/news/southeast/2026/09/17/885380.htm",
       "status": "PROMOTED",
-      "gist": "",
-      "summary_status": "PENDING",
-      "summary_prompt_version": null,
-      "summarized_at": null
+      "gist": "What happened: A Florida condo manager and contractor were charged in an alleged $186,000 kickback scheme involving repair contracts after storm damage. The manager allegedly took $186,000 in loans to steer the contracts.\n\nWho/what is involved: A Florida condominium manager, a contractor, and storm-damage repair work.\n\nStakes: The allegations involve potential financial losses, criminal charges, and the integrity of repair-contract decisions.\n\nNotable detail: The dashboard catalog identifies the item as dated September 11, 2026.",
+      "summary_status": "COMPLETE",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": "2026-10-08T00:46:15Z"
     },
     {
       "item_id": 298,
@@ -2040,10 +2040,10 @@
       "date": "2026-09-10T13:33:30Z",
       "source_link": "https://www.dfs.ny.gov/reports_and_publications/press_releases/pr20260910",
       "status": "NEW",
-      "gist": "",
-      "summary_status": "PENDING",
-      "summary_prompt_version": null,
-      "summarized_at": null
+      "gist": "What happened: The New York Department of Financial Services issued new cybersecurity guidance concerning risk assessments for financial services entities on September 10, 2026.\n\nWho/what is involved: New York DFS and financial services entities subject to its oversight.\n\nStakes: The guidance may affect how covered entities address cybersecurity risk assessments, but specific legal, regulatory, financial, or operational consequences are unclear from the supplied text.\n\nNotable detail: The source is a DFS press release.",
+      "summary_status": "COMPLETE",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": "2026-10-08T00:47:14Z"
     },
     {
       "item_id": 26,
@@ -2068,10 +2068,10 @@
       "date": "2026-09-09-ny-dfs-auto-rate-prior-approval-proposal",
       "source_link": "https://www.dfs.ny.gov/reports_and_publications/press_releases/pr20260909",
       "status": "PROMOTED",
-      "gist": "",
-      "summary_status": "PENDING",
-      "summary_prompt_version": null,
-      "summarized_at": null
+      "gist": "What happened: New York’s Department of Financial Services proposed a regulation that would place every auto-insurance rate increase under prior approval.\n\nWho/what is involved: The Department of Financial Services, Governor Hochul, auto insurers, and New York policyholders.\n\nStakes: The proposal could affect how auto-insurance rates are reviewed and increase transparency for policyholders.\n\nNotable detail: The source item is dated September 9, 2026, and concerns the New York auto-insurance market.",
+      "summary_status": "COMPLETE",
+      "summary_prompt_version": "gist_v1",
+      "summarized_at": "2026-10-08T00:46:56Z"
     },
     {
       "item_id": 19,
