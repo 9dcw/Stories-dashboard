@@ -124,6 +124,9 @@ def recover_candidate_metadata(candidate: Candidate, body: str) -> Candidate:
 
 
 def collect_feed(source: dict, body: str) -> list[Candidate]:
+    # Some otherwise valid feeds emit prefixed extension tags without declaring
+    # the prefix; normalize those tags before ElementTree parses the document.
+    body = re.sub(r"(<\/?)[A-Za-z_][\w.-]*:", r"\1", body)
     root = ElementTree.fromstring(body.lstrip("\ufeff \t\r\n"))
     candidates = []
     for entry in root.iter():
@@ -223,12 +226,17 @@ def collect_html_list(source: dict, body: str) -> list[Candidate]:
 
 def collect_json(source: dict, body: str) -> list[Candidate]:
     payload = json.loads(body)
-    rows = payload if isinstance(payload, list) else payload.get("items", [])
+    config = json.loads(source.get("collector_config") or "{}")
+    rows = payload
+    for key in config.get("items_path", "").split(".") if config.get("items_path") else []:
+        rows = rows.get(key, []) if isinstance(rows, dict) else []
+    if not config.get("items_path"):
+        rows = rows if isinstance(rows, list) else rows.get("items", [])
     base = source.get("poll_url") or source.get("source_url", "")
     candidates = []
     for row in rows:
         headline = row.get("title") or row.get("headline")
-        link = row.get("url") or row.get("link")
+        link = row.get("url") or row.get("link") or row.get("source_link")
         if headline and link:
             candidates.append(Candidate(source["source_id"], headline.strip(), urljoin(base, link), _date(row.get("date") or row.get("published_at") or row.get("published"))))
     return candidates

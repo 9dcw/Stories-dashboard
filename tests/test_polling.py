@@ -99,6 +99,17 @@ def test_feed_parser_accepts_leading_whitespace_before_xml_declaration():
     assert len(candidates) == 2
 
 
+def test_feed_parser_accepts_undeclared_prefixed_extension_tags():
+    from collectors import collect_feed
+
+    candidates = collect_feed(
+        {"source_id": 4, "poll_url": "https://example.gov/feed"},
+        '<rss version="2.0"><channel><item><title>USFA post</title><link>https://example.gov/post</link><pubDate>Thu, 09 Oct 2026 12:00:00 GMT</pubDate></item><atom:link href="https://example.gov/feed" /></channel></rss>',
+    )
+
+    assert len(candidates) == 1
+
+
 def test_html_collector_skips_non_http_navigation_links():
     from collectors import collect_html_list
 
@@ -119,6 +130,17 @@ def test_json_collector_and_candidate_shape():
     )
 
     assert candidates == [Candidate(9, "Order", "https://example.gov/orders/1", "2026-10-08")]
+
+
+def test_json_collector_supports_nested_items_and_source_link():
+    from collectors import collect_json
+
+    candidates = collect_json(
+        {"source_id": 24, "poll_url": "https://example.gov/data", "collector_config": '{"items_path":"recent_candidates"}'},
+        '{"recent_candidates":[{"headline":"Dashboard item","source_link":"https://example.gov/item/1","date":"2026-10-09"}]}',
+    )
+
+    assert candidates == [Candidate(24, "Dashboard item", "https://example.gov/item/1", "2026-10-09")]
 
 
 def test_validation_rejects_archive_navigation_and_generic_headlines():
@@ -168,7 +190,7 @@ def test_html_collector_recovers_secondary_header_date():
 def test_poll_report_has_all_quality_buckets_and_ten_source_registry(tmp_path):
     from polling_sources import STAGE2_SOURCES
 
-    assert len(STAGE2_SOURCES) == 10
+    assert len(STAGE2_SOURCES) == 17
     expected = {"candidates_extracted", "rejected_navigation_archive", "rejected_old", "accepted_publications", "ambiguous"}
     store, rss_id, html_id = make_store(tmp_path)
     result = poll_sources(store, source_ids=[rss_id, html_id], fetcher={"https://example.gov/feed": RSS, "https://agency.gov/notices": HTML}.__getitem__)
