@@ -131,6 +131,18 @@ def test_validation_rejects_archive_navigation_and_generic_headlines():
     assert accepted.decision == "accepted"
 
 
+def test_validation_allows_source_configured_article_path_segments():
+    from collectors import validate_candidate
+
+    source = {"source_id": 18, "collector_config": '{"allow_archive_segments":["news"]}'}
+    accepted = validate_candidate(
+        source,
+        Candidate(18, "Insurer announces new coverage", "https://example.com/news/national/2026/10/09/123.htm", "2026-10-09"),
+        now="2026-10-09T12:00:00Z",
+    )
+    assert accepted.decision == "accepted"
+
+
 def test_html_collector_recovers_headline_from_listing_heading_and_date():
     from collectors import collect_html_list
 
@@ -141,6 +153,16 @@ def test_html_collector_recovers_headline_from_listing_heading_and_date():
     )
     assert candidates[0].headline == "Commissioner issues emergency order"
     assert candidates[0].published_at == "2026-10-08T00:00:00Z"
+
+
+def test_html_collector_recovers_secondary_header_date():
+    from collectors import collect_html_list
+
+    candidates = collect_html_list(
+        {"source_id": 14, "poll_url": "https://agency.gov/2026/", "collector_config": "{}"},
+        '<span class="secondaryHeader">October 7, 2026</span><a href="/release036-2026.cfm">Release</a>',
+    )
+    assert candidates[0].published_at == "2026-10-07T00:00:00Z"
 
 
 def test_poll_report_has_all_quality_buckets_and_ten_source_registry(tmp_path):

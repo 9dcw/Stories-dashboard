@@ -51,7 +51,9 @@ def validate_candidate(source: dict, candidate: Candidate, *, now: str | None = 
     config = json.loads(source.get("collector_config") or "{}")
     parsed = urlsplit(candidate.url)
     path_parts = [part.casefold() for part in parsed.path.split("/") if part]
-    if any(part in ARCHIVE_SEGMENTS for part in path_parts[:-1]) or (path_parts and path_parts[-1].isdigit() and len(path_parts[-1]) == 4) or path_parts in (["news"], ["press-releases"], ["news", ""]):
+    allowed_archive_segments = {part.casefold() for part in config.get("allow_archive_segments", [])}
+    disallowed_archive_parts = set(path_parts[:-1]) & (ARCHIVE_SEGMENTS - allowed_archive_segments)
+    if disallowed_archive_parts or (path_parts and path_parts[-1].isdigit() and len(path_parts[-1]) == 4) or path_parts in (["news"], ["press-releases"], ["news", ""]):
         return Validation("navigation_archive", "archive_or_index", candidate.headline)
     if not _meaningful_headline(candidate.headline):
         return Validation("navigation_archive", "generic_anchor_text", candidate.headline)
@@ -149,6 +151,7 @@ class _ListParser(HTMLParser):
         self.current_href = None
         self.current_text = []
         self.current_date = None
+        self.pending_date = None
         self.current_date_text = []
         self.heading_text = []
         self.in_heading = False
@@ -163,13 +166,14 @@ class _ListParser(HTMLParser):
         if tag in {"h1", "h2", "h3", "h4"}:
             self.in_heading, self.heading_text = True, []
         elif tag == "a" and attrs.get("href"):
-            self.current_href, self.current_text, self.current_date = attrs["href"], [], None
+            self.current_href, self.current_text, self.current_date = attrs["href"], [], self.pending_date
+            self.pending_date = None
         elif tag == "time" and attrs.get("datetime"):
             if self.current_href:
                 self.current_date = attrs["datetime"]
             elif self.last_candidate_index is not None:
                 self.candidates[self.last_candidate_index] = Candidate(self.source_id, self.candidates[self.last_candidate_index].headline, self.candidates[self.last_candidate_index].url, _date(attrs["datetime"]))
-        if tag in {"time", "span", "div", "p"} and (tag == "time" or "date" in classes or "published" in classes):
+        if tag in {"time", "span", "div", "p"} and (tag == "time" or "date" in classes or "published" in classes or "secondaryheader" in classes):
             self.in_date, self.current_date_text = True, []
 
     def handle_data(self, data):
@@ -191,6 +195,8 @@ class _ListParser(HTMLParser):
             elif self.last_candidate_index is not None and parsed_date:
                 existing = self.candidates[self.last_candidate_index]
                 self.candidates[self.last_candidate_index] = Candidate(existing.source_id, existing.headline, existing.url, parsed_date)
+            elif parsed_date:
+                self.pending_date = parsed_date
             self.in_date = False
         if tag == "a" and self.current_href:
             anchor = " ".join("".join(self.current_text).split())
