@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-08T22:25:16Z",
+  "generated_at": "2026-10-09T15:54:55Z",
   "recent_candidates": [
     {
       "item_id": 400,
@@ -2229,7 +2229,7 @@
       "active": true,
       "last_success_at": null,
       "last_error": "",
-      "publications_last_30_days": 21,
+      "publications_last_30_days": 18,
       "telegram_action_label": "Disable via Telegram",
       "telegram_action_url": "https://t.me/share/url?url=https%3A%2F%2F9dcw.github.io%2FStories-dashboard&text=Disable+source+7+%28Existing+dashboard+catalog%29+in+the+stories-dashboard+source+registry.+Stop+future+polling+but+preserve+all+existing+records.+Update+and+publish+the+dashboard."
     },
@@ -2370,12 +2370,12 @@
       "publication_url": "",
       "source_type": "web",
       "collector_type": "",
-      "active": true,
+      "active": false,
       "last_success_at": null,
       "last_error": "",
       "publications_last_30_days": 0,
-      "telegram_action_label": "Disable via Telegram",
-      "telegram_action_url": "https://t.me/share/url?url=&text=Disable+source+8+%28Smoke+Test+Source%29+in+the+stories-dashboard+source+registry.+Stop+future+polling+but+preserve+all+existing+records.+Update+and+publish+the+dashboard."
+      "telegram_action_label": "Enable via Telegram",
+      "telegram_action_url": "https://t.me/share/url?url=&text=Enable+source+8+%28Smoke+Test+Source%29+in+the+stories-dashboard+source+registry.+Resume+future+polling.+Update+and+publish+the+dashboard."
     },
     {
       "source_id": 2,
@@ -2886,10 +2886,6 @@
         "count": 3
       },
       {
-        "lane": "TEST",
-        "count": 1
-      },
-      {
         "lane": "legacy",
         "count": 1
       }
@@ -2909,7 +2905,7 @@
       },
       {
         "jurisdiction": "US",
-        "count": 14
+        "count": 13
       },
       {
         "jurisdiction": "mixed",
@@ -3042,14 +3038,6 @@
         "last_success_at": "2026-10-08T20:20:34Z",
         "last_error": "",
         "publications": 25
-      },
-      {
-        "name": "Smoke Test Source",
-        "lane": "TEST",
-        "jurisdiction": "US",
-        "last_success_at": null,
-        "last_error": null,
-        "publications": 0
       },
       {
         "name": "State insurance departments",
