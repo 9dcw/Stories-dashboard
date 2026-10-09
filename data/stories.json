@@ -1,6 +1,36 @@
 {
-  "generated_at": "2026-10-09T15:54:55Z",
+  "generated_at": "2026-10-09T16:04:54Z",
   "recent_candidates": [
+    {
+      "item_id": 403,
+      "headline": "SEC Proposes Expanding Securities Eligible for Cross Trading by Registered Funds",
+      "display_headline": "",
+      "source": "SEC litigation releases",
+      "lane": "A",
+      "jurisdiction": "US",
+      "date": "2026-10-09T14:59:00Z",
+      "source_link": "https://www.sec.gov/newsroom/press-releases/2026-104-sec-proposes-expanding-securities-eligible-cross-trading-registered-funds",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
+    {
+      "item_id": 402,
+      "headline": "New York State Department of Financial Services Celebrates 15 Years of Serving New Yorkers",
+      "display_headline": "",
+      "source": "New York DFS press releases",
+      "lane": "C",
+      "jurisdiction": "NY",
+      "date": "2026-10-09T00:00:00Z",
+      "source_link": "https://www.dfs.ny.gov/reports_and_publications/press_releases/pr20261009",
+      "status": "NEW",
+      "gist": "",
+      "summary_status": "PENDING",
+      "summary_prompt_version": null,
+      "summarized_at": null
+    },
     {
       "item_id": 400,
       "headline": "Justice Department and FBI Seize Vulnerability Scanning and Spear Phishing Tools Operated and Used by China-State Sponsored Hackers",
@@ -2163,7 +2193,7 @@
       "source_type": "web",
       "collector_type": "html_list",
       "active": true,
-      "last_success_at": "2026-10-08T20:20:32Z",
+      "last_success_at": "2026-10-09T16:04:21Z",
       "last_error": "",
       "publications_last_30_days": 0,
       "telegram_action_label": "Disable via Telegram",
@@ -2212,7 +2242,7 @@
       "collector_type": "rss",
       "active": true,
       "last_success_at": "2026-10-08T20:20:32Z",
-      "last_error": "",
+      "last_error": "HTTP Error 403: Forbidden",
       "publications_last_30_days": 33,
       "telegram_action_label": "Disable via Telegram",
       "telegram_action_url": "https://t.me/share/url?url=https%3A%2F%2Fwww.justice.gov%2Fnews%2Frss%3Fm%3D1%26type%3Dpress_release&text=Disable+source+9+%28DOJ+press+releases%29+in+the+stories-dashboard+source+registry.+Stop+future+polling+but+preserve+all+existing+records.+Update+and+publish+the+dashboard."
@@ -2259,7 +2289,7 @@
       "source_type": "web",
       "collector_type": "rss",
       "active": true,
-      "last_success_at": "2026-10-08T20:20:33Z",
+      "last_success_at": "2026-10-09T16:04:22Z",
       "last_error": "",
       "publications_last_30_days": 30,
       "telegram_action_label": "Disable via Telegram",
@@ -2323,7 +2353,7 @@
       "source_type": "web",
       "collector_type": "html_list",
       "active": true,
-      "last_success_at": "2026-10-08T20:20:34Z",
+      "last_success_at": "2026-10-09T16:04:22Z",
       "last_error": "",
       "publications_last_30_days": 0,
       "telegram_action_label": "Disable via Telegram",
@@ -2339,9 +2369,9 @@
       "source_type": "web",
       "collector_type": "html_list",
       "active": true,
-      "last_success_at": "2026-10-08T20:20:34Z",
+      "last_success_at": "2026-10-09T16:04:22Z",
       "last_error": "",
-      "publications_last_30_days": 6,
+      "publications_last_30_days": 7,
       "telegram_action_label": "Disable via Telegram",
       "telegram_action_url": "https://t.me/share/url?url=https%3A%2F%2Fwww.dfs.ny.gov%2Freports_and_publications%2Fpress_releases&text=Disable+source+13+%28New+York+DFS+press+releases%29+in+the+stories-dashboard+source+registry.+Stop+future+polling+but+preserve+all+existing+records.+Update+and+publish+the+dashboard."
     },
@@ -2355,9 +2385,9 @@
       "source_type": "web",
       "collector_type": "rss",
       "active": true,
-      "last_success_at": "2026-10-08T20:20:34Z",
+      "last_success_at": "2026-10-09T16:04:22Z",
       "last_error": "",
-      "publications_last_30_days": 18,
+      "publications_last_30_days": 19,
       "telegram_action_label": "Disable via Telegram",
       "telegram_action_url": "https://t.me/share/url?url=https%3A%2F%2Fwww.sec.gov%2Fnews%2Fpressreleases.rss&text=Disable+source+11+%28SEC+litigation+releases%29+in+the+stories-dashboard+source+registry.+Stop+future+polling+but+preserve+all+existing+records.+Update+and+publish+the+dashboard."
     },
@@ -2403,7 +2433,7 @@
       "source_type": "web",
       "collector_type": "html_list",
       "active": true,
-      "last_success_at": "2026-10-08T20:20:34Z",
+      "last_success_at": "2026-10-09T16:04:22Z",
       "last_error": "",
       "publications_last_30_days": 0,
       "telegram_action_label": "Disable via Telegram",
@@ -2939,7 +2969,7 @@
         "name": "California DOI news",
         "lane": "C",
         "jurisdiction": "CA",
-        "last_success_at": "2026-10-08T20:20:32Z",
+        "last_success_at": "2026-10-09T16:04:21Z",
         "last_error": "",
         "publications": 10
       },
@@ -2964,7 +2994,7 @@
         "lane": "A",
         "jurisdiction": "US",
         "last_success_at": "2026-10-08T20:20:32Z",
-        "last_error": "",
+        "last_error": "HTTP Error 403: Forbidden",
         "publications": 33
       },
       {
@@ -2987,7 +3017,7 @@
         "name": "Insurance Journal",
         "lane": "D",
         "jurisdiction": "US",
-        "last_success_at": "2026-10-08T20:20:33Z",
+        "last_success_at": "2026-10-09T16:04:22Z",
         "last_error": "",
         "publications": 30
       },
@@ -3019,7 +3049,7 @@
         "name": "New Jersey DOBI press releases",
         "lane": "C",
         "jurisdiction": "NJ",
-        "last_success_at": "2026-10-08T20:20:34Z",
+        "last_success_at": "2026-10-09T16:04:22Z",
         "last_error": "",
         "publications": 11
       },
@@ -3027,17 +3057,17 @@
         "name": "New York DFS press releases",
         "lane": "C",
         "jurisdiction": "NY",
-        "last_success_at": "2026-10-08T20:20:34Z",
+        "last_success_at": "2026-10-09T16:04:22Z",
         "last_error": "",
-        "publications": 16
+        "publications": 17
       },
       {
         "name": "SEC litigation releases",
         "lane": "A",
         "jurisdiction": "US",
-        "last_success_at": "2026-10-08T20:20:34Z",
+        "last_success_at": "2026-10-09T16:04:22Z",
         "last_error": "",
-        "publications": 25
+        "publications": 26
       },
       {
         "name": "State insurance departments",
@@ -3051,7 +3081,7 @@
         "name": "U.S. Supreme Court opinions",
         "lane": "B",
         "jurisdiction": "US",
-        "last_success_at": "2026-10-08T20:20:34Z",
+        "last_success_at": "2026-10-09T16:04:22Z",
         "last_error": "",
         "publications": 0
       }
