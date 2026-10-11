@@ -159,8 +159,10 @@ Stage 3 adds a bounded, per-item semantic compression layer without scoring or p
 
 - `candidate_notes` stores the generated `display_headline` and gist, `summary_status`, `gist_v2` prompt version, extraction counts/method, timestamps, and errors.
 - `gist.py` fetches ordinary HTML, removes common navigation/site furniture, builds a deterministic bounded input (default maximum: 12,000 characters), and parses the single-call JSON response containing both `display_headline` and `gist`.
+- PDF source links are accepted as a fallback: the first page is rendered to a temporary PNG and passed to image-capable gist commands. The PNG is deleted after each item; the stored extraction method is `pdf_first_page_image`.
 - `summarize_items.py` processes one item or all pending items. It isolates failures and skips completed summaries unless `--force` is supplied; legacy completed summaries without a display headline are eligible for regeneration.
 - The summarizer is intentionally a local command boundary: set `STORY_GIST_COMMAND` to a command that reads the prompt from stdin and writes the JSON result to stdout. No hosted API or new server is added by this repository.
+- Image-capable custom commands receive the temporary PNG path in `STORY_GIST_IMAGE`; the bundled `scripts/hermes_gist_command.py` forwards it to `hermes chat --image`.
 
 Examples:
 
@@ -171,6 +173,30 @@ python3 scripts/story_cli.py export --output data/stories.json
 ```
 
 The machine-readable result is shaped like `{"items_checked":12,"summaries_created":10,"summaries_failed":2}`. Failed extraction or summarization is recorded on the item and does not stop the batch. Candidate cards show the generated display headline prominently, retain the publisher's original headline in an expandable detail, and include source, date, gist, summary state, search support, and source link. `samples/gists-review.json` contains a small review fixture demonstrating the intended compact format; the production review set should be expanded to 30–50 representative candidates before prompt acceptance.
+
+### Source retrieval policies
+
+All polling and gist fetches use `source_fetch.py`, a shared policy layer rather than one hard-coded HTTP client. It supports per-source JSON configuration in `sources.collector_config` and environment-backed credentials without storing secrets in SQLite or Git. Supported credential modes are `bearer_env`, `token_env`, `basic_env`, and `api_key_env`; policies also control per-host pacing, retryable HTTP statuses, `Retry-After`, and endpoint adapters.
+
+Built-in host behavior:
+
+- SEC requests use a contact-bearing User-Agent when `STORIES_SEC_CONTACT_EMAIL` is set and pace requests at 4 per second or slower.
+- CourtListener requests use `COURTLISTENER_API_TOKEN` when available, pace requests at 5 per minute, and transform opinion pages into the REST opinion endpoint. The REST JSON's plain-text or HTML opinion fields feed the same bounded gist extractor.
+
+Set credentials only in the local environment, for example:
+
+```bash
+export STORIES_SEC_CONTACT_EMAIL='you@example.com'
+export COURTLISTENER_API_TOKEN='token-from-your-courtlistener-profile'
+```
+
+A source can override the inferred host policy without code changes:
+
+```json
+{"fetch":{"auth_type":"bearer_env","credential_env":"EXAMPLE_TOKEN","min_interval":2,"max_attempts":3}}
+```
+
+Tokens are never written to the dashboard database, generated JSON, or repository. Missing credentials do not cause a secret to be guessed; the request proceeds unauthenticated and the source's actual HTTP/error result is recorded.
 
 ## Stage 4 automated source discovery
 

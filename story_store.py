@@ -185,7 +185,8 @@ class StoryStore:
         query = """SELECT i.*, s.name AS source_name, s.lane, s.jurisdiction,
                          COALESCE(n.display_headline, '') AS display_headline, COALESCE(n.gist, '') AS gist, COALESCE(n.summary_status, 'PENDING') AS summary_status,
                          n.summary_prompt_version, n.summarized_at, n.extracted_char_count,
-                         n.input_char_count, n.extraction_method, COALESCE(n.summary_error, '') AS summary_error
+                         n.input_char_count, n.extraction_method, COALESCE(n.summary_error, '') AS summary_error,
+                         s.collector_config
                   FROM items i JOIN sources s ON s.source_id = i.source_id
                   LEFT JOIN candidate_notes n ON n.item_id = i.item_id"""
         params: list[object] = []
@@ -206,7 +207,8 @@ class StoryStore:
                 """SELECT i.*, s.name AS source_name, s.lane, s.jurisdiction,
                           COALESCE(n.display_headline, '') AS display_headline, COALESCE(n.gist, '') AS gist, COALESCE(n.summary_status, 'PENDING') AS summary_status,
                           n.summary_prompt_version, n.summarized_at, n.extracted_char_count,
-                          n.input_char_count, n.extraction_method, COALESCE(n.summary_error, '') AS summary_error
+                          n.input_char_count, n.extraction_method, COALESCE(n.summary_error, '') AS summary_error,
+                          s.collector_config
                    FROM items i JOIN sources s ON s.source_id = i.source_id
                    LEFT JOIN candidate_notes n ON n.item_id = i.item_id WHERE i.item_id = ?""",
                 (item_id,),
@@ -218,7 +220,8 @@ class StoryStore:
     def list_unsummarized_items(self, limit: int | None = None, *, active_only: bool = False) -> list[dict]:
         query = """SELECT i.*, s.name AS source_name, s.lane, s.jurisdiction,
                           COALESCE(n.summary_status, 'PENDING') AS summary_status,
-                          COALESCE(n.display_headline, '') AS display_headline
+                          COALESCE(n.display_headline, '') AS display_headline,
+                          s.collector_config
                    FROM items i JOIN sources s ON s.source_id = i.source_id
                    LEFT JOIN candidate_notes n ON n.item_id = i.item_id
                    WHERE (COALESCE(n.summary_status, 'PENDING') != 'COMPLETE'

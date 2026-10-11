@@ -17,6 +17,9 @@ command = [
     "hermes", "chat", "-Q", "--source", "tool", "--max-turns", "1",
     "--toolsets", "safe", "--provider", provider, "--model", model, "-q", prompt,
 ]
+image = os.environ.get("STORY_GIST_IMAGE", "").strip()
+if image:
+    command[2:2] = ["--image", image]
 completed = subprocess.run(command, text=True, capture_output=True, timeout=180, check=False, env={
     key: value for key, value in os.environ.items() if not key.startswith("HERMES_SESSION_")
 })

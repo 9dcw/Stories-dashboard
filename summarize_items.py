@@ -6,10 +6,12 @@ import json
 import os
 import shlex
 import subprocess
+import inspect
 from pathlib import Path
 from typing import Callable
 
-from gist import MAX_INPUT_CHARS, PROMPT_VERSION, build_bounded_input, extract_html_text, fetch_url, parse_summary_output, prompt_for
+from gist import MAX_INPUT_CHARS, PROMPT_VERSION, build_bounded_input, extract_html_text, fetch_url, parse_summary_output, prompt_for, render_pdf_first_page
+from source_fetch import fetch_url_content
 from story_store import StoryStore
 
 
@@ -18,8 +20,13 @@ def command_summarizer(command: str) -> Callable[[str], str]:
     if not argv:
         raise ValueError("summarizer command is empty")
 
-    def summarize(prompt: str) -> str:
-        completed = subprocess.run(argv, input=prompt, text=True, capture_output=True, check=False, timeout=120)
+    def summarize(prompt: str, image_path: str | None = None) -> str:
+        env = os.environ.copy()
+        if image_path:
+            env["STORY_GIST_IMAGE"] = image_path
+        else:
+            env.pop("STORY_GIST_IMAGE", None)
+        completed = subprocess.run(argv, input=prompt, text=True, capture_output=True, check=False, timeout=120, env=env)
         if completed.returncode:
             raise RuntimeError(completed.stderr.strip() or f"summarizer exited {completed.returncode}")
         result = completed.stdout.strip()
@@ -31,8 +38,8 @@ def command_summarizer(command: str) -> Callable[[str], str]:
 
 
 def summarize_items(store: StoryStore, *, item_ids: list[int] | None = None, force: bool = False,
-                    fetcher: Callable[[str], str] = fetch_url,
-                    summarizer: Callable[[str], str] | None = None,
+                    fetcher: Callable[[str], str] | None = None,
+                    summarizer: Callable[..., str] | None = None,
                     max_input_chars: int = MAX_INPUT_CHARS) -> dict[str, int]:
     rows = [store.get_item(item_id) for item_id in item_ids] if item_ids else (store.list_items() if force else store.list_unsummarized_items())
     if not force:
@@ -40,15 +47,35 @@ def summarize_items(store: StoryStore, *, item_ids: list[int] | None = None, for
     result = {"items_checked": 0, "summaries_created": 0, "summaries_failed": 0}
     for item in rows:
         result["items_checked"] += 1
+        image_path = None
         try:
-            html_content = fetcher(item["raw_url"])
-            extracted, method = extract_html_text(html_content)
+            if fetcher is None:
+                body, content_type = fetch_url_content(item["raw_url"], source_config=item.get("collector_config"))
+                if content_type == "application/pdf":
+                    image_path = render_pdf_first_page(body)
+                    html_content = ""
+                else:
+                    html_content = body.decode("utf-8", errors="replace")
+            else:
+                html_content = fetcher(item["raw_url"])
+            if image_path:
+                extracted, method = item["headline"], "pdf_first_page_image"
+            else:
+                extracted, method = extract_html_text(html_content)
             bounded = build_bounded_input(item, extracted, max_input_chars)
-            if len(extracted.strip()) < 40:
+            if not image_path and len(extracted.strip()) < 40:
                 raise ValueError("extracted text is too short")
             if summarizer is None:
                 raise ValueError("no summarizer configured; set STORY_GIST_COMMAND or pass a summarizer")
-            output = parse_summary_output(summarizer(prompt_for(bounded.input_text)))
+            prompt = prompt_for(bounded.input_text)
+            if image_path:
+                prompt += "\n\nA first-page image from the source PDF is attached. Read the visible document text and use it with the metadata; do not infer facts that are not visible."
+            try:
+                parameters = inspect.signature(summarizer).parameters
+                accepts_image = len(parameters) >= 2 or any(parameter.kind == inspect.Parameter.VAR_POSITIONAL for parameter in parameters.values())
+            except (TypeError, ValueError):
+                accepts_image = False
+            output = parse_summary_output(summarizer(prompt, image_path) if accepts_image else summarizer(prompt))
             display_headline = output["display_headline"] or item["headline"]
             gist = output["gist"]
             if not gist:
@@ -62,6 +89,9 @@ def summarize_items(store: StoryStore, *, item_ids: list[int] | None = None, for
                                extraction_method="fetch_failed" if isinstance(exc, (OSError, ValueError)) and "extract" not in str(exc).lower() else "",
                                summary_error=str(exc)[:500])
             result["summaries_failed"] += 1
+        finally:
+            if image_path:
+                Path(image_path).unlink(missing_ok=True)
     return result
 
 

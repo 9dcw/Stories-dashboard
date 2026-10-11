@@ -5,16 +5,22 @@ from __future__ import annotations
 import json
 import time
 from pathlib import Path
-from urllib.request import Request, urlopen
 
 from collectors import Candidate, Validation, collect_feed, collect_html_list, collect_json, recover_candidate_metadata, validate_candidate
+from source_fetch import fetch_url as fetch_source_url
 from story_store import StoryStore, utc_now
 
 
-def fetch_url(url: str) -> str:
-    request = Request(url, headers={"User-Agent": "insurance-stories-poller/1.0"})
-    with urlopen(request, timeout=30) as response:
-        return response.read().decode(response.headers.get_content_charset() or "utf-8", errors="replace")
+def fetch_url(url: str, source_config: str | dict | None = None) -> str:
+    return fetch_source_url(url, source_config=source_config, timeout=30)
+
+
+def _fetch(fetcher, url: str, source_config: str) -> str:
+    try:
+        return fetcher(url, source_config)
+    except TypeError:
+        # Preserve the small one-argument fixture fetcher contract.
+        return fetcher(url)
 
 
 def collect(source: dict, body: str) -> list[Candidate]:
@@ -28,7 +34,7 @@ def collect(source: dict, body: str) -> list[Candidate]:
     raise ValueError(f"Unsupported collector_type: {collector_type}")
 
 
-def poll_sources(store: StoryStore, source_ids: list[int] | None = None, fetcher=fetch_url,
+def poll_sources(store: StoryStore, source_ids: list[int] | None = None, fetcher=None,
                  retry_attempts: int = 1, retry_delay: float = 0.0) -> dict[str, int]:
     sources = store.list_sources()
     if source_ids is not None:
@@ -49,7 +55,7 @@ def poll_sources(store: StoryStore, source_ids: list[int] | None = None, fetcher
             last_error = None
             for attempt in range(max(1, retry_attempts)):
                 try:
-                    candidates = collect(source, fetcher(source["poll_url"]))
+                    candidates = collect(source, _fetch(fetcher or fetch_url, source["poll_url"], source.get("collector_config", "{}")))
                     break
                 except (OSError, TimeoutError) as exc:
                     last_error = exc
@@ -72,7 +78,7 @@ def poll_sources(store: StoryStore, source_ids: list[int] | None = None, fetcher
                         validation = validate_candidate(source, candidate, now=checked_at)
                         if validation.decision == "ambiguous":
                             try:
-                                recovered = recover_candidate_metadata(candidate, fetcher(candidate.url))
+                                recovered = recover_candidate_metadata(candidate, _fetch(fetcher or fetch_url, candidate.url, source.get("collector_config", "{}")))
                                 validation = validate_candidate(source, recovered, now=checked_at)
                                 candidate = recovered
                             except Exception:

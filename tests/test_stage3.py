@@ -142,3 +142,26 @@ def test_completed_summary_without_display_headline_is_pending(tmp_path):
     store, item = make_store(tmp_path)
     store.save_summary(item.item_id, gist="old", summary_prompt_version="gist_v1", extraction_method="html_article")
     assert [row["item_id"] for row in store.list_unsummarized_items()] == [item.item_id]
+
+
+def test_pdf_uses_first_page_image_and_cleans_up(tmp_path, monkeypatch):
+    import summarize_items as summarizer_module
+
+    store, item = make_store(tmp_path)
+    image_path = tmp_path / "first-page.png"
+    image_path.write_bytes(b"png")
+    calls = {}
+
+    monkeypatch.setattr(summarizer_module, "fetch_url_content", lambda url, source_config=None: (b"pdf", "application/pdf"))
+    monkeypatch.setattr(summarizer_module, "render_pdf_first_page", lambda body: str(image_path))
+
+    def summarizer(prompt, attached_image):
+        calls["image"] = attached_image
+        return '{"display_headline":"PDF-backed settlement","gist":"What happened: A PDF source was summarized from its first page image."}'
+
+    from summarize_items import summarize_items
+    result = summarize_items(store, item_ids=[item.item_id], summarizer=summarizer)
+    assert result == {"items_checked": 1, "summaries_created": 1, "summaries_failed": 0}
+    assert calls["image"] == str(image_path)
+    assert not image_path.exists()
+    assert store.get_item(item.item_id)["extraction_method"] == "pdf_first_page_image"

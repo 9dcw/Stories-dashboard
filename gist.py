@@ -6,7 +6,10 @@ import json
 import re
 from dataclasses import dataclass
 from html.parser import HTMLParser
-from urllib.request import Request, urlopen
+from pathlib import Path
+from tempfile import NamedTemporaryFile
+
+from source_fetch import fetch_url_content, fetch_url as fetch_source_url
 
 MAX_INPUT_CHARS = 12000
 PROMPT_VERSION = "gist_v2"
@@ -64,6 +67,24 @@ class _ArticleParser(HTMLParser):
 
 
 def extract_html_text(content: str) -> tuple[str, str]:
+    # Endpoint adapters may return structured JSON rather than an HTML page.
+    if content.lstrip().startswith("{"):
+        try:
+            payload = json.loads(content)
+        except json.JSONDecodeError:
+            payload = None
+        if isinstance(payload, dict):
+            for key in ("plain_text", "html_with_citations", "html_lawbox", "html"):
+                value = payload.get(key)
+                if isinstance(value, str) and value.strip():
+                    if key == "plain_text":
+                        return value.strip(), "api_json_plain_text"
+                    parser = _ArticleParser()
+                    parser.feed(value)
+                    text = parser.text()
+                    if text:
+                        return text, "api_json_html"
+            raise ValueError("empty extracted text")
     parser = _ArticleParser()
     parser.feed(content)
     text = parser.text()
@@ -73,13 +94,27 @@ def extract_html_text(content: str) -> tuple[str, str]:
     return text, method
 
 
-def fetch_url(url: str, *, timeout: int = 20) -> str:
-    request = Request(url, headers={"User-Agent": "StoriesDashboard/3.0"})
-    with urlopen(request, timeout=timeout) as response:
-        content_type = response.headers.get_content_type()
-        if content_type not in {"text/html", "application/xhtml+xml"}:
-            raise ValueError(f"unsupported content type: {content_type}")
-        return response.read(2_000_000).decode(response.headers.get_content_charset() or "utf-8", errors="replace")
+def fetch_url(url: str, *, source_config: str | dict | None = None, timeout: int = 20) -> str:
+    return fetch_source_url(url, source_config=source_config, timeout=timeout)
+
+
+def render_pdf_first_page(pdf_bytes: bytes) -> str:
+    """Render page one to a temporary PNG and return its path."""
+    try:
+        import pymupdf
+    except ImportError as exc:
+        raise RuntimeError("PDF gist fallback requires pymupdf") from exc
+    document = pymupdf.open(stream=pdf_bytes, filetype="pdf")
+    try:
+        if document.page_count < 1:
+            raise ValueError("PDF has no pages")
+        pixmap = document.load_page(0).get_pixmap(matrix=pymupdf.Matrix(1.5, 1.5), alpha=False)
+        with NamedTemporaryFile(prefix="stories-dashboard-pdf-", suffix=".png", delete=False) as output:
+            path = Path(output.name)
+        pixmap.save(str(path))
+        return str(path)
+    finally:
+        document.close()
 
 
 @dataclass(frozen=True)
