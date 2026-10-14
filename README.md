@@ -159,7 +159,7 @@ Stage 3 adds a bounded, per-item semantic compression layer without scoring or p
 
 - `candidate_notes` stores the generated `display_headline` and gist, `summary_status`, `gist_v2` prompt version, extraction counts/method, timestamps, and errors.
 - `gist.py` fetches ordinary HTML, removes common navigation/site furniture, builds a deterministic bounded input (default maximum: 12,000 characters), and parses the single-call JSON response containing both `display_headline` and `gist`.
-- PDF source links are accepted as a fallback: the first page is rendered to a temporary PNG and passed to image-capable gist commands. The PNG is deleted after each item; the stored extraction method is `pdf_first_page_image`.
+- PDF source links are accepted as a fallback: up to the first three pages are rendered into a temporary vertically stacked PNG and passed to image-capable gist commands. The PNG is deleted after each item; the stored extraction method is `pdf_first_three_pages_image`.
 - `summarize_items.py` processes one item or all pending items. It isolates failures and skips completed summaries unless `--force` is supplied; legacy completed summaries without a display headline are eligible for regeneration.
 - The summarizer is intentionally a local command boundary: set `STORY_GIST_COMMAND` to a command that reads the prompt from stdin and writes the JSON result to stdout. No hosted API or new server is added by this repository.
 - Image-capable custom commands receive the temporary PNG path in `STORY_GIST_IMAGE`; the bundled `scripts/hermes_gist_command.py` forwards it to `hermes chat --image`.

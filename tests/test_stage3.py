@@ -144,7 +144,7 @@ def test_completed_summary_without_display_headline_is_pending(tmp_path):
     assert [row["item_id"] for row in store.list_unsummarized_items()] == [item.item_id]
 
 
-def test_pdf_uses_first_page_image_and_cleans_up(tmp_path, monkeypatch):
+def test_pdf_uses_first_three_pages_image_and_cleans_up(tmp_path, monkeypatch):
     import summarize_items as summarizer_module
 
     store, item = make_store(tmp_path)
@@ -153,7 +153,7 @@ def test_pdf_uses_first_page_image_and_cleans_up(tmp_path, monkeypatch):
     calls = {}
 
     monkeypatch.setattr(summarizer_module, "fetch_url_content", lambda url, source_config=None: (b"pdf", "application/pdf"))
-    monkeypatch.setattr(summarizer_module, "render_pdf_first_page", lambda body: str(image_path))
+    monkeypatch.setattr(summarizer_module, "render_pdf_first_three_pages", lambda body: str(image_path))
 
     def summarizer(prompt, attached_image):
         calls["image"] = attached_image
@@ -164,4 +164,26 @@ def test_pdf_uses_first_page_image_and_cleans_up(tmp_path, monkeypatch):
     assert result == {"items_checked": 1, "summaries_created": 1, "summaries_failed": 0}
     assert calls["image"] == str(image_path)
     assert not image_path.exists()
-    assert store.get_item(item.item_id)["extraction_method"] == "pdf_first_page_image"
+    assert store.get_item(item.item_id)["extraction_method"] == "pdf_first_three_pages_image"
+
+
+def test_pdf_renderer_stacks_at_most_three_pages(tmp_path):
+    import pymupdf
+    from PIL import Image
+
+    document = pymupdf.open()
+    for index in range(4):
+        page = document.new_page(width=200, height=300)
+        page.insert_text((20, 40), f"Page {index + 1}")
+    pdf_bytes = document.tobytes()
+    document.close()
+
+    from gist import render_pdf_first_three_pages
+
+    image_path = Path(render_pdf_first_three_pages(pdf_bytes))
+    try:
+        image = Image.open(image_path)
+        assert image.width == 300
+        assert image.height == 1350
+    finally:
+        image_path.unlink(missing_ok=True)

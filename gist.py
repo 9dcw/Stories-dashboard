@@ -98,23 +98,40 @@ def fetch_url(url: str, *, source_config: str | dict | None = None, timeout: int
     return fetch_source_url(url, source_config=source_config, timeout=timeout)
 
 
-def render_pdf_first_page(pdf_bytes: bytes) -> str:
-    """Render page one to a temporary PNG and return its path."""
+def render_pdf_first_three_pages(pdf_bytes: bytes) -> str:
+    """Render up to the first three PDF pages into one vertically stacked PNG."""
     try:
         import pymupdf
     except ImportError as exc:
         raise RuntimeError("PDF gist fallback requires pymupdf") from exc
+    from PIL import Image
+
     document = pymupdf.open(stream=pdf_bytes, filetype="pdf")
     try:
         if document.page_count < 1:
             raise ValueError("PDF has no pages")
-        pixmap = document.load_page(0).get_pixmap(matrix=pymupdf.Matrix(1.5, 1.5), alpha=False)
+        pixmaps = [
+            document.load_page(index).get_pixmap(matrix=pymupdf.Matrix(1.5, 1.5), alpha=False)
+            for index in range(min(3, document.page_count))
+        ]
+        pages = [Image.frombytes("RGB", (pixmap.width, pixmap.height), pixmap.samples) for pixmap in pixmaps]
+        width = max(page.width for page in pages)
+        canvas = Image.new("RGB", (width, sum(page.height for page in pages)), "white")
+        offset = 0
+        for page in pages:
+            canvas.paste(page, (0, offset))
+            offset += page.height
         with NamedTemporaryFile(prefix="stories-dashboard-pdf-", suffix=".png", delete=False) as output:
             path = Path(output.name)
-        pixmap.save(str(path))
+        canvas.save(str(path))
         return str(path)
     finally:
         document.close()
+
+
+def render_pdf_first_page(pdf_bytes: bytes) -> str:
+    """Backward-compatible alias for callers that used the old one-page helper."""
+    return render_pdf_first_three_pages(pdf_bytes)
 
 
 @dataclass(frozen=True)

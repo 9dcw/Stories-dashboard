@@ -10,7 +10,7 @@ import inspect
 from pathlib import Path
 from typing import Callable
 
-from gist import MAX_INPUT_CHARS, PROMPT_VERSION, build_bounded_input, extract_html_text, fetch_url, parse_summary_output, prompt_for, render_pdf_first_page
+from gist import MAX_INPUT_CHARS, PROMPT_VERSION, build_bounded_input, extract_html_text, fetch_url, parse_summary_output, prompt_for, render_pdf_first_three_pages
 from source_fetch import fetch_url_content
 from story_store import StoryStore
 
@@ -52,14 +52,14 @@ def summarize_items(store: StoryStore, *, item_ids: list[int] | None = None, for
             if fetcher is None:
                 body, content_type = fetch_url_content(item["raw_url"], source_config=item.get("collector_config"))
                 if content_type == "application/pdf":
-                    image_path = render_pdf_first_page(body)
+                    image_path = render_pdf_first_three_pages(body)
                     html_content = ""
                 else:
                     html_content = body.decode("utf-8", errors="replace")
             else:
                 html_content = fetcher(item["raw_url"])
             if image_path:
-                extracted, method = item["headline"], "pdf_first_page_image"
+                extracted, method = item["headline"], "pdf_first_three_pages_image"
             else:
                 extracted, method = extract_html_text(html_content)
             bounded = build_bounded_input(item, extracted, max_input_chars)
@@ -69,7 +69,7 @@ def summarize_items(store: StoryStore, *, item_ids: list[int] | None = None, for
                 raise ValueError("no summarizer configured; set STORY_GIST_COMMAND or pass a summarizer")
             prompt = prompt_for(bounded.input_text)
             if image_path:
-                prompt += "\n\nA first-page image from the source PDF is attached. Read the visible document text and use it with the metadata; do not infer facts that are not visible."
+                prompt += "\n\nAn image containing up to the first three pages of the source PDF is attached. Read the visible document text and use it with the metadata; do not infer facts that are not visible."
             try:
                 parameters = inspect.signature(summarizer).parameters
                 accepts_image = len(parameters) >= 2 or any(parameter.kind == inspect.Parameter.VAR_POSITIONAL for parameter in parameters.values())
