@@ -76,7 +76,7 @@ def _retry_delay(response_headers, attempt: int) -> float:
 
 
 def _headers(url: str, policy: FetchPolicy) -> dict[str, str]:
-    headers = {"User-Agent": policy.user_agent, "Accept": "text/html, application/xhtml+xml, application/json"}
+    headers = {"User-Agent": policy.user_agent, "Accept": "text/html, application/xhtml+xml, application/json, application/rss+xml, application/atom+xml, application/xml, text/xml"}
     if _host(url) == "www.sec.gov":
         contact = os.environ.get(policy.contact_env, "").strip()
         if contact:
@@ -110,7 +110,7 @@ def fetch_url_content(url: str, *, source_config: str | dict | None = None, time
         try:
             with urlopen(request, timeout=timeout) as response:
                 content_type = response.headers.get_content_type()
-                allowed = {"text/html", "application/xhtml+xml", "application/json", "application/pdf"}
+                allowed = {"text/html", "application/xhtml+xml", "application/json", "application/pdf", "application/rss+xml", "application/atom+xml", "application/xml", "text/xml"}
                 if content_type not in allowed:
                     raise ValueError(f"unsupported content type: {content_type}")
                 return response.read(2_000_000), content_type

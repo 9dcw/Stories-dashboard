@@ -22,7 +22,7 @@ Stage 2 adds source polling without changing the SQLite system of record:
 
 - `collectors.py` contains the small RSS/Atom, HTML-list, and JSON collectors.
 - `polling.py` normalizes candidates and inserts them through the existing URL canonicalization and uniqueness constraints.
-- `polling_sources.py` defines the representative ten-source registry.
+- `polling_sources.py` defines the representative source registry, including official opinion feeds/listings for all twelve Article III appellate circuits plus the Federal Circuit.
 - `scripts/configure_sources.py` installs or refreshes those registry entries idempotently.
 - `scripts/poll_sources.py` emits one compact JSON result and isolates failures by source.
 

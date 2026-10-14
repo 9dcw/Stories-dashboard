@@ -70,6 +70,15 @@ def test_custom_auth_and_rate_policy_are_configurable(monkeypatch):
     assert captured["auth"] == "Bearer abc"
 
 
+def test_xml_feed_content_types_are_supported(monkeypatch):
+    def opener(request, timeout):
+        return FakeResponse("<rss><channel><title>Feed</title></channel></rss>", "application/rss+xml")
+
+    monkeypatch.setattr(source_fetch, "urlopen", opener)
+    source_fetch._LAST_REQUEST.clear()
+    assert "<rss>" in source_fetch.fetch_url("https://source.example/feed.xml")
+
+
 def test_retry_after_is_honored_for_rate_limit(monkeypatch):
     calls = []
     monkeypatch.setattr(source_fetch.time, "sleep", lambda value: calls.append(value))
