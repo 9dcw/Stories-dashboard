@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-15T00:29:33Z",
+  "generated_at": "2026-10-15T22:10:13Z",
   "recent_candidates": [
     {
       "item_id": 407,
@@ -100,7 +100,7 @@
       "jurisdiction": "US",
       "date": "2026-10-14T12:31:00Z",
       "source_link": "https://www.prnewswire.com/news-releases/the-operation-that-cost-the-gop-new-hampshire-now-runs-45-ai-made-ads-in-eight-senate-races-302908536.html",
-      "status": "NEW",
+      "status": "DISMISSED",
       "gist": "",
       "summary_status": "PENDING",
       "dismissal_action_url": "https://t.me/mehyanbot?text=Dismiss+story+item+742+from+the+Stories+Dashboard%3A+The+Operation+That+Cost+the+GOP+New+Hampshire+Now+Runs+45+AI-Made+Ads+in+Eight+Senate+Races.+Set+its+status+to+DISMISSED%2C+preserve+the+record%2C+and+refresh+the+dashboard+export.+Source%3A+https%3A%2F%2Fwww.prnewswire.com%2Fnews-releases%2Fthe-operation-that-cost-the-gop-new-hampshire-now-runs-45-ai-made-ads-in-eight-senate-races-302908536.html",
@@ -8978,7 +8978,7 @@
       "active": true,
       "last_success_at": "2026-10-14T12:33:26Z",
       "last_error": "",
-      "publications_last_30_days": 10,
+      "publications_last_30_days": 9,
       "telegram_action_label": "Disable via Telegram",
       "telegram_action_url": "https://t.me/share/url?url=https%3A%2F%2Fwww.fbi.gov%2Ffeeds%2Fnational-press-releases%2Fatom.xml&text=Disable+source+10+%28FBI+news%29+in+the+stories-dashboard+source+registry.+Stop+future+polling+but+preserve+all+existing+records.+Update+and+publish+the+dashboard."
     },
@@ -8994,7 +8994,7 @@
       "active": true,
       "last_success_at": "2026-10-14T12:33:27Z",
       "last_error": "",
-      "publications_last_30_days": 87,
+      "publications_last_30_days": 78,
       "telegram_action_label": "Disable via Telegram",
       "telegram_action_url": "https://t.me/share/url?url=https%3A%2F%2Fwww.cafc.uscourts.gov%2Fcategory%2Fopinion-order%2Ffeed&text=Disable+source+37+%28Federal+Circuit+opinions+and+orders%29+in+the+stories-dashboard+source+registry.+Stop+future+polling+but+preserve+all+existing+records.+Update+and+publish+the+dashboard."
     },
