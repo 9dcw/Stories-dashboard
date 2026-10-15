@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-15T22:10:13Z",
+  "generated_at": "2026-10-15T22:11:17Z",
   "recent_candidates": [
     {
       "item_id": 407,
@@ -46,7 +46,7 @@
       "jurisdiction": "US",
       "date": "2026-10-14T14:00:00Z",
       "source_link": "https://ww3.ca2.uscourts.gov/decisions.html",
-      "status": "NEW",
+      "status": "DISMISSED",
       "gist": "What happened: The United States Court of Appeals for the Second Circuit provided a webpage titled “Recent Opinions” and “Second Circuit opinions.” Who/what is involved: The Second Circuit and its decisions webpage. Stakes: Any legal, insurance, financial, consumer, or regulatory consequences are unclear because no individual opinion or case details are supplied. Notable detail: The source metadata identifies the item as dated October 14, 2026, at 14:00 UTC.",
       "summary_status": "COMPLETE",
       "dismissal_action_url": "https://t.me/mehyanbot?text=Dismiss+story+item+762+from+the+Stories+Dashboard%3A+Recent+Opinions.+Set+its+status+to+DISMISSED%2C+preserve+the+record%2C+and+refresh+the+dashboard+export.+Source%3A+https%3A%2F%2Fww3.ca2.uscourts.gov%2Fdecisions.html",
@@ -730,7 +730,7 @@
       "jurisdiction": "US",
       "date": "2026-10-13T23:05:03Z",
       "source_link": "https://www.ca5.uscourts.gov/opinions/unpub/25/25-40573.0.pdf",
-      "status": "NEW",
+      "status": "DISMISSED",
       "gist": "What happened: The Fifth Circuit affirmed the district court’s denial of Broderick Wade York’s motion for compassionate release. Who/what is involved: York, a federal prisoner serving consecutive life terms under 18 U.S.C. § 924(c), challenged the court’s treatment of the First Step Act’s non-retroactive sentence-stacking change. Stakes: His consecutive life sentences remain in place. Notable detail: The court relied on the Supreme Court’s 2026 decision in Rutherford v. United States and denied the Government’s summary-affirmance motion.",
       "summary_status": "COMPLETE",
       "dismissal_action_url": "https://t.me/mehyanbot?text=Dismiss+story+item+653+from+the+Stories+Dashboard%3A+25-40573++USA+v.+York.+Set+its+status+to+DISMISSED%2C+preserve+the+record%2C+and+refresh+the+dashboard+export.+Source%3A+https%3A%2F%2Fwww.ca5.uscourts.gov%2Fopinions%2Funpub%2F25%2F25-40573.0.pdf",
