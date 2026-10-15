@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-15T22:12:44Z",
+  "generated_at": "2026-10-15T22:20:21Z",
   "recent_candidates": [
     {
       "item_id": 407,
@@ -748,7 +748,7 @@
       "jurisdiction": "US",
       "date": "2026-10-13T23:05:03Z",
       "source_link": "https://www.ca5.uscourts.gov/opinions/unpub/26/26-10077.0.pdf",
-      "status": "NEW",
+      "status": "DISMISSED",
       "gist": "What happened: The Fifth Circuit affirmed Erasto Sanchez-Sanchez’s 57-month sentence for a drug offense. Who/what is involved: Sanchez-Sanchez pleaded guilty to possessing cocaine with intent to distribute and possessing a firearm in furtherance of drug trafficking. Stakes: The ruling leaves the district court’s sentence intact. Notable detail: The court rejected arguments that the district court improperly deferred to a new prosecutorial policy or failed to address unwarranted sentencing disparities under 18 U.S.C. § 3553(a)(6).",
       "summary_status": "COMPLETE",
       "dismissal_action_url": "https://t.me/mehyanbot?text=Dismiss+story+item+652+from+the+Stories+Dashboard%3A+26-10077++USA+v.+Sanchez-Sanchez.+Set+its+status+to+DISMISSED%2C+preserve+the+record%2C+and+refresh+the+dashboard+export.+Source%3A+https%3A%2F%2Fwww.ca5.uscourts.gov%2Fopinions%2Funpub%2F26%2F26-10077.0.pdf",
