@@ -91,6 +91,7 @@ List or classify candidates:
 ```bash
 python3 scripts/story_cli.py list-items --limit 50
 python3 scripts/story_cli.py update-status ITEM_ID IGNORED
+python3 scripts/story_cli.py update-status ITEM_ID DISMISSED
 ```
 
 Promote a candidate:
@@ -119,6 +120,8 @@ git push origin main
 ```
 
 The Pages read model also contains an enrolled-source management section. It includes active and disabled rows, source IDs, publication/feed URLs, lane, jurisdiction, last successful poll, publications discovered in the last 30 days, latest errors, and Telegram share links. The links only prepopulate a message for manual review; they do not implement a bot, token, authentication, or backend action.
+
+Candidate cards also include a **Dismiss via Telegram** share link. It prepopulates a precise instruction containing the stable item ID and headline. Acting on that instruction currently means applying `update-status ITEM_ID DISMISSED` through the manual Telegram/CLI workflow, then exporting the snapshot. Dismissed items remain in SQLite and the JSON read model but are hidden in the dashboard by default; **Show dismissed** reveals them for review. This deliberate manual boundary can later be replaced by a Google Cloud backend without changing the dashboard's item/status contract.
 
 Disable or enable sources through the existing CLI:
 

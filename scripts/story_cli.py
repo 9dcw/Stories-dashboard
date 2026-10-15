@@ -30,7 +30,7 @@ def parser() -> argparse.ArgumentParser:
     item = sub.add_parser("add-item")
     item.add_argument("source_id", type=int); item.add_argument("headline"); item.add_argument("raw_url"); item.add_argument("--published-at")
     listing = sub.add_parser("list-items"); listing.add_argument("--limit", type=int, default=25); listing.add_argument("--status")
-    status = sub.add_parser("update-status"); status.add_argument("item_id", type=int); status.add_argument("status", choices=["NEW", "PROMOTED", "IGNORED"])
+    status = sub.add_parser("update-status"); status.add_argument("item_id", type=int); status.add_argument("status", choices=["NEW", "PROMOTED", "IGNORED", "DISMISSED"])
     promote = sub.add_parser("promote"); promote.add_argument("item_id", type=int); promote.add_argument("title"); promote.add_argument("--status", default="ACTIVE")
     links = sub.add_parser("update-links"); links.add_argument("story_id", type=int); links.add_argument("--google-doc-url"); links.add_argument("--telegram-thread-url"); links.add_argument("--research-folder-url"); links.add_argument("--status")
     export = sub.add_parser("export"); export.add_argument("--output", type=Path, default=DEFAULT_JSON); export.add_argument("--generated-at")

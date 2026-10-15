@@ -1,4 +1,4 @@
-const CACHE='stories-dashboard-v4';
+const CACHE='stories-dashboard-v5';
 const FILES=['./','./index.html','./styles.css','./app.js','./data/stories.json','./data/assets.json','./manifest.json'];
 const APP_SHELL_PATH=/\/(?:index\.html|styles\.css|app\.js|data\/(?:stories|assets)\.json|manifest\.json)$|\/$/;
 

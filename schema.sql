@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS items (
     url_hash TEXT NOT NULL UNIQUE,
     published_at TEXT,
     first_seen_at TEXT NOT NULL,
-    status TEXT NOT NULL DEFAULT 'NEW' CHECK (status IN ('NEW', 'PROMOTED', 'IGNORED')),
+    status TEXT NOT NULL DEFAULT 'NEW' CHECK (status IN ('NEW', 'PROMOTED', 'IGNORED', 'DISMISSED')),
     validation_reason TEXT NOT NULL DEFAULT ''
 );
 

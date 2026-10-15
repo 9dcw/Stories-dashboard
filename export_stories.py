@@ -21,6 +21,11 @@ def export_json(db_path: str | Path, output_path: str | Path, generated_at: str 
             "source": row["source_name"], "lane": row["lane"], "jurisdiction": row["jurisdiction"],
             "date": row["published_at"] or row["first_seen_at"], "source_link": public_source_url(row["raw_url"]),
             "status": row["status"], "gist": row["gist"], "summary_status": row["summary_status"],
+            "dismissal_action_url": "https://t.me/share/url?" + urlencode({
+                "url": public_source_url(row["raw_url"]),
+                "text": f"Dismiss story item {row['item_id']} from the Stories Dashboard: {row['headline']}. "
+                        "Set its status to DISMISSED, preserve the record, and refresh the dashboard export.",
+            }),
             "summary_prompt_version": row["summary_prompt_version"], "summarized_at": row["summarized_at"]})
     stories = []
     for row in store.list_stories():

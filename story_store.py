@@ -13,7 +13,7 @@ from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 ROOT = Path(__file__).resolve().parent
 SCHEMA_PATH = ROOT / "schema.sql"
-VALID_ITEM_STATUSES = {"NEW", "PROMOTED", "IGNORED"}
+VALID_ITEM_STATUSES = {"NEW", "PROMOTED", "IGNORED", "DISMISSED"}
 VALID_SUMMARY_STATUSES = {"PENDING", "COMPLETE", "FAILED", "SKIPPED"}
 _TRACKING_KEYS = {"fbclid", "gclid", "mc_cid", "mc_eid", "ref_src"}
 
@@ -86,6 +86,40 @@ class StoryStore:
     def _initialize(self) -> None:
         with self._connect() as connection:
             connection.executescript(SCHEMA_PATH.read_text())
+            item_schema = connection.execute(
+                "SELECT sql FROM sqlite_master WHERE type='table' AND name='items'"
+            ).fetchone()[0]
+            if "DISMISSED" not in item_schema:
+                # SQLite cannot alter a CHECK constraint in place. Rebuild only
+                # this small table while preserving all item IDs and metadata.
+                connection.execute("PRAGMA foreign_keys = OFF")
+                connection.execute("PRAGMA legacy_alter_table = ON")
+                connection.execute("DROP INDEX IF EXISTS idx_items_first_seen")
+                connection.execute("DROP INDEX IF EXISTS idx_items_status")
+                connection.execute("ALTER TABLE items RENAME TO items_legacy")
+                connection.execute("""CREATE TABLE items (
+                    item_id INTEGER PRIMARY KEY,
+                    source_id INTEGER NOT NULL REFERENCES sources(source_id),
+                    headline TEXT NOT NULL,
+                    raw_url TEXT NOT NULL,
+                    canonical_url TEXT NOT NULL UNIQUE,
+                    url_hash TEXT NOT NULL UNIQUE,
+                    published_at TEXT,
+                    first_seen_at TEXT NOT NULL,
+                    status TEXT NOT NULL DEFAULT 'NEW' CHECK (status IN ('NEW', 'PROMOTED', 'IGNORED', 'DISMISSED')),
+                    validation_reason TEXT NOT NULL DEFAULT ''
+                )""")
+                connection.execute("""INSERT INTO items
+                    (item_id, source_id, headline, raw_url, canonical_url, url_hash,
+                     published_at, first_seen_at, status, validation_reason)
+                    SELECT item_id, source_id, headline, raw_url, canonical_url, url_hash,
+                           published_at, first_seen_at, status, validation_reason
+                    FROM items_legacy""")
+                connection.execute("DROP TABLE items_legacy")
+                connection.execute("CREATE INDEX idx_items_first_seen ON items(first_seen_at DESC)")
+                connection.execute("CREATE INDEX idx_items_status ON items(status)")
+                connection.execute("PRAGMA legacy_alter_table = OFF")
+                connection.execute("PRAGMA foreign_keys = ON")
             note_columns = {row[1] for row in connection.execute("PRAGMA table_info(candidate_notes)")}
             if "display_headline" not in note_columns:
                 connection.execute("ALTER TABLE candidate_notes ADD COLUMN display_headline TEXT NOT NULL DEFAULT ''")

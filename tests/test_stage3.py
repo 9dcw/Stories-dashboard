@@ -73,6 +73,45 @@ def test_failed_summary_is_recorded_and_can_be_retried(tmp_path):
     assert [row["item_id"] for row in store.list_unsummarized_items()] == [item.item_id]
 
 
+def test_dismissed_status_is_persisted_and_exported_with_telegram_action(tmp_path):
+    store, item = make_store(tmp_path)
+    store.update_item_status(item.item_id, "DISMISSED")
+    assert store.get_item(item.item_id)["status"] == "DISMISSED"
+    output = tmp_path / "stories.json"
+    export_json(tmp_path / "stories.sqlite3", output)
+    candidate = json.loads(output.read_text())["recent_candidates"][0]
+    assert candidate["status"] == "DISMISSED"
+    assert "item+1" in candidate["dismissal_action_url"]
+    assert "DISMISSED" in candidate["dismissal_action_url"]
+
+
+def test_legacy_items_table_is_migrated_without_changing_item_ids(tmp_path):
+    import sqlite3
+    db = tmp_path / "legacy.sqlite3"
+    connection = sqlite3.connect(db)
+    connection.executescript("""
+        CREATE TABLE sources (source_id INTEGER PRIMARY KEY, name TEXT NOT NULL, lane TEXT NOT NULL,
+            jurisdiction TEXT NOT NULL, source_url TEXT NOT NULL, source_type TEXT NOT NULL DEFAULT 'web',
+            active INTEGER NOT NULL DEFAULT 1, created_at TEXT NOT NULL, notes TEXT NOT NULL DEFAULT '');
+        CREATE TABLE items (item_id INTEGER PRIMARY KEY, source_id INTEGER NOT NULL, headline TEXT NOT NULL,
+            raw_url TEXT NOT NULL, canonical_url TEXT NOT NULL UNIQUE, url_hash TEXT NOT NULL UNIQUE,
+            published_at TEXT, first_seen_at TEXT NOT NULL,
+            status TEXT NOT NULL DEFAULT 'NEW' CHECK (status IN ('NEW', 'PROMOTED', 'IGNORED')),
+            validation_reason TEXT NOT NULL DEFAULT '');
+        INSERT INTO sources VALUES (1, 'Legacy', 'A', 'US', 'https://example.gov', 'web', 1, 'now', '');
+        INSERT INTO items VALUES (7, 1, 'Old item', 'https://example.gov/old', 'https://example.gov/old', 'hash', NULL, 'now', 'NEW', '');
+    """)
+    connection.commit(); connection.close()
+    store = StoryStore(db)
+    assert store.get_item(7)["headline"] == "Old item"
+    store.update_item_status(7, "DISMISSED")
+    assert store.get_item(7)["status"] == "DISMISSED"
+    with sqlite3.connect(db) as check:
+        assert check.execute("PRAGMA foreign_key_check").fetchall() == []
+        child_sql = check.execute("SELECT sql FROM sqlite_master WHERE name='candidate_notes'").fetchone()[0]
+        assert 'REFERENCES items' in child_sql
+
+
 def test_export_includes_gist_and_summary_state(tmp_path):
     store, item = make_store(tmp_path)
     store.save_summary(item.item_id, display_headline="Regulator settles insurance claims case", gist="What happened: Settlement announced.", summary_prompt_version=PROMPT_VERSION, extracted_char_count=10, input_char_count=10, extraction_method="html_article")
