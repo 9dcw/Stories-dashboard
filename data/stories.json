@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-15T22:20:21Z",
+  "generated_at": "2026-10-15T22:20:46Z",
   "recent_candidates": [
     {
       "item_id": 407,
@@ -784,7 +784,7 @@
       "jurisdiction": "US",
       "date": "2026-10-13T17:05:02Z",
       "source_link": "https://www.ca5.uscourts.gov/opinions/unpub/25/25-11021.0.pdf",
-      "status": "NEW",
+      "status": "DISMISSED",
       "gist": "What happened: The Fifth Circuit affirmed dismissal of Wendell and Karen Reese’s civil action as barred by res judicata. Who/what is involved: The Reeses challenged claims involving their property loan, foreclosure, Wells Fargo, Breckenridge Property Fund 2016, U.S. Bank, Bank of the West, a law firm, and a substitute trustee. Stakes: The ruling leaves the dismissal in place and denies further litigation of the claims in this action. Notable detail: The court held the parties were in privity and the lawsuits shared the same nucleus of operative fact.",
       "summary_status": "COMPLETE",
       "dismissal_action_url": "https://t.me/mehyanbot?text=Dismiss+story+item+660+from+the+Stories+Dashboard%3A+25-11021++Reese+v.+Wells+Fargo.+Set+its+status+to+DISMISSED%2C+preserve+the+record%2C+and+refresh+the+dashboard+export.+Source%3A+https%3A%2F%2Fwww.ca5.uscourts.gov%2Fopinions%2Funpub%2F25%2F25-11021.0.pdf",
