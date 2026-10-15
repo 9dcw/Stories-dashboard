@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-15T22:11:17Z",
+  "generated_at": "2026-10-15T22:12:44Z",
   "recent_candidates": [
     {
       "item_id": 407,
@@ -712,7 +712,7 @@
       "jurisdiction": "US",
       "date": "2026-10-13T23:05:03Z",
       "source_link": "https://www.ca5.uscourts.gov/opinions/unpub/25/25-11341.0.pdf",
-      "status": "NEW",
+      "status": "DISMISSED",
       "gist": "What happened: The Fifth Circuit granted appointed counsel’s motion to withdraw and dismissed Victor Torres’s appeal. Who/what is involved: The case is United States v. Torres, No. 25-11341, from the Northern District of Texas. Stakes: The ruling ends the appeal and excuses counsel from further responsibilities. Notable detail: The court agreed the appeal presented no nonfrivolous issue and cited Anders v. California and Fifth Circuit Rule 42.2.",
       "summary_status": "COMPLETE",
       "dismissal_action_url": "https://t.me/mehyanbot?text=Dismiss+story+item+654+from+the+Stories+Dashboard%3A+25-11341++USA+v.+Torres.+Set+its+status+to+DISMISSED%2C+preserve+the+record%2C+and+refresh+the+dashboard+export.+Source%3A+https%3A%2F%2Fwww.ca5.uscourts.gov%2Fopinions%2Funpub%2F25%2F25-11341.0.pdf",
