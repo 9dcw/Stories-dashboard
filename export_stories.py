@@ -6,6 +6,8 @@ from pathlib import Path
 from urllib.parse import urlencode
 from story_store import StoryStore
 
+TELEGRAM_BOT_USERNAME = "mehyanbot"
+
 def public_source_url(value: str) -> str:
     lowered = value.lower()
     if "/example/" in lowered or "legacy.example" in lowered or "smoke.example.test" in lowered:
@@ -21,10 +23,10 @@ def export_json(db_path: str | Path, output_path: str | Path, generated_at: str 
             "source": row["source_name"], "lane": row["lane"], "jurisdiction": row["jurisdiction"],
             "date": row["published_at"] or row["first_seen_at"], "source_link": public_source_url(row["raw_url"]),
             "status": row["status"], "gist": row["gist"], "summary_status": row["summary_status"],
-            "dismissal_action_url": "https://t.me/share/url?" + urlencode({
-                "url": public_source_url(row["raw_url"]),
+            "dismissal_action_url": f"https://t.me/{TELEGRAM_BOT_USERNAME}?" + urlencode({
                 "text": f"Dismiss story item {row['item_id']} from the Stories Dashboard: {row['headline']}. "
-                        "Set its status to DISMISSED, preserve the record, and refresh the dashboard export.",
+                        "Set its status to DISMISSED, preserve the record, and refresh the dashboard export. "
+                        f"Source: {public_source_url(row['raw_url'])}",
             }),
             "summary_prompt_version": row["summary_prompt_version"], "summarized_at": row["summarized_at"]})
     stories = []

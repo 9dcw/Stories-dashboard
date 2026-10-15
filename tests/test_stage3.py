@@ -74,15 +74,22 @@ def test_failed_summary_is_recorded_and_can_be_retried(tmp_path):
 
 
 def test_dismissed_status_is_persisted_and_exported_with_telegram_action(tmp_path):
+    from urllib.parse import parse_qs, urlsplit
+
     store, item = make_store(tmp_path)
     store.update_item_status(item.item_id, "DISMISSED")
     assert store.get_item(item.item_id)["status"] == "DISMISSED"
     output = tmp_path / "stories.json"
     export_json(tmp_path / "stories.sqlite3", output)
     candidate = json.loads(output.read_text())["recent_candidates"][0]
+    action_url = urlsplit(candidate["dismissal_action_url"])
     assert candidate["status"] == "DISMISSED"
-    assert "item+1" in candidate["dismissal_action_url"]
-    assert "DISMISSED" in candidate["dismissal_action_url"]
+    assert action_url.netloc == "t.me"
+    assert action_url.path == "/mehyanbot"
+    text = parse_qs(action_url.query)["text"][0]
+    assert "item 1" in text
+    assert "DISMISSED" in text
+    assert "https://example.gov/order/1" in text
 
 
 def test_legacy_items_table_is_migrated_without_changing_item_ids(tmp_path):
