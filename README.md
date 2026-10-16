@@ -123,6 +123,8 @@ The Pages read model also contains an enrolled-source management section. It inc
 
 Candidate cards also include a **Dismiss via Telegram** link. It opens the dedicated `@mehyanbot` chat directly and prepopulates a precise instruction containing the stable item ID, headline, and source URL, instead of opening Telegram's generic share-recipient picker. Acting on that instruction currently means sending the draft and applying `update-status ITEM_ID DISMISSED` through the manual Telegram/CLI workflow, then exporting the snapshot. Dismissed items remain in SQLite and the JSON read model but are hidden in the dashboard by default; **Show dismissed** reveals them for review. This deliberate manual boundary can later be replaced by a Google Cloud backend without changing the dashboard's item/status contract.
 
+Candidate cards also include **Promote to Phase 2 via Telegram**. The link prepopulates a precise handoff containing the stable item ID and headline. It directs the manual workflow to resolve the exact `story_root_key` and `event_key`, open or reuse the canonical dedicated Stories topic, and create or verify the historical Phase 2 Drive package: one story folder under `Insurance Research / Active Stories`, one `Research & Treatment` Doc, and an `Images` child folder. It also calls for evidence labels and a read-back of the shared `phase2` row. The dashboard remains read-only: opening the link does not itself promote the item, create Telegram topics, or write Google Drive.
+
 Disable or enable sources through the existing CLI:
 
 ```bash

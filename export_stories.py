@@ -14,6 +14,19 @@ def public_source_url(value: str) -> str:
         return ""
     return value
 
+
+def phase2_action_url(item_id: int, headline: str, source_url: str) -> str:
+    """Build a reviewable Telegram handoff for the manual Phase 2 workflow."""
+    instruction = (
+        f"Promote Stories Dashboard item {item_id} to Phase 2: {headline}. "
+        "Open or reuse the canonical dedicated Telegram Stories topic for this exact story/event, "
+        "then create or verify the Google Drive package under Insurance Research / Active Stories "
+        "with one story folder, a Research & Treatment Doc, and an Images folder. "
+        "Resolve the exact story_root_key and event_key first, preserve evidence labels, and write/read back the phase2 row. "
+        f"Source: {source_url}"
+    )
+    return f"https://t.me/{TELEGRAM_BOT_USERNAME}?" + urlencode({"text": instruction})
+
 def export_json(db_path: str | Path, output_path: str | Path, generated_at: str | None = None) -> Path:
     store = StoryStore(db_path)
     candidates = []
@@ -28,6 +41,8 @@ def export_json(db_path: str | Path, output_path: str | Path, generated_at: str 
                         "Set its status to DISMISSED, preserve the record, and refresh the dashboard export. "
                         f"Source: {public_source_url(row['raw_url'])}",
             }),
+            "phase2_action_url": phase2_action_url(row["item_id"], row["headline"], public_source_url(row["raw_url"])),
+            "phase2_action_label": "Promote to Phase 2 via Telegram",
             "summary_prompt_version": row["summary_prompt_version"], "summarized_at": row["summarized_at"]})
     stories = []
     for row in store.list_stories():

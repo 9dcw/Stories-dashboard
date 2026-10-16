@@ -4,13 +4,30 @@ from pathlib import Path
 from export_stories import export_json
 from gist import MAX_INPUT_CHARS, PROMPT_VERSION, build_bounded_input, extract_html_text, parse_summary_output
 from story_store import StoryStore
-from export_stories import public_source_url
+from export_stories import public_source_url, phase2_action_url
 
 
 def test_placeholder_source_urls_are_not_published():
     assert public_source_url("https://www.insurancejournal.com/example/business-interruption") == ""
     assert public_source_url("https://legacy.example/stories/old-item") == ""
     assert public_source_url("https://www.justice.gov/real/press-release") == "https://www.justice.gov/real/press-release"
+
+
+def test_phase2_action_url_opens_hermes_chat_with_exact_drive_topic_handoff():
+    from urllib.parse import parse_qs, urlsplit
+
+    url = phase2_action_url(42, "A regulator announces a settlement", "https://example.gov/order/42")
+    parsed = urlsplit(url)
+    query = parse_qs(parsed.query)
+    assert parsed.netloc == "t.me"
+    assert parsed.path == "/mehyanbot"
+    text = query["text"][0]
+    assert "item 42" in text
+    assert "canonical dedicated Telegram Stories topic" in text
+    assert "Research & Treatment Doc" in text
+    assert "Images folder" in text
+    assert "phase2 row" in text
+    assert "https://example.gov/order/42" in text
 
 
 HTML_FIXTURE = """
@@ -90,6 +107,16 @@ def test_dismissed_status_is_persisted_and_exported_with_telegram_action(tmp_pat
     assert "item 1" in text
     assert "DISMISSED" in text
     assert "https://example.gov/order/1" in text
+
+
+def test_export_includes_phase2_promotion_action(tmp_path):
+    store, item = make_store(tmp_path)
+    output = tmp_path / "stories.json"
+    export_json(tmp_path / "stories.sqlite3", output)
+    candidate = json.loads(output.read_text())["recent_candidates"][0]
+    assert candidate["phase2_action_label"] == "Promote to Phase 2 via Telegram"
+    assert f"item+{item.item_id}" in candidate["phase2_action_url"]
+    assert "Research+%26+Treatment+Doc" in candidate["phase2_action_url"]
 
 
 def test_legacy_items_table_is_migrated_without_changing_item_ids(tmp_path):
