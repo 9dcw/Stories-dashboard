@@ -6,6 +6,8 @@ import hashlib
 import json
 import re
 import sqlite3
+import copy
+from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
@@ -22,6 +24,19 @@ VALID_DISMISSAL_REASONS = {
     "not_relevant", "duplicate", "too_old", "weak_source", "other", "manual_cli"
 }
 _TRACKING_KEYS = {"fbclid", "gclid", "mc_cid", "mc_eid", "ref_src"}
+
+
+class _BorrowedConnection:
+    """A context wrapper that does not commit or close its snapshot connection."""
+
+    def __init__(self, connection: sqlite3.Connection):
+        self.connection = connection
+
+    def __enter__(self) -> sqlite3.Connection:
+        return self.connection
+
+    def __exit__(self, *_args) -> None:
+        return None
 
 
 def utc_now() -> str:
@@ -89,6 +104,19 @@ class StoryStore:
         connection.execute("PRAGMA foreign_keys = ON")
         connection.execute("PRAGMA busy_timeout = 5000")
         return connection
+
+    @contextmanager
+    def read_snapshot(self):
+        """Yield a read-only store facade pinned to one SQLite transaction."""
+        connection = self._connect()
+        try:
+            connection.execute("BEGIN")
+            snapshot = copy.copy(self)
+            snapshot._connect = lambda: _BorrowedConnection(connection)  # type: ignore[method-assign]
+            yield snapshot
+        finally:
+            connection.rollback()
+            connection.close()
 
     def _initialize(self) -> None:
         with self._connect() as connection:
@@ -492,7 +520,8 @@ class StoryStore:
         raise ValueError("request_id was already used with a different payload")
 
     def dismiss_item(self, item_id: int | Item, reason_code: str, note: str | None,
-                     actor_sub: str, actor_email: str, request_id: str) -> dict:
+                     actor_sub: str, actor_email: str, request_id: str, *,
+                     return_replay_status: bool = False) -> dict | tuple[dict, bool]:
         """Atomically append a dismissal event and project the item to DISMISSED."""
         item_id = self._item_id(item_id)
         note = "" if note is None else note
@@ -518,7 +547,7 @@ class StoryStore:
                 self._feedback_row(connection, request_id), expected
             )
             if replay is not None:
-                return replay
+                return (replay, True) if return_replay_status else replay
             item = connection.execute(
                 "SELECT status FROM items WHERE item_id = ?", (item_id,)
             ).fetchone()
@@ -538,10 +567,12 @@ class StoryStore:
             row = connection.execute(
                 "SELECT * FROM item_feedback_events WHERE feedback_id = ?", (cursor.lastrowid,)
             ).fetchone()
-            return dict(row)
+            event = dict(row)
+            return (event, False) if return_replay_status else event
 
     def restore_item(self, item_id: int | Item, dismissal_feedback_id: int,
-                     actor_sub: str, actor_email: str, request_id: str) -> dict:
+                     actor_sub: str, actor_email: str, request_id: str, *,
+                     return_replay_status: bool = False) -> dict | tuple[dict, bool]:
         """Atomically append a restore event for the active referenced dismissal."""
         item_id = self._item_id(item_id)
         if not isinstance(dismissal_feedback_id, int) or isinstance(dismissal_feedback_id, bool):
@@ -559,7 +590,7 @@ class StoryStore:
                 self._feedback_row(connection, request_id), expected
             )
             if replay is not None:
-                return replay
+                return (replay, True) if return_replay_status else replay
             item = connection.execute(
                 "SELECT status FROM items WHERE item_id = ?", (item_id,)
             ).fetchone()
@@ -593,7 +624,8 @@ class StoryStore:
             row = connection.execute(
                 "SELECT * FROM item_feedback_events WHERE feedback_id = ?", (cursor.lastrowid,)
             ).fetchone()
-            return dict(row)
+            event = dict(row)
+            return (event, False) if return_replay_status else event
 
     def list_item_feedback(self, item_id: int | Item) -> list[dict]:
         item_id = self._item_id(item_id)
@@ -626,6 +658,31 @@ class StoryStore:
                   )
                 ORDER BY d.feedback_id DESC LIMIT 1""", (item_id,)).fetchone()
             return dict(row) if row else None
+
+    def get_active_dismissals(self, item_ids: list[int]) -> dict[int, dict]:
+        """Fetch all active dismissals in one query (and one snapshot connection)."""
+        if not item_ids:
+            return {}
+        placeholders = ",".join("?" for _ in item_ids)
+        with self._connect() as connection:
+            rows = connection.execute(f"""SELECT d.*
+                FROM item_feedback_events d
+                JOIN items i ON i.item_id = d.item_id AND i.status = 'DISMISSED'
+                WHERE d.item_id IN ({placeholders}) AND d.action = 'DISMISS'
+                  AND NOT EXISTS (
+                      SELECT 1 FROM item_feedback_events r
+                      WHERE r.action = 'RESTORE' AND r.reverts_feedback_id = d.feedback_id
+                  )
+                  AND d.feedback_id = (
+                      SELECT MAX(latest.feedback_id) FROM item_feedback_events latest
+                      WHERE latest.item_id = d.item_id AND latest.action = 'DISMISS'
+                        AND NOT EXISTS (
+                            SELECT 1 FROM item_feedback_events restored
+                            WHERE restored.action = 'RESTORE'
+                              AND restored.reverts_feedback_id = latest.feedback_id
+                        )
+                  )""", item_ids).fetchall()
+            return {int(row["item_id"]): dict(row) for row in rows}
 
     def promote_item(self, item_id: int | Item, title: str, status: str = "ACTIVE") -> int:
         item_id = self._item_id(item_id)
