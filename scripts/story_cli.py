@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import sys
+import uuid
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
@@ -55,7 +56,17 @@ def main() -> None:
         for row in store.list_items(args.limit, args.status):
             print(f'{row["item_id"]}\t{row["status"]}\t{row["source_name"]}\t{row["headline"]}\t{row["raw_url"]}')
     elif args.command == "update-status":
-        store.update_item_status(args.item_id, args.status)
+        if args.status == "DISMISSED":
+            store.dismiss_item(
+                args.item_id,
+                reason_code="manual_cli",
+                note="",
+                actor_sub="cli",
+                actor_email="local-cli",
+                request_id=f"cli-dismiss-{uuid.uuid4()}",
+            )
+        else:
+            store.update_item_status(args.item_id, args.status)
     elif args.command == "promote":
         print(store.promote_item(args.item_id, args.title, args.status))
     elif args.command == "update-links":

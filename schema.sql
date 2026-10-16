@@ -1,5 +1,10 @@
 PRAGMA foreign_keys = ON;
 
+CREATE TABLE IF NOT EXISTS schema_migrations (
+    version TEXT PRIMARY KEY,
+    applied_at TEXT NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS sources (
     source_id INTEGER PRIMARY KEY,
     name TEXT NOT NULL,
@@ -45,6 +50,7 @@ CREATE TABLE IF NOT EXISTS story_projects (
 
 CREATE INDEX IF NOT EXISTS idx_items_first_seen ON items(first_seen_at DESC);
 CREATE INDEX IF NOT EXISTS idx_items_status ON items(status);
+
 CREATE TABLE IF NOT EXISTS candidate_notes (
     item_id INTEGER PRIMARY KEY REFERENCES items(item_id) ON DELETE CASCADE,
     display_headline TEXT NOT NULL DEFAULT '',

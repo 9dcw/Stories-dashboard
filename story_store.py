@@ -15,6 +15,12 @@ ROOT = Path(__file__).resolve().parent
 SCHEMA_PATH = ROOT / "schema.sql"
 VALID_ITEM_STATUSES = {"NEW", "PROMOTED", "IGNORED", "DISMISSED"}
 VALID_SUMMARY_STATUSES = {"PENDING", "COMPLETE", "FAILED", "SKIPPED"}
+MAX_FEEDBACK_REASON_LENGTH = 64
+MAX_FEEDBACK_NOTE_LENGTH = 1000
+FEEDBACK_MIGRATION_VERSION = "feedback_v1"
+VALID_DISMISSAL_REASONS = {
+    "not_relevant", "duplicate", "too_old", "weak_source", "other", "manual_cli"
+}
 _TRACKING_KEYS = {"fbclid", "gclid", "mc_cid", "mc_eid", "ref_src"}
 
 
@@ -78,9 +84,10 @@ class StoryStore:
         self._initialize()
 
     def _connect(self) -> sqlite3.Connection:
-        connection = sqlite3.connect(self.db_path)
+        connection = sqlite3.connect(self.db_path, timeout=5.0)
         connection.row_factory = sqlite3.Row
         connection.execute("PRAGMA foreign_keys = ON")
+        connection.execute("PRAGMA busy_timeout = 5000")
         return connection
 
     def _initialize(self) -> None:
@@ -138,6 +145,116 @@ class StoryStore:
             item_columns = {row[1] for row in connection.execute("PRAGMA table_info(items)")}
             if "validation_reason" not in item_columns:
                 connection.execute("ALTER TABLE items ADD COLUMN validation_reason TEXT NOT NULL DEFAULT ''")
+
+            # Commit unrelated historical schema upgrades before opening the
+            # all-or-nothing feedback migration transaction.
+            connection.commit()
+            self._ensure_feedback_migration(connection)
+
+    def _ensure_feedback_migration(self, connection: sqlite3.Connection) -> None:
+        if connection.execute(
+            "SELECT 1 FROM schema_migrations WHERE version = ?",
+            (FEEDBACK_MIGRATION_VERSION,),
+        ).fetchone():
+            return
+
+        # Recheck after acquiring the write lock so concurrent Store
+        # constructors cannot both apply/backfill this migration.
+        connection.execute("BEGIN IMMEDIATE")
+        if connection.execute(
+            "SELECT 1 FROM schema_migrations WHERE version = ?",
+            (FEEDBACK_MIGRATION_VERSION,),
+        ).fetchone():
+            return
+        self._migrate_feedback_v1(connection)
+        connection.execute(
+            "INSERT INTO schema_migrations(version, applied_at) VALUES (?, ?)",
+            (FEEDBACK_MIGRATION_VERSION, utc_now()),
+        )
+
+    def _migrate_feedback_v1(self, connection: sqlite3.Connection) -> None:
+        connection.execute("""CREATE TABLE IF NOT EXISTS item_feedback_events (
+            feedback_id INTEGER PRIMARY KEY,
+            item_id INTEGER NOT NULL REFERENCES items(item_id),
+            action TEXT NOT NULL CHECK (action IN ('DISMISS', 'RESTORE')),
+            reason_code TEXT NOT NULL DEFAULT '' CHECK (length(reason_code) <= 64),
+            note TEXT NOT NULL DEFAULT '' CHECK (length(note) <= 1000),
+            prior_status TEXT NOT NULL CHECK (prior_status IN ('NEW', 'PROMOTED', 'IGNORED', 'DISMISSED')),
+            resulting_status TEXT NOT NULL CHECK (resulting_status IN ('NEW', 'PROMOTED', 'IGNORED', 'DISMISSED')),
+            reverts_feedback_id INTEGER REFERENCES item_feedback_events(feedback_id),
+            actor_sub TEXT NOT NULL CHECK (
+                length(actor_sub) <= 255 AND
+                length(trim(actor_sub, ' ' || char(9) || char(10) || char(11) || char(12) || char(13))) > 0
+            ),
+            actor_email TEXT NOT NULL CHECK (
+                length(actor_email) <= 320 AND
+                length(trim(actor_email, ' ' || char(9) || char(10) || char(11) || char(12) || char(13))) > 0
+            ),
+            request_id TEXT NOT NULL UNIQUE CHECK (
+                length(request_id) <= 255 AND
+                length(trim(request_id, ' ' || char(9) || char(10) || char(11) || char(12) || char(13))) > 0
+            ),
+            created_at TEXT NOT NULL,
+            CHECK (
+                (action = 'DISMISS' AND reason_code != '' AND prior_status = 'NEW'
+                    AND resulting_status = 'DISMISSED' AND reverts_feedback_id IS NULL)
+                OR
+                (action = 'RESTORE' AND reason_code = '' AND prior_status = 'DISMISSED'
+                    AND resulting_status = 'NEW' AND reverts_feedback_id IS NOT NULL)
+            )
+        )""")
+        connection.execute("""CREATE INDEX IF NOT EXISTS idx_item_feedback_item_created
+            ON item_feedback_events(item_id, feedback_id)""")
+        connection.execute("""CREATE UNIQUE INDEX IF NOT EXISTS idx_item_feedback_reverts
+            ON item_feedback_events(reverts_feedback_id)""")
+        connection.execute("""INSERT INTO item_feedback_events
+            (item_id, action, reason_code, note, prior_status, resulting_status,
+             reverts_feedback_id, actor_sub, actor_email, request_id, created_at)
+            SELECT i.item_id, 'DISMISS', 'legacy_backfill', '', 'NEW', 'DISMISSED',
+                   NULL, 'migration', 'migration',
+                   'migration-dismissed-' || i.item_id, i.first_seen_at
+            FROM items i
+            WHERE i.status = 'DISMISSED'
+              AND NOT EXISTS (
+                  SELECT 1 FROM item_feedback_events f
+                  WHERE f.item_id = i.item_id AND f.action = 'DISMISS'
+              )
+            ON CONFLICT(request_id) DO NOTHING""")
+        self._install_feedback_triggers(connection)
+
+    def _install_feedback_triggers(self, connection: sqlite3.Connection) -> None:
+        connection.execute("""CREATE TRIGGER IF NOT EXISTS item_feedback_events_validate_identity
+            BEFORE INSERT ON item_feedback_events
+            WHEN length(NEW.actor_sub) > 255
+              OR length(trim(NEW.actor_sub, ' ' || char(9) || char(10) || char(11) || char(12) || char(13))) = 0
+              OR length(NEW.actor_email) > 320
+              OR length(trim(NEW.actor_email, ' ' || char(9) || char(10) || char(11) || char(12) || char(13))) = 0
+              OR length(NEW.request_id) > 255
+              OR length(trim(NEW.request_id, ' ' || char(9) || char(10) || char(11) || char(12) || char(13))) = 0
+            BEGIN
+                SELECT RAISE(ABORT, 'feedback identity values must be nonblank and bounded');
+            END""")
+        connection.execute("""CREATE TRIGGER IF NOT EXISTS item_feedback_events_validate_restore
+            BEFORE INSERT ON item_feedback_events
+            WHEN NEW.action = 'RESTORE' AND NOT EXISTS (
+                SELECT 1 FROM item_feedback_events dismissed
+                WHERE dismissed.feedback_id = NEW.reverts_feedback_id
+                  AND dismissed.action = 'DISMISS'
+                  AND dismissed.item_id = NEW.item_id
+            )
+            BEGIN
+                SELECT RAISE(ABORT, 'restore must reference a dismissal for the same item');
+            END""")
+        connection.execute("""CREATE TRIGGER IF NOT EXISTS item_feedback_events_no_update
+            BEFORE UPDATE ON item_feedback_events
+            BEGIN
+                SELECT RAISE(ABORT, 'item feedback events are immutable');
+            END""")
+        connection.execute("""CREATE TRIGGER IF NOT EXISTS item_feedback_events_no_delete
+            BEFORE DELETE ON item_feedback_events
+            BEGIN
+                SELECT RAISE(ABORT, 'item feedback events are immutable');
+            END""")
 
     def add_source(self, name: str, lane: str, jurisdiction: str, source_url: str,
                    source_type: str = "web", active: bool = True, notes: str = "",
@@ -313,7 +430,7 @@ class StoryStore:
         counts = {"checked": 0, "quarantined": 0, "preserved_projects": 0}
         with self._connect() as connection:
             rows = connection.execute("""SELECT i.*, s.collector_config FROM items i JOIN sources s ON s.source_id=i.source_id
-                WHERE i.status != 'PROMOTED'""").fetchall()
+                WHERE i.status NOT IN ('PROMOTED', 'DISMISSED')""").fetchall()
             for row in rows:
                 counts["checked"] += 1
                 if connection.execute("SELECT 1 FROM story_projects WHERE origin_item_id = ?", (row["item_id"],)).fetchone():
@@ -321,26 +438,207 @@ class StoryStore:
                     continue
                 result = validate_candidate(dict(row), Candidate(row["source_id"], row["headline"], row["raw_url"], row["published_at"]), now=now)
                 if result.decision in {"navigation_archive", "old"}:
-                    connection.execute("UPDATE items SET status='IGNORED', validation_reason=? WHERE item_id=?", (result.reason, row["item_id"]))
-                    counts["quarantined"] += 1
+                    cursor = connection.execute(
+                        """UPDATE items SET status='IGNORED', validation_reason=?
+                           WHERE item_id=? AND status != 'DISMISSED'""",
+                        (result.reason, row["item_id"]),
+                    )
+                    counts["quarantined"] += cursor.rowcount
         return counts
 
     def update_item_status(self, item_id: int | Item, status: str) -> None:
         item_id = self._item_id(item_id)
         if status not in VALID_ITEM_STATUSES:
             raise ValueError(f"Invalid item status: {status}")
+        if status == "DISMISSED":
+            raise ValueError("DISMISSED status requires dismiss_item so an audit event is recorded")
         with self._connect() as connection:
-            cursor = connection.execute("UPDATE items SET status = ? WHERE item_id = ?", (status, item_id))
+            cursor = connection.execute(
+                """UPDATE items SET status = ?
+                   WHERE item_id = ? AND status != 'DISMISSED'""",
+                (status, item_id),
+            )
             if cursor.rowcount == 0:
+                item = connection.execute(
+                    "SELECT status FROM items WHERE item_id = ?", (item_id,)
+                ).fetchone()
+                if item is None:
+                    raise ValueError(f"Unknown item_id: {item_id}")
+                raise ValueError("DISMISSED items must be transitioned with restore_item")
+
+    @staticmethod
+    def _validate_feedback_identity(actor_sub: str, actor_email: str, request_id: str) -> None:
+        for name, value, maximum in (
+            ("actor_sub", actor_sub, 255),
+            ("actor_email", actor_email, 320),
+            ("request_id", request_id, 255),
+        ):
+            if not isinstance(value, str) or not value.strip() or len(value) > maximum:
+                raise ValueError(f"{name} must be a non-empty string of at most {maximum} characters")
+
+    @staticmethod
+    def _feedback_row(connection: sqlite3.Connection, request_id: str) -> sqlite3.Row | None:
+        return connection.execute(
+            "SELECT * FROM item_feedback_events WHERE request_id = ?", (request_id,)
+        ).fetchone()
+
+    @staticmethod
+    def _return_replay_or_conflict(existing: sqlite3.Row | None, expected: dict) -> dict | None:
+        if existing is None:
+            return None
+        row = dict(existing)
+        if all(row[key] == value for key, value in expected.items()):
+            return row
+        raise ValueError("request_id was already used with a different payload")
+
+    def dismiss_item(self, item_id: int | Item, reason_code: str, note: str | None,
+                     actor_sub: str, actor_email: str, request_id: str) -> dict:
+        """Atomically append a dismissal event and project the item to DISMISSED."""
+        item_id = self._item_id(item_id)
+        note = "" if note is None else note
+        if (not isinstance(reason_code, str)
+                or reason_code not in VALID_DISMISSAL_REASONS
+                or not re.fullmatch(r"[a-z0-9][a-z0-9_-]*", reason_code)
+                or len(reason_code) > MAX_FEEDBACK_REASON_LENGTH):
+            raise ValueError(
+                "reason_code must be one of: " + ", ".join(sorted(VALID_DISMISSAL_REASONS))
+            )
+        if not isinstance(note, str) or len(note) > MAX_FEEDBACK_NOTE_LENGTH:
+            raise ValueError(f"note must be at most {MAX_FEEDBACK_NOTE_LENGTH} characters")
+        self._validate_feedback_identity(actor_sub, actor_email, request_id)
+        expected = {
+            "item_id": item_id, "action": "DISMISS", "reason_code": reason_code,
+            "note": note, "prior_status": "NEW", "resulting_status": "DISMISSED",
+            "reverts_feedback_id": None, "actor_sub": actor_sub,
+            "actor_email": actor_email, "request_id": request_id,
+        }
+        with self._connect() as connection:
+            connection.execute("BEGIN IMMEDIATE")
+            replay = self._return_replay_or_conflict(
+                self._feedback_row(connection, request_id), expected
+            )
+            if replay is not None:
+                return replay
+            item = connection.execute(
+                "SELECT status FROM items WHERE item_id = ?", (item_id,)
+            ).fetchone()
+            if item is None:
                 raise ValueError(f"Unknown item_id: {item_id}")
+            if item["status"] != "NEW":
+                raise ValueError("Only NEW items can be dismissed")
+            cursor = connection.execute("""INSERT INTO item_feedback_events
+                (item_id, action, reason_code, note, prior_status, resulting_status,
+                 reverts_feedback_id, actor_sub, actor_email, request_id, created_at)
+                VALUES (?, 'DISMISS', ?, ?, 'NEW', 'DISMISSED', NULL, ?, ?, ?, ?)""",
+                (item_id, reason_code, note, actor_sub, actor_email, request_id, utc_now()),
+            )
+            connection.execute(
+                "UPDATE items SET status = 'DISMISSED' WHERE item_id = ?", (item_id,)
+            )
+            row = connection.execute(
+                "SELECT * FROM item_feedback_events WHERE feedback_id = ?", (cursor.lastrowid,)
+            ).fetchone()
+            return dict(row)
+
+    def restore_item(self, item_id: int | Item, dismissal_feedback_id: int,
+                     actor_sub: str, actor_email: str, request_id: str) -> dict:
+        """Atomically append a restore event for the active referenced dismissal."""
+        item_id = self._item_id(item_id)
+        if not isinstance(dismissal_feedback_id, int) or isinstance(dismissal_feedback_id, bool):
+            raise ValueError("dismissal_feedback_id must be an integer")
+        self._validate_feedback_identity(actor_sub, actor_email, request_id)
+        expected = {
+            "item_id": item_id, "action": "RESTORE", "reason_code": "", "note": "",
+            "prior_status": "DISMISSED", "resulting_status": "NEW",
+            "reverts_feedback_id": dismissal_feedback_id, "actor_sub": actor_sub,
+            "actor_email": actor_email, "request_id": request_id,
+        }
+        with self._connect() as connection:
+            connection.execute("BEGIN IMMEDIATE")
+            replay = self._return_replay_or_conflict(
+                self._feedback_row(connection, request_id), expected
+            )
+            if replay is not None:
+                return replay
+            item = connection.execute(
+                "SELECT status FROM items WHERE item_id = ?", (item_id,)
+            ).fetchone()
+            if item is None:
+                raise ValueError(f"Unknown item_id: {item_id}")
+            if item["status"] != "DISMISSED":
+                raise ValueError("Only DISMISSED items can be restored")
+            active = connection.execute("""SELECT d.*
+                FROM item_feedback_events d
+                WHERE d.item_id = ? AND d.action = 'DISMISS'
+                  AND NOT EXISTS (
+                      SELECT 1 FROM item_feedback_events r
+                      WHERE r.action = 'RESTORE' AND r.reverts_feedback_id = d.feedback_id
+                  )
+                ORDER BY d.feedback_id DESC LIMIT 1""", (item_id,)).fetchone()
+            if active is None or active["feedback_id"] != dismissal_feedback_id:
+                raise ValueError("dismissal_feedback_id is not the active dismissal")
+            resulting_status = active["prior_status"]
+            if resulting_status != "NEW":
+                raise ValueError("Active dismissal has an invalid prior status")
+            cursor = connection.execute("""INSERT INTO item_feedback_events
+                (item_id, action, reason_code, note, prior_status, resulting_status,
+                 reverts_feedback_id, actor_sub, actor_email, request_id, created_at)
+                VALUES (?, 'RESTORE', '', '', 'DISMISSED', ?, ?, ?, ?, ?, ?)""",
+                (item_id, resulting_status, dismissal_feedback_id, actor_sub,
+                 actor_email, request_id, utc_now()),
+            )
+            connection.execute(
+                "UPDATE items SET status = ? WHERE item_id = ?", (resulting_status, item_id)
+            )
+            row = connection.execute(
+                "SELECT * FROM item_feedback_events WHERE feedback_id = ?", (cursor.lastrowid,)
+            ).fetchone()
+            return dict(row)
+
+    def list_item_feedback(self, item_id: int | Item) -> list[dict]:
+        item_id = self._item_id(item_id)
+        with self._connect() as connection:
+            if connection.execute(
+                "SELECT 1 FROM items WHERE item_id = ?", (item_id,)
+            ).fetchone() is None:
+                raise ValueError(f"Unknown item_id: {item_id}")
+            return [dict(row) for row in connection.execute(
+                "SELECT * FROM item_feedback_events WHERE item_id = ? ORDER BY feedback_id",
+                (item_id,),
+            )]
+
+    def get_active_dismissal(self, item_id: int | Item) -> dict | None:
+        item_id = self._item_id(item_id)
+        with self._connect() as connection:
+            item = connection.execute(
+                "SELECT status FROM items WHERE item_id = ?", (item_id,)
+            ).fetchone()
+            if item is None:
+                raise ValueError(f"Unknown item_id: {item_id}")
+            if item["status"] != "DISMISSED":
+                return None
+            row = connection.execute("""SELECT d.*
+                FROM item_feedback_events d
+                WHERE d.item_id = ? AND d.action = 'DISMISS'
+                  AND NOT EXISTS (
+                      SELECT 1 FROM item_feedback_events r
+                      WHERE r.action = 'RESTORE' AND r.reverts_feedback_id = d.feedback_id
+                  )
+                ORDER BY d.feedback_id DESC LIMIT 1""", (item_id,)).fetchone()
+            return dict(row) if row else None
 
     def promote_item(self, item_id: int | Item, title: str, status: str = "ACTIVE") -> int:
         item_id = self._item_id(item_id)
         now = utc_now()
         with self._connect() as connection:
-            item = connection.execute("SELECT 1 FROM items WHERE item_id = ?", (item_id,)).fetchone()
+            connection.execute("BEGIN IMMEDIATE")
+            item = connection.execute(
+                "SELECT status FROM items WHERE item_id = ?", (item_id,)
+            ).fetchone()
             if item is None:
                 raise ValueError(f"Unknown item_id: {item_id}")
+            if item["status"] == "DISMISSED":
+                raise ValueError("DISMISSED items must be transitioned with restore_item before promotion")
             existing = connection.execute(
                 "SELECT story_id FROM story_projects WHERE origin_item_id = ?", (item_id,)
             ).fetchone()
