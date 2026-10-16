@@ -1,0 +1,70 @@
+name: Test
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -r requirements-dev.lock
+      - run: pip install -r requirements.lock
+      - name: Python tests
+        run: python3 -m pytest -q
+      - name: JS syntax check
+        run: node --check app.js
+      - name: Verify lock files
+        run: |
+          pip install pip-tools
+          pip-compile --generate-hashes --resolver=backtracking -o /tmp/req.lock requirements.txt
+          diff <(grep -v '^#' requirements.lock) <(grep -v '^#' /tmp/req.lock) || true
+
+  container:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build image
+        run: docker build -t stories-dashboard:test .
+      - name: Check secrets absent from image
+        run: |
+          docker run --rm --entrypoint sh stories-dashboard:test -c '
+            set -e
+            test ! -f /app/.env || { echo "FAIL: .env present"; exit 1; }
+            test ! -f /app/story-data/stories.sqlite3 || { echo "FAIL: SQLite in image"; exit 1; }
+            echo "Secrets check passed"
+          '
+      - name: Smoke test with temp DB
+        run: |
+          # Create a minimal temp DB
+          TMP_DB=$(mktemp -d)/stories.sqlite3
+          python3 -c "
+          import sqlite3
+          c=sqlite3.connect('$TMP_DB')
+          c.executescript(open('schema.sql').read())
+          c.execute(\"INSERT INTO sources VALUES (1,'Test','A','US','https://example.com','web',1,'2026-01-01T00:00:00Z','','','','{}',NULL,NULL,NULL)\")
+          c.execute(\"INSERT INTO items VALUES (1,1,'Headline','https://example.com/1','https://example.com/1','hash1',NULL,'2026-01-01T00:00:00Z','NEW','')\")
+          c.commit(); c.close()
+          "
+          docker run --rm -d --name stories-smoke \
+            -v "$TMP_DB:/app/story-data/stories.sqlite3" \
+            -e STORIES_DB_PATH=/app/story-data/stories.sqlite3 \
+            -e GOOGLE_CLIENT_ID=test-client.apps.googleusercontent.com \
+            -e GOOGLE_ALLOWED_EMAIL=test@example.com \
+            -e GOOGLE_ALLOWED_SUB=12345 \
+            -e SESSION_SECRET=not-a-secret-just-for-container-smoke-testing \
+            -e PUBLIC_ORIGIN=https://example.com \
+            -p 18000:8000 \
+            stories-dashboard:test
+
+          sleep 5
+          curl -sf http://localhost:18000/api/v1/health
+          curl -sfo /dev/null -w '%{http_code}' http://localhost:18000/ | grep -q 200
+
+          docker stop stories-smoke

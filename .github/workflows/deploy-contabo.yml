@@ -1,0 +1,74 @@
+name: Deploy Contabo
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    concurrency: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}:${{ github.sha }}
+            ghcr.io/${{ github.repository }}:latest
+
+      - name: Deploy to Contabo
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.CONTABO_HOST }}
+          username: ${{ secrets.CONTABO_USER }}
+          key: ${{ secrets.CONTABO_SSH_KEY }}
+          known_hosts: ${{ secrets.CONTABO_KNOWN_HOSTS }}
+          script: |
+            set -e
+            cd ${{ secrets.DEPLOY_PATH || '/srv/stories-dashboard' }}
+
+            IMAGE=ghcr.io/${{ github.repository }}:${{ github.sha }}
+
+            echo "=== Pulling $IMAGE ==="
+            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            docker pull "$IMAGE"
+
+            echo "=== Backup database ==="
+            python3 scripts/backup_db.py
+
+            echo "=== Deploy ==="
+            export IMAGE_TAG=${{ github.sha }}
+            docker compose up -d --no-deps app
+            docker compose restart caddy
+
+            echo "=== Health check ==="
+            for i in $(seq 1 12); do
+              if curl -sf https://${{ vars.DOMAIN }}/api/v1/health; then
+                echo "Health check passed"
+                break
+              fi
+              sleep 5
+            done
+
+            curl -sf https://${{ vars.DOMAIN }}/api/v1/health || {
+              echo "Health check failed — rolling back"
+              export IMAGE_TAG=latest
+              docker compose up -d --no-deps app
+              docker compose restart caddy
+              exit 1
+            }
+
+            echo "=== Deploy complete ==="
