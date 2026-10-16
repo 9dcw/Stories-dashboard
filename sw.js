@@ -1,4 +1,4 @@
-const CACHE='stories-dashboard-v5';
+const CACHE='stories-dashboard-v6';
 const FILES=['./','./index.html','./styles.css','./app.js','./data/stories.json','./data/assets.json','./manifest.json'];
 const APP_SHELL_PATH=/\/(?:index\.html|styles\.css|app\.js|data\/(?:stories|assets)\.json|manifest\.json)$|\/$/;
 
@@ -8,6 +8,11 @@ self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=
 self.addEventListener('fetch',event=>{
   if(event.request.method!=='GET') return;
   const url=new URL(event.request.url);
+  // API paths are network-only — never cache, never fall back to app shell
+  if(url.pathname.startsWith('/api/')){
+    event.respondWith(fetch(event.request));
+    return;
+  }
   const isAppShell=url.origin===self.location.origin&&APP_SHELL_PATH.test(url.pathname);
   event.respondWith(
     isAppShell
