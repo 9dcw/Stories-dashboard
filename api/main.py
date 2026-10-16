@@ -185,6 +185,10 @@ def create_app(config: RuntimeConfig | None = None) -> FastAPI:
     def health() -> dict[str, str]:
         return {"status": "ok"}
 
+    @app.get("/deployment-mode.json", include_in_schema=False)
+    def deployment_mode() -> dict[str, str]:
+        return {"mode": "interactive"}
+
     @app.get("/api/v1/config")
     def public_config() -> dict[str, str]:
         return {"google_client_id": runtime.google_client_id}

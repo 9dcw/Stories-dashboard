@@ -1,13 +1,12 @@
-version: "3.8"
-
 services:
   app:
-    image: ghcr.io/9dcw/stories-dashboard:${IMAGE_TAG:-latest}
+    image: ${STORIES_IMAGE:-ghcr.io/9dcw/stories-dashboard:latest}
     restart: unless-stopped
     env_file:
       - /etc/stories/stories.env
     volumes:
       - /srv/stories-dashboard/story-data:/app/story-data
+      - /srv/stories-dashboard/backups:/app/backups
     healthcheck:
       test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/v1/health')"]
       interval: 30s
@@ -20,6 +19,8 @@ services:
   caddy:
     image: caddy:2-alpine
     restart: unless-stopped
+    env_file:
+      - /etc/stories/stories.env
     ports:
       - "80:80"
       - "443:443"

@@ -7,7 +7,8 @@
 
 // ── compact query helper ──────────────────────────────────────────
 const $=s=>document.querySelector(s);
-const esc=s=>String(s??'').replace(/[&<>\\\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\\\\':'&bsol;','\"':'&quot;'}[c]));
+const ESCAPES={'&':'&amp;','<':'&lt;','>':'&gt;','\\':'&bsol;','"':'&quot;'};
+const esc=s=>String(s??'').replace(/[&<>\\"]/g,c=>ESCAPES[c]);
 
 // ── shared state ──────────────────────────────────────────────────
 const state={
@@ -22,6 +23,7 @@ const state={
   favorites:new Set(JSON.parse(localStorage.getItem('stories-favorites')||'[]')),
   recent:JSON.parse(localStorage.getItem('stories-recent')||'[]'),
   pending:{},               // item_id → true during API call
+  mutationRequestIds:{},     // operation key → UUID retained across ambiguous retries
   snackbarTimer:0,
   dismissedQueue:[]          // recently dismissed for undo
 };
@@ -43,8 +45,20 @@ API.fetch=async(path,init)=>{
   if(r.status===401){API.forceLogin();throw new Error('Authentication required');}
   return r;
 };
+API.json=async response=>{
+  let body={};
+  try{body=await response.json();}catch(_){}
+  if(!response.ok){
+    const error=new Error(body.detail||`Request failed (${response.status})`);
+    error.status=response.status;
+    throw error;
+  }
+  return body;
+};
 API.forceLogin=()=>{state.csrf='';state.csrfExpires=0;renderLogin();};
 API.requestId=()=>crypto.randomUUID?crypto.randomUUID():'r-'+Date.now()+'-'+Math.random().toString(36).slice(2);
+API.mutationRequestId=key=>state.mutationRequestIds[key]||(state.mutationRequestIds[key]=API.requestId());
+API.finishMutation=key=>{delete state.mutationRequestIds[key];};
 
 // ── Google Sign-In ────────────────────────────────────────────────
 function initGoogleSignIn(){
@@ -246,8 +260,9 @@ async function submitDismiss(){
   const reason=$('#dismissConfirm').dataset.reason;
   if(!reason)return;
   const note=$('#dismissNote').value.slice(0,1000);
-  const requestId=API.requestId();
   const itemId=dismissTarget.item_id;
+  const mutationKey=`dismiss:${itemId}`;
+  const requestId=API.mutationRequestId(mutationKey);
   state.pending[itemId]=true;
   closeDismissPanel();
   try{
@@ -255,44 +270,55 @@ async function submitDismiss(){
       method:'POST',headers:API.headers(),
       body:JSON.stringify({reason_code:reason,note,request_id:requestId})
     });
-    const d=await r.json();
+    const d=await API.json(r);
+    API.finishMutation(mutationKey);
     const fb=d.feedback||d;
     state.dismissedQueue.push({item_id:itemId,feedback_id:fb.feedback_id});
     showSnackbar(`Dismissed. <button class="snackbar-undo" id="snackbarUndo">Undo</button>`,8000);
     await refreshAfterMutation();
   }catch(e){
+    if(e.status)API.finishMutation(mutationKey);
     showSnackbar(`Error: ${e.message}`,4000);
   }finally{delete state.pending[itemId];render();}
 }
 async function undoLastDismiss(){
   const entry=state.dismissedQueue.pop();
   if(!entry){showSnackbar('Nothing to undo',3000);return;}
-  const requestId=API.requestId();
+  const mutationKey=`restore:${entry.item_id}:${entry.feedback_id}`;
+  const requestId=API.mutationRequestId(mutationKey);
   state.pending[entry.item_id]=true;
   try{
-    await API.fetch(`/api/v1/items/${entry.item_id}/restore`,{
+    const r=await API.fetch(`/api/v1/items/${entry.item_id}/restore`,{
       method:'POST',headers:API.headers(),
       body:JSON.stringify({dismissal_feedback_id:entry.feedback_id,request_id:requestId})
     });
+    await API.json(r);
+    API.finishMutation(mutationKey);
     showSnackbar('Restored',3000);
     await refreshAfterMutation();
   }catch(e){
+    if(e.status)API.finishMutation(mutationKey);
     showSnackbar(`Restore failed: ${e.message}`,4000);
     state.dismissedQueue.push(entry);
   }finally{delete state.pending[entry.item_id];render();}
 }
 async function restoreItem(itemId,feedbackId){
-  const requestId=API.requestId();
+  const parsedFeedbackId=parseInt(feedbackId,10);
+  const mutationKey=`restore:${itemId}:${parsedFeedbackId}`;
+  const requestId=API.mutationRequestId(mutationKey);
   state.pending[itemId]=true;
   render();
   try{
-    await API.fetch(`/api/v1/items/${itemId}/restore`,{
+    const r=await API.fetch(`/api/v1/items/${itemId}/restore`,{
       method:'POST',headers:API.headers(),
-      body:JSON.stringify({dismissal_feedback_id:parseInt(feedbackId,10),request_id:requestId})
+      body:JSON.stringify({dismissal_feedback_id:parsedFeedbackId,request_id:requestId})
     });
+    await API.json(r);
+    API.finishMutation(mutationKey);
     showSnackbar('Restored',3000);
     await refreshAfterMutation();
   }catch(e){
+    if(e.status)API.finishMutation(mutationKey);
     showSnackbar(`Restore failed: ${e.message}`,4000);
   }finally{delete state.pending[itemId];render();}
 }
@@ -360,24 +386,62 @@ async function init(){
     $('#themeToggle').textContent='☾';
   }
   if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
-  // detect mode
+
+  let modeResponse;
   try{
-    const r=await fetch('/api/v1/config',{headers:{Origin:API.origin}});
-    if(r.ok){
-      const d=await r.json();
-      if(d.google_client_id){
-        state.mode='interactive';
-        state.googleClientId=d.google_client_id;
-      }
+    modeResponse=await fetch('/deployment-mode.json',{cache:'no-store'});
+    if(!modeResponse.ok)throw new Error(`Mode declaration returned ${modeResponse.status}`);
+    const declaration=await modeResponse.json();
+    if(declaration.mode==='static'){
+      state.mode='static';
+      await loadStaticDashboard();
+      return;
     }
-  }catch(_){}
-  if(state.mode==='interactive'){
-    const loggedIn=await checkSession();
-    if(!loggedIn){showLoginGate();}
-  }else{
-    state.mode='static';
-    await loadStaticDashboard();
+    if(declaration.mode!=='interactive')throw new Error('Invalid deployment mode');
+  }catch(_){
+    state.mode='unavailable';
+    $('#storyCount').textContent='Dashboard unavailable';
+    $('#updatedAt').textContent='Could not determine the deployment mode. Try again when connected.';
+    return;
   }
+
+  let configResponse;
+  try{
+    configResponse=await fetch('/api/v1/config',{headers:{Origin:API.origin}});
+  }catch(_){
+    state.mode='unavailable';
+    $('#storyCount').textContent='Interactive dashboard unavailable';
+    $('#updatedAt').textContent='Could not reach the interactive service. Try again when connected.';
+    return;
+  }
+
+  if(configResponse.status===404){
+    state.mode='unavailable';
+    $('#storyCount').textContent='Interactive dashboard unavailable';
+    $('#updatedAt').textContent='The interactive service is not available on this deployment.';
+    return;
+  }
+  if(!configResponse.ok){
+    state.mode='unavailable';
+    $('#storyCount').textContent='Interactive dashboard unavailable';
+    $('#updatedAt').textContent=`Interactive service returned ${configResponse.status}. Try again later.`;
+    return;
+  }
+
+  try{
+    const config=await configResponse.json();
+    if(!config.google_client_id)throw new Error('Missing Google client configuration');
+    state.mode='interactive';
+    state.googleClientId=config.google_client_id;
+  }catch(_){
+    state.mode='unavailable';
+    $('#storyCount').textContent='Interactive dashboard unavailable';
+    $('#updatedAt').textContent='Interactive service configuration is invalid.';
+    return;
+  }
+
+  const loggedIn=await checkSession();
+  if(!loggedIn)showLoginGate();
 }
 
 init();

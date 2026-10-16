@@ -18,13 +18,15 @@ jobs:
       - run: pip install -r requirements.lock
       - name: Python tests
         run: python3 -m pytest -q
+      - name: JavaScript tests
+        run: npm test
       - name: JS syntax check
         run: node --check app.js
       - name: Verify lock files
         run: |
           pip install pip-tools
           pip-compile --generate-hashes --resolver=backtracking -o /tmp/req.lock requirements.txt
-          diff <(grep -v '^#' requirements.lock) <(grep -v '^#' /tmp/req.lock) || true
+          diff <(grep -v '^#' requirements.lock) <(grep -v '^#' /tmp/req.lock)
 
   container:
     runs-on: ubuntu-latest
@@ -43,7 +45,9 @@ jobs:
       - name: Smoke test with temp DB
         run: |
           # Create a minimal temp DB
-          TMP_DB=$(mktemp -d)/stories.sqlite3
+          TMP_DIR=$(mktemp -d)
+          TMP_DB="$TMP_DIR/stories.sqlite3"
+          mkdir "$TMP_DIR/backups"
           python3 -c "
           import sqlite3
           c=sqlite3.connect('$TMP_DB')
@@ -52,14 +56,17 @@ jobs:
           c.execute(\"INSERT INTO items VALUES (1,1,'Headline','https://example.com/1','https://example.com/1','hash1',NULL,'2026-01-01T00:00:00Z','NEW','')\")
           c.commit(); c.close()
           "
+          chmod 666 "$TMP_DB"
+          chmod 777 "$TMP_DIR/backups"
           docker run --rm -d --name stories-smoke \
             -v "$TMP_DB:/app/story-data/stories.sqlite3" \
+            -v "$TMP_DIR/backups:/app/backups" \
             -e STORIES_DB_PATH=/app/story-data/stories.sqlite3 \
             -e GOOGLE_CLIENT_ID=test-client.apps.googleusercontent.com \
             -e GOOGLE_ALLOWED_EMAIL=test@example.com \
             -e GOOGLE_ALLOWED_SUB=12345 \
             -e SESSION_SECRET=not-a-secret-just-for-container-smoke-testing \
-            -e PUBLIC_ORIGIN=https://example.com \
+            -e PUBLIC_ORIGIN=https://stories.localhost \
             -p 18000:8000 \
             stories-dashboard:test
 

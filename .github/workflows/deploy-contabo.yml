@@ -1,17 +1,29 @@
 name: Deploy Contabo
 
 on:
-  workflow_dispatch:
-  push:
+  workflow_run:
+    workflows: ["Test"]
+    types: [completed]
     branches: [main]
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  DEPLOY_SHA: ${{ github.event.workflow_run.head_sha }}
+  IMAGE_REPOSITORY: ghcr.io/9dcw/stories-dashboard
 
 jobs:
   deploy:
+    if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push'
     runs-on: ubuntu-latest
     environment: production
     concurrency: production
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.DEPLOY_SHA }}
 
       - name: Log in to GHCR
         uses: docker/login-action@v3
@@ -26,8 +38,8 @@ jobs:
           context: .
           push: true
           tags: |
-            ghcr.io/${{ github.repository }}:${{ github.sha }}
-            ghcr.io/${{ github.repository }}:latest
+            ${{ env.IMAGE_REPOSITORY }}:${{ env.DEPLOY_SHA }}
+            ${{ env.IMAGE_REPOSITORY }}:latest
 
       - name: Deploy to Contabo
         uses: appleboy/ssh-action@v1
@@ -35,12 +47,30 @@ jobs:
           host: ${{ secrets.CONTABO_HOST }}
           username: ${{ secrets.CONTABO_USER }}
           key: ${{ secrets.CONTABO_SSH_KEY }}
-          known_hosts: ${{ secrets.CONTABO_KNOWN_HOSTS }}
+          fingerprint: ${{ secrets.CONTABO_HOST_FINGERPRINT }}
           script: |
             set -e
-            cd ${{ secrets.DEPLOY_PATH || '/srv/stories-dashboard' }}
+            cd ${{ vars.DEPLOY_PATH || '/srv/stories-dashboard' }}
 
-            IMAGE=ghcr.io/${{ github.repository }}:${{ github.sha }}
+            DEPLOY_SHA=${{ env.DEPLOY_SHA }}
+            IMAGE=${{ env.IMAGE_REPOSITORY }}:${{ env.DEPLOY_SHA }}
+            APP_CONTAINER=$(docker compose ps -q app 2>/dev/null || true)
+            CURRENT_IMAGE=$(docker inspect --format '{{.Config.Image}}' "$APP_CONTAINER" 2>/dev/null || true)
+            ROLLBACK_ASSETS=$(mktemp -d)
+            cp -a docker-compose.yml "$ROLLBACK_ASSETS/docker-compose.yml"
+            cp -a deploy "$ROLLBACK_ASSETS/deploy"
+            cp -a scripts/backup_db.py "$ROLLBACK_ASSETS/backup_db.py"
+
+            echo "=== Verifying tested main revision ==="
+            git fetch origin main
+            MAIN_SHA=$(git rev-parse origin/main)
+            if [ "$MAIN_SHA" != "$DEPLOY_SHA" ]; then
+              echo "Refusing stale deployment: tested $DEPLOY_SHA but main is $MAIN_SHA"
+              exit 1
+            fi
+
+            echo "=== Updating deployment assets ==="
+            git checkout "$DEPLOY_SHA" -- docker-compose.yml deploy scripts/backup_db.py
 
             echo "=== Pulling $IMAGE ==="
             echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
@@ -50,9 +80,7 @@ jobs:
             python3 scripts/backup_db.py
 
             echo "=== Deploy ==="
-            export IMAGE_TAG=${{ github.sha }}
-            docker compose up -d --no-deps app
-            docker compose restart caddy
+            STORIES_IMAGE="$IMAGE" docker compose up -d
 
             echo "=== Health check ==="
             for i in $(seq 1 12); do
@@ -65,10 +93,25 @@ jobs:
 
             curl -sf https://${{ vars.DOMAIN }}/api/v1/health || {
               echo "Health check failed — rolling back"
-              export IMAGE_TAG=latest
-              docker compose up -d --no-deps app
-              docker compose restart caddy
+              cp -a "$ROLLBACK_ASSETS/docker-compose.yml" docker-compose.yml
+              rm -rf deploy
+              cp -a "$ROLLBACK_ASSETS/deploy" deploy
+              cp -a "$ROLLBACK_ASSETS/backup_db.py" scripts/backup_db.py
+              if [ -z "$CURRENT_IMAGE" ]; then
+                echo "No previously running image was found; cannot roll back automatically"
+                exit 1
+              fi
+              STORIES_IMAGE="$CURRENT_IMAGE" docker compose up -d
+              for i in $(seq 1 12); do
+                if curl -sf https://${{ vars.DOMAIN }}/api/v1/health; then
+                  echo "Rollback health check passed"
+                  exit 1
+                fi
+                sleep 5
+              done
+              echo "Rollback health check failed"
               exit 1
             }
 
+            rm -rf "$ROLLBACK_ASSETS"
             echo "=== Deploy complete ==="

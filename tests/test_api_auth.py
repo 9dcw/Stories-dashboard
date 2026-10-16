@@ -6,6 +6,9 @@ def test_public_health_and_config_disclose_only_safe_values(client):
     health = client.get("/api/v1/health")
     assert health.status_code == 200
     assert health.json() == {"status": "ok"}
+    mode = client.get("/deployment-mode.json")
+    assert mode.status_code == 200
+    assert mode.json() == {"mode": "interactive"}
     config = client.get("/api/v1/config")
     assert config.json() == {"google_client_id": "client-id.apps.googleusercontent.com"}
     assert "STORIES" not in config.text

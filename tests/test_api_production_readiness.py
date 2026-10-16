@@ -1,9 +1,11 @@
 import asyncio
 import sqlite3
+import json
 import threading
 import uuid
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import replace
+from pathlib import Path
 
 import pytest
 from fastapi import FastAPI, Request
@@ -301,3 +303,62 @@ def test_session_expiration_uses_real_timestamp_validation(runtime_config, monke
     with pytest.raises(Exception) as caught:
         codec.serializer.loads(token, max_age=runtime_config.session_max_age_seconds)
     assert caught.type.__name__ == "SignatureExpired"
+
+
+def test_deployment_rollback_uses_the_previously_running_immutable_image():
+    root = Path(__file__).resolve().parents[1]
+    compose = (root / "docker-compose.yml").read_text()
+    workflow = (root / ".github/workflows/deploy-contabo.yml").read_text()
+
+    assert "${STORIES_IMAGE:-" in compose
+    assert "CURRENT_IMAGE=$(docker inspect" in workflow
+    assert 'STORIES_IMAGE="$CURRENT_IMAGE" docker compose up -d' in workflow
+    assert "export IMAGE_TAG=latest" not in workflow
+
+
+def test_container_user_matches_documented_volume_owner_and_ci_db_is_writable():
+    root = Path(__file__).resolve().parents[1]
+    dockerfile = (root / "Dockerfile").read_text()
+    workflow = (root / ".github/workflows/test.yml").read_text()
+
+    assert "groupadd -g 1000 stories" in dockerfile
+    assert "useradd -u 1000 -g stories" in dockerfile
+    assert 'chmod 666 "$TMP_DB"' in workflow
+    assert "PUBLIC_ORIGIN=https://stories.localhost" in workflow
+
+
+def test_production_compose_passes_domain_and_persistent_backup_mount():
+    root = Path(__file__).resolve().parents[1]
+    compose = (root / "docker-compose.yml").read_text()
+    entrypoint = (root / "deploy/entrypoint.sh").read_text()
+
+    assert "caddy:" in compose
+    assert "- /etc/stories/stories.env" in compose
+    assert "/srv/stories-dashboard/backups:/app/backups" in compose
+    assert "cp \"$STORIES_DB_PATH\"" not in entrypoint
+    assert "scripts/backup_db.py" in entrypoint
+
+
+def test_deploy_runs_only_after_tests_with_package_permission_and_host_pin():
+    root = Path(__file__).resolve().parents[1]
+    workflow = (root / ".github/workflows/deploy-contabo.yml").read_text()
+
+    assert "workflow_run:" in workflow
+    assert 'workflows: ["Test"]' in workflow
+    assert "workflow_dispatch:" not in workflow
+    assert "github.event.workflow_run.conclusion == 'success'" in workflow
+    assert "github.event.workflow_run.event == 'push'" in workflow
+    assert 'git fetch origin main' in workflow
+    assert 'git rev-parse origin/main' in workflow
+    assert "packages: write" in workflow
+    assert "fingerprint: ${{ secrets.CONTABO_HOST_FINGERPRINT }}" in workflow
+    assert "known_hosts:" not in workflow
+    assert "vars.DEPLOY_PATH" in workflow
+    assert "secrets.DEPLOY_PATH" not in workflow
+    assert 'ROLLBACK_ASSETS=$(mktemp -d)' in workflow
+    assert 'cp -a "$ROLLBACK_ASSETS/docker-compose.yml" docker-compose.yml' in workflow
+
+
+def test_static_host_declares_mode_explicitly():
+    root = Path(__file__).resolve().parents[1]
+    assert json.loads((root / "deployment-mode.json").read_text()) == {"mode": "static"}

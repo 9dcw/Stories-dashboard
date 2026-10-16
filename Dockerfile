@@ -1,6 +1,6 @@
-FROM python:3.11-slim@sha256:f2f0261a2d316f8347d8e7643567766304010c6ac3ffeb56471ca2f21aff1aab
+FROM python:3.11-slim@sha256:e88e9763f943ec1834f992a4b51e0f24500486803e8bc534e5767af9ea65f6ce
 
-RUN groupadd -r stories && useradd -r -g stories -d /app stories
+RUN groupadd -g 1000 stories && useradd -u 1000 -g stories -d /app stories
 
 WORKDIR /app
 
@@ -34,7 +34,7 @@ COPY data/ /app/data/
 COPY deploy/entrypoint.sh /app/deploy/entrypoint.sh
 RUN chmod +x /app/deploy/entrypoint.sh
 
-RUN mkdir -p /app/story-data && chown stories:stories /app/story-data
+RUN mkdir -p /app/story-data /app/backups && chown stories:stories /app/story-data /app/backups
 
 USER stories
 EXPOSE 8000

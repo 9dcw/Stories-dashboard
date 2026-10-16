@@ -17,12 +17,10 @@ if [ ! -f "$STORIES_DB_PATH" ]; then
   exit 1
 fi
 
-# Create a timestamped backup before migration
-BACKUP_DIR="${STORIES_DB_PATH%/*}/backups"
-mkdir -p "$BACKUP_DIR"
-BACKUP_FILE="$BACKUP_DIR/stories-$(date -u +%Y%m%dT%H%M%SZ).sqlite3"
-cp "$STORIES_DB_PATH" "$BACKUP_FILE"
-echo "Backup created: $BACKUP_FILE"
+# Create and verify an online backup before automatic migrations.
+python3 /app/scripts/backup_db.py \
+  --db "$STORIES_DB_PATH" \
+  --backup-dir /app/backups
 
 # Python startup validates config, opens DB (migrations run automatically),
 # verifies integrity (foreign keys, etc.)
