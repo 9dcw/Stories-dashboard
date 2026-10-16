@@ -186,7 +186,8 @@ def create_app(config: RuntimeConfig | None = None) -> FastAPI:
         return {"status": "ok"}
 
     @app.get("/deployment-mode.json", include_in_schema=False)
-    def deployment_mode() -> dict[str, str]:
+    def deployment_mode(response: Response) -> dict[str, str]:
+        response.headers["Cache-Control"] = "no-store"
         return {"mode": "interactive"}
 
     @app.get("/api/v1/config")

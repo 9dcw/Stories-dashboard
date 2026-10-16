@@ -312,7 +312,9 @@ def test_deployment_rollback_uses_the_previously_running_immutable_image():
 
     assert "${STORIES_IMAGE:-" in compose
     assert "CURRENT_IMAGE=$(docker inspect" in workflow
-    assert 'STORIES_IMAGE="$CURRENT_IMAGE" docker compose up -d' in workflow
+    assert 'docker-compose.rollback.yml' in workflow
+    assert 'docker-compose.rollback.yml' in workflow
+    assert '-f docker-compose.yml -f docker-compose.rollback.yml up -d' in workflow
     assert "export IMAGE_TAG=latest" not in workflow
 
 
@@ -333,7 +335,9 @@ def test_production_compose_passes_domain_and_persistent_backup_mount():
     entrypoint = (root / "deploy/entrypoint.sh").read_text()
 
     assert "caddy:" in compose
-    assert "- /etc/stories/stories.env" in compose
+    caddy_section = compose.split("  caddy:", 1)[1]
+    assert "/etc/stories/stories.env" not in caddy_section
+    assert "DOMAIN: ${DOMAIN:?DOMAIN must be set}" in caddy_section
     assert "/srv/stories-dashboard/backups:/app/backups" in compose
     assert "cp \"$STORIES_DB_PATH\"" not in entrypoint
     assert "scripts/backup_db.py" in entrypoint
@@ -362,3 +366,9 @@ def test_deploy_runs_only_after_tests_with_package_permission_and_host_pin():
 def test_static_host_declares_mode_explicitly():
     root = Path(__file__).resolve().parents[1]
     assert json.loads((root / "deployment-mode.json").read_text()) == {"mode": "static"}
+
+
+def test_deployment_mode_is_never_service_worker_cached():
+    root = Path(__file__).resolve().parents[1]
+    worker = (root / "sw.js").read_text()
+    assert "url.pathname==='/deployment-mode.json'" in worker

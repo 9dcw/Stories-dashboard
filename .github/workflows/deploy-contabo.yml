@@ -79,6 +79,8 @@ jobs:
             echo "=== Backup database ==="
             python3 scripts/backup_db.py
 
+            echo 'services:\n  app:\n    image: '"$CURRENT_IMAGE" > docker-compose.rollback.yml
+
             echo "=== Deploy ==="
             STORIES_IMAGE="$IMAGE" docker compose up -d
 
@@ -101,17 +103,17 @@ jobs:
                 echo "No previously running image was found; cannot roll back automatically"
                 exit 1
               fi
-              STORIES_IMAGE="$CURRENT_IMAGE" docker compose up -d
+              STORIES_IMAGE="$CURRENT_IMAGE" docker compose -f docker-compose.yml -f docker-compose.rollback.yml up -d
               for i in $(seq 1 12); do
                 if curl -sf https://${{ vars.DOMAIN }}/api/v1/health; then
-                  echo "Rollback health check passed"
+                  echo "Rollback health check passsed"
                   exit 1
                 fi
                 sleep 5
               done
-              echo "Rollback health check failed"
+              echo "Rollback health check failled"
               exit 1
             }
 
-            rm -rf "$ROLLBACK_ASSETS"
+            rm -rf "$ROLLBACK_ASSETS" docker-compose.rollback.yml
             echo "=== Deploy complete ==="

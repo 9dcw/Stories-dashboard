@@ -1,6 +1,8 @@
 import sqlite3
+import threading
 from pathlib import Path
 
+from scripts import backup_db
 from scripts.backup_db import backup
 
 
@@ -49,3 +51,47 @@ def test_backup_prunes_only_after_a_verified_backup(tmp_path):
 
     assert destination.exists()
     assert len(list(backup_dir.glob("stories-*.sqlite3"))) == 2
+
+
+def test_backup_counts_and_copy_share_one_read_snapshot_during_concurrent_write(tmp_path, monkeypatch):
+    database = tmp_path / "stories.sqlite3"
+    backup_dir = tmp_path / "backups"
+    create_database(database)
+    with sqlite3.connect(database) as connection:
+        connection.execute("PRAGMA journal_mode=WAL")
+
+    snapshot_read = threading.Event()
+    writer_finished = threading.Event()
+    original_snapshot = backup_db._snapshot
+    snapshot_calls = 0
+
+    def paused_snapshot(connection):
+        nonlocal snapshot_calls, expected_counts, expected_statuses
+        result = original_snapshot(connection)
+        expected_counts, expected_statuses = result
+        snapshot_calls += 1
+        if snapshot_calls == 1:
+            snapshot_read.set()
+            assert writer_finished.wait(3)
+        return result
+
+    expected_counts = None
+    expected_statuses = None
+
+    def writer():
+        assert snapshot_read.wait(3)
+        with sqlite3.connect(database) as connection:
+            connection.execute("INSERT INTO items VALUES (3, 1, 'NEW')")
+        writer_finished.set()
+
+    monkeypatch.setattr(backup_db, "_snapshot", paused_snapshot)
+    thread = threading.Thread(target=writer)
+    thread.start()
+    destination = backup(database, backup_dir)
+    thread.join(3)
+
+    assert not thread.is_alive()
+    with sqlite3.connect(destination) as connection:
+        assert connection.execute("SELECT count(*) FROM items").fetchone() == (2,)
+    with sqlite3.connect(database) as connection:
+        assert connection.execute("SELECT count(*) FROM items").fetchone() == (3,)

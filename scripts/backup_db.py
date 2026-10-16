@@ -38,7 +38,8 @@ def _verify_backup(
     destination: Path,
     expected_counts: dict[str, int],
     expected_statuses: dict[str, int],
-) -> None:
+) -> str:
+    """Verify the backup is internally consistent and matches expected counts make."""
     with sqlite3.connect(destination) as verify:
         integrity = verify.execute("PRAGMA integrity_check").fetchall()
         if integrity != [("ok",)]:
@@ -48,14 +49,14 @@ def _verify_backup(
         if violations:
             raise RuntimeError(f"Backup foreign key check failed: {violations}")
         actual_counts, actual_statuses = _snapshot(verify)
+    message = f"Backup row counts differ: expected {expected_counts}, got {actual_counts}"
     if actual_counts != expected_counts:
-        raise RuntimeError(
-            f"Backup row counts differ: expected {expected_counts}, got {actual_counts}"
-        )
+        raise RuntimeError(message)
     if actual_statuses != expected_statuses:
         raise RuntimeError(
             f"Backup status counts differ: expected {expected_statuses}, got {actual_statuses}"
         )
+    return "ok"
 
 
 def backup(
@@ -77,9 +78,11 @@ def backup(
 
     try:
         with sqlite3.connect(db_path) as source:
+            source.execute("BEGIN")
             expected_counts, expected_statuses = _snapshot(source)
             with sqlite3.connect(destination) as target:
                 source.backup(target)
+            source.rollback()
         _verify_backup(destination, expected_counts, expected_statuses)
     except Exception:
         destination.unlink(missing_ok=True)

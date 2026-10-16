@@ -8,8 +8,8 @@ self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=
 self.addEventListener('fetch',event=>{
   if(event.request.method!=='GET') return;
   const url=new URL(event.request.url);
-  // API paths are network-only — never cache, never fall back to app shell
-  if(url.pathname.startsWith('/api/')){
+  // API paths and deployment mode are network-only — never cache, never fall back to app shell
+  if(url.pathname.startsWith('/api/')||url.pathname==='/deployment-mode.json'){
     event.respondWith(fetch(event.request));
     return;
   }
