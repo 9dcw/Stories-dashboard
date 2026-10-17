@@ -375,3 +375,9 @@ def test_deployment_mode_is_never_service_worker_cached():
     root = Path(__file__).resolve().parents[1]
     worker = (root / "sw.js").read_text()
     assert "url.pathname==='/deployment-mode.json'" in worker
+
+
+def test_hidden_overlays_are_not_forced_visible_by_component_css():
+    root = Path(__file__).resolve().parents[1]
+    stylesheet = (root / "styles.css").read_text()
+    assert "[hidden]{display:none!important}" in stylesheet
