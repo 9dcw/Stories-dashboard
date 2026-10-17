@@ -359,6 +359,9 @@ def test_deploy_runs_only_after_tests_with_package_permission_and_host_pin():
     assert "known_hosts:" not in workflow
     assert "vars.DEPLOY_PATH" in workflow
     assert "secrets.DEPLOY_PATH" not in workflow
+    assert "DOMAIN: ${{ vars.DOMAIN }}" in workflow
+    assert "envs: DOMAIN" in workflow
+    assert "GitHub Actions variable DOMAIN must be set" in workflow
     assert 'ROLLBACK_ASSETS=$(mktemp -d)' in workflow
     assert 'cp -a "$ROLLBACK_ASSETS/docker-compose.yml" docker-compose.yml' in workflow
 

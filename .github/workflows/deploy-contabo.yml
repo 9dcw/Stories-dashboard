@@ -43,13 +43,17 @@ jobs:
 
       - name: Deploy to Contabo
         uses: appleboy/ssh-action@v1
+        env:
+          DOMAIN: ${{ vars.DOMAIN }}
         with:
           host: ${{ secrets.CONTABO_HOST }}
           username: ${{ secrets.CONTABO_USER }}
           key: ${{ secrets.CONTABO_SSH_KEY }}
           fingerprint: ${{ secrets.CONTABO_HOST_FINGERPRINT }}
+          envs: DOMAIN
           script: |
             set -e
+            : "${DOMAIN:?GitHub Actions variable DOMAIN must be set}"
             cd ${{ vars.DEPLOY_PATH || '/srv/stories-dashboard' }}
 
             DEPLOY_SHA=${{ env.DEPLOY_SHA }}
