@@ -45,7 +45,8 @@ The production deployment must eventually track `main`. During pre-merge setup, 
 sudo mkdir -p /srv/stories-dashboard /etc/stories
 sudo chown "$USER:$USER" /srv/stories-dashboard
 sudo chmod 0755 /srv/stories-dashboard
-sudo chmod 0700 /etc/stories
+sudo chown root:"$USER" /etc/stories
+sudo chmod 0750 /etc/stories
 
 git clone --branch main --single-branch \
   https://github.com/9dcw/Stories-dashboard.git \
@@ -165,10 +166,13 @@ PUBLIC_ORIGIN=https://vmi3298003.contaboserver.net
 Then lock down and verify the file without printing secret values:
 
 ```bash
-sudo chown root:root /etc/stories/stories.env
-sudo chmod 0600 /etc/stories/stories.env
+sudo chown root:"$USER" /etc/stories/stories.env
+sudo chmod 0640 /etc/stories/stories.env
 sudo awk -F= 'NF >= 2 {print $1 "=SET"}' /etc/stories/stories.env
 ```
+
+The deployment user needs read access because Docker Compose reads `env_file`
+before starting the container. Other users still have no access.
 
 `DOMAIN` is deliberately not required in this secrets file. It is a non-secret Docker Compose/GitHub Actions deployment variable.
 
