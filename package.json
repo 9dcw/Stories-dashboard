@@ -1,0 +1,7 @@
+{
+  "name": "stories-dashboard-frontend-tests",
+  "private": true,
+  "scripts": {
+    "test": "node --test tests/js/*.test.js"
+  }
+}

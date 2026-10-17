@@ -1,0 +1,123 @@
+name: Deploy Contabo
+
+on:
+  workflow_run:
+    workflows: ["Test"]
+    types: [completed]
+    branches: [main]
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  DEPLOY_SHA: ${{ github.event.workflow_run.head_sha }}
+  IMAGE_REPOSITORY: ghcr.io/9dcw/stories-dashboard
+
+jobs:
+  deploy:
+    if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push'
+    runs-on: ubuntu-latest
+    environment: production
+    concurrency: production
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.DEPLOY_SHA }}
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ env.IMAGE_REPOSITORY }}:${{ env.DEPLOY_SHA }}
+            ${{ env.IMAGE_REPOSITORY }}:latest
+
+      - name: Deploy to Contabo
+        uses: appleboy/ssh-action@v1
+        env:
+          DOMAIN: ${{ vars.DOMAIN }}
+        with:
+          host: ${{ secrets.CONTABO_HOST }}
+          username: ${{ secrets.CONTABO_USER }}
+          key: ${{ secrets.CONTABO_SSH_KEY }}
+          fingerprint: ${{ secrets.CONTABO_HOST_FINGERPRINT }}
+          envs: DOMAIN
+          script: |
+            set -e
+            : "${DOMAIN:?GitHub Actions variable DOMAIN must be set}"
+            cd ${{ vars.DEPLOY_PATH || '/srv/stories-dashboard' }}
+
+            DEPLOY_SHA=${{ env.DEPLOY_SHA }}
+            IMAGE=${{ env.IMAGE_REPOSITORY }}:${{ env.DEPLOY_SHA }}
+            APP_CONTAINER=$(docker compose ps -q app 2>/dev/null || true)
+            CURRENT_IMAGE=$(docker inspect --format '{{.Config.Image}}' "$APP_CONTAINER" 2>/dev/null || true)
+            ROLLBACK_ASSETS=$(mktemp -d)
+            cp -a docker-compose.yml "$ROLLBACK_ASSETS/docker-compose.yml"
+            cp -a deploy "$ROLLBACK_ASSETS/deploy"
+            cp -a scripts/backup_db.py "$ROLLBACK_ASSETS/backup_db.py"
+
+            echo "=== Verifying tested main revision ==="
+            git fetch origin main
+            MAIN_SHA=$(git rev-parse origin/main)
+            if [ "$MAIN_SHA" != "$DEPLOY_SHA" ]; then
+              echo "Refusing stale deployment: tested $DEPLOY_SHA but main is $MAIN_SHA"
+              exit 1
+            fi
+
+            echo "=== Updating deployment assets ==="
+            git checkout "$DEPLOY_SHA" -- docker-compose.yml deploy scripts/backup_db.py
+
+            echo "=== Pulling $IMAGE ==="
+            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            docker pull "$IMAGE"
+
+            echo "=== Backup database ==="
+            python3 scripts/backup_db.py
+
+            echo 'services:\n  app:\n    image: '"$CURRENT_IMAGE" > docker-compose.rollback.yml
+
+            echo "=== Deploy ==="
+            STORIES_IMAGE="$IMAGE" docker compose up -d
+
+            echo "=== Health check ==="
+            for i in $(seq 1 12); do
+              if curl -sf https://${{ vars.DOMAIN }}/api/v1/health; then
+                echo "Health check passed"
+                break
+              fi
+              sleep 5
+            done
+
+            curl -sf https://${{ vars.DOMAIN }}/api/v1/health || {
+              echo "Health check failed — rolling back"
+              cp -a "$ROLLBACK_ASSETS/docker-compose.yml" docker-compose.yml
+              rm -rf deploy
+              cp -a "$ROLLBACK_ASSETS/deploy" deploy
+              cp -a "$ROLLBACK_ASSETS/backup_db.py" scripts/backup_db.py
+              if [ -z "$CURRENT_IMAGE" ]; then
+                echo "No previously running image was found; cannot roll back automatically"
+                exit 1
+              fi
+              STORIES_IMAGE="$CURRENT_IMAGE" docker compose -f docker-compose.yml -f docker-compose.rollback.yml up -d
+              for i in $(seq 1 12); do
+                if curl -sf https://${{ vars.DOMAIN }}/api/v1/health; then
+                  echo "Rollback health check passsed"
+                  exit 1
+                fi
+                sleep 5
+              done
+              echo "Rollback health check failled"
+              exit 1
+            }
+
+            rm -rf "$ROLLBACK_ASSETS" docker-compose.rollback.yml
+            echo "=== Deploy complete ==="

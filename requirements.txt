@@ -1,0 +1,8 @@
+cachecontrol>=0.14,<1
+fastapi>=0.115,<1
+google-auth>=2.35,<3
+itsdangerous>=2.2,<3
+Pillow>=10,<13
+PyMuPDF>=1.24,<2
+requests>=2.32,<3
+uvicorn[standard]>=0.30,<1

@@ -1,0 +1,16 @@
+{$DOMAIN:localhost}
+
+encode gzip zstd
+
+header {
+  Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
+  X-Content-Type-Options "nosniff"
+  Referrer-Policy "strict-origin-when-cross-origin"
+  X-Frame-Options "DENY"
+  Permissions-Policy "camera=(), microphone=(), geolocation=()"
+}
+
+# Content Security Policy — minimum for Google Identity Services
+header Content-Security-Policy "default-src 'self'; script-src 'self' https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline'; frame-src https://accounts.google.com; img-src 'self' data:; connect-src 'self' https://accounts.google.com;"
+
+reverse_proxy app:8000

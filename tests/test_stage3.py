@@ -94,7 +94,9 @@ def test_dismissed_status_is_persisted_and_exported_with_telegram_action(tmp_pat
     from urllib.parse import parse_qs, urlsplit
 
     store, item = make_store(tmp_path)
-    store.update_item_status(item.item_id, "DISMISSED")
+    store.dismiss_item(
+        item.item_id, "other", "", "test", "test@example.test", "stage3-export-dismiss"
+    )
     assert store.get_item(item.item_id)["status"] == "DISMISSED"
     output = tmp_path / "stories.json"
     export_json(tmp_path / "stories.sqlite3", output)
@@ -138,7 +140,9 @@ def test_legacy_items_table_is_migrated_without_changing_item_ids(tmp_path):
     connection.commit(); connection.close()
     store = StoryStore(db)
     assert store.get_item(7)["headline"] == "Old item"
-    store.update_item_status(7, "DISMISSED")
+    store.dismiss_item(
+        7, "other", "", "test", "test@example.test", "stage3-migration-dismiss"
+    )
     assert store.get_item(7)["status"] == "DISMISSED"
     with sqlite3.connect(db) as check:
         assert check.execute("PRAGMA foreign_key_check").fetchall() == []
