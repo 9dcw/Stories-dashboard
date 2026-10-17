@@ -180,6 +180,20 @@ before starting the container. Other users still have no access.
 
 Create a dedicated SSH key for GitHub Actions; do not use a personal/root key. Install its public key in the deployment user's `~/.ssh/authorized_keys` and verify that key-only login works before putting the private key into GitHub.
 
+Pin the host-key algorithm that the deployment client actually negotiates. `appleboy/ssh-action@v1` currently negotiates this server's ECDSA host key, so derive the trusted value on the server:
+
+```bash
+ssh-keygen -lf /etc/ssh/ssh_host_ecdsa_key.pub -E sha256
+```
+
+From a second trusted network, confirm the same verified ECDSA fingerprint is presented publicly:
+
+```bash
+ssh-keyscan -t ecdsa 86.48.21.252 2>/dev/null | ssh-keygen -lf - -E sha256
+```
+
+Do not substitute the ED25519 fingerprint merely because ED25519 is generally preferred; the pin must match the host-key algorithm selected by this deployment client.
+
 In GitHub, open `Settings → Environments → production`.
 
 Add these **environment secrets**:
@@ -187,7 +201,7 @@ Add these **environment secrets**:
 - `CONTABO_HOST`: `86.48.21.252`
 - `CONTABO_USER`: `david`
 - `CONTABO_SSH_KEY`: the complete dedicated private key, including its BEGIN and END lines
-- `CONTABO_HOST_FINGERPRINT`: the verified ED25519 fingerprint, beginning with `SHA256:`
+- `CONTABO_HOST_FINGERPRINT`: the verified ECDSA fingerprint selected by the deployment client, beginning with `SHA256:`
 
 Add these **environment variables**:
 

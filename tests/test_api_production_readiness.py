@@ -352,7 +352,7 @@ def test_deploy_runs_only_after_tests_with_package_permission_and_host_pin():
     assert "workflow_dispatch:" not in workflow
     assert "github.event.workflow_run.conclusion == 'success'" in workflow
     assert "github.event.workflow_run.event == 'push'" in workflow
-    assert 'git fetch origin main' in workflow
+    assert 'git fetch origin main:refs/remotes/origin/main' in workflow
     assert 'git rev-parse origin/main' in workflow
     assert "packages: write" in workflow
     assert "fingerprint: ${{ secrets.CONTABO_HOST_FINGERPRINT }}" in workflow
@@ -364,6 +364,14 @@ def test_deploy_runs_only_after_tests_with_package_permission_and_host_pin():
     assert "GitHub Actions variable DOMAIN must be set" in workflow
     assert 'ROLLBACK_ASSETS=$(mktemp -d)' in workflow
     assert 'cp -a "$ROLLBACK_ASSETS/docker-compose.yml" docker-compose.yml' in workflow
+
+
+def test_deploy_docs_pin_the_host_key_algorithm_used_by_ssh_action():
+    root = Path(__file__).resolve().parents[1]
+    deployment_guide = (root / "deploy/README.md").read_text()
+
+    assert "verified ECDSA fingerprint" in deployment_guide
+    assert "ssh-keyscan -t ecdsa" in deployment_guide
 
 
 def test_static_host_declares_mode_explicitly():

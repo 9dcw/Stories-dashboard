@@ -66,7 +66,7 @@ jobs:
             cp -a scripts/backup_db.py "$ROLLBACK_ASSETS/backup_db.py"
 
             echo "=== Verifying tested main revision ==="
-            git fetch origin main
+            git fetch origin main:refs/remotes/origin/main
             MAIN_SHA=$(git rev-parse origin/main)
             if [ "$MAIN_SHA" != "$DEPLOY_SHA" ]; then
               echo "Refusing stale deployment: tested $DEPLOY_SHA but main is $MAIN_SHA"
