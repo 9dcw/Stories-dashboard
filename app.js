@@ -14,10 +14,8 @@ const state={
   csrf:'',
   csrfExpires:0,
   googleClientId:'',
-  stories:[],candidates:[],sources:[],
-  filter:'All',query:'',candidateLane:'',
-  showFailed:false,showDismissed:false,
-  sourceQuery:'',sourceLane:'',sourceStatus:'',
+  stories:[],candidates:[],sources:[],proposals:[],
+  query:'', filters:{kind:'',phase:'',lane:'',source:'',dismissed:'hide',summary:'',activity:'',sourceStatus:''},
   favorites:new Set(JSON.parse(localStorage.getItem('stories-favorites')||'[]')),
   recent:JSON.parse(localStorage.getItem('stories-recent')||'[]'),
   pending:{},               // item_id → true during API call
@@ -139,8 +137,7 @@ async function loadDashboard(){
     state.stories=d.stories||[];
     state.candidates=(d.recent_candidates||[]).filter(c=>c.status!=='IGNORED');
     state.sources=d.sources||[];
-    renderSources(d);
-    renderSourceManagement();
+    state.proposals=d.source_proposals||[];
     const gen=d.generated_at||new Date().toISOString();
     $('#updatedAt').textContent=`Live dashboard · ${gen.slice(0,16).replace('T',' ')}`;
     renderFilters();
@@ -154,9 +151,42 @@ async function loadDashboard(){
 // ── Render helpers (preserving original card layouts) ─────────────
 const laneLabels={A:'Enforcement & regulatory actions',B:'Courts & legal opinions',C:'Public agencies & public-interest news',D:'Insurance industry & risk news'};
 function storyStage(s){return s.stage||s.status||'Phase 2'}
-function filters(){return ['All','Phase 2 pending','Phase 2','Phase 3','★ Favorites']}
-function renderFilters(){$('#filters').innerHTML=filters().map(x=>`<button class="filter ${x===state.filter?'active':''}" data-filter="${esc(x)}">${esc(x)}</button>`).join('')}
-function matches(s){const hay=[s.title,s.hook,s.whatHappened,s.humanAngle,s.actors,s.category,s.status,s.eventKey,s.source].join(' ').toLowerCase();return (state.filter==='All'||(state.filter==='★ Favorites'?state.favorites.has(s.id||String(s.story_id)):storyStage(s)===state.filter))&&hay.includes(state.query.toLowerCase())}
+const defaultFilters={kind:'',phase:'',lane:'',source:'',dismissed:'hide',summary:'',activity:'',sourceStatus:''};
+function filterSelect(key,label,options){return `<label>${label}<select data-global-filter="${key}">${options.map(([value,text])=>`<option value="${esc(value)}"${state.filters[key]===value?' selected':''}>${esc(text)}</option>`).join('')}</select></label>`}
+function renderFilters(){
+  const names=[...new Set([...state.sources.map(s=>s.name),...state.candidates.map(s=>s.source),...state.stories.map(s=>s.source),...state.proposals.map(s=>s.name)].filter(Boolean))].sort();
+  $('#filters').innerHTML=[
+    filterSelect('kind','Items',[['','All items'],['candidate','Candidates'],['story','Promoted stories'],['discovery','Discovery items'],['source','Sources']]),
+    filterSelect('phase','Phase',[['','All phases'],['Candidate','Candidates'],['Phase 2 pending','Phase 2 pending'],['Phase 2','Phase 2'],['Phase 3','Phase 3']]),
+    filterSelect('lane','Content area',[['','All content areas'],...Object.entries(laneLabels)]),
+    filterSelect('source','Source',[['','All sources'],...names.map(n=>[n,n])]),
+    filterSelect('dismissed','Dismissed',[['hide','Hide dismissed'],['include','Include dismissed'],['only','Dismissed only']]),
+    filterSelect('summary','Summary',[['','All summary states'],['COMPLETE','Complete'],['PENDING','Pending'],['FAILED','Failed'],['SKIPPED','Skipped']]),
+    filterSelect('activity','Activity',[['','All activity'],['recent','Recently opened'],['favorites','Favorites']]),
+    filterSelect('sourceStatus','Source status',[['','All source statuses'],['active','Active'],['disabled','Disabled']]),
+    '<button class="text-button" id="resetFilters">Reset filters</button>'
+  ].join('');
+}
+// Every card goes through this predicate; incompatible facets yield no matches.
+function matchesRecord(record,kind){
+  const f=state.filters;
+  const source=kind==='source'||kind==='discovery'?record.name:record.source;
+  const registry=state.sources.find(s=>s.name===source);
+  const lane=record.lane||registry?.lane;
+  const phase=kind==='story'?storyStage(record):kind==='candidate'?'Candidate':'';
+  const id=record.id||String(record.story_id);
+  const dismissed=record.status==='DISMISSED';
+  if(f.kind&&f.kind!==kind)return false;
+  if(f.phase&&f.phase!==phase)return false;
+  if(f.lane&&f.lane!==lane)return false;
+  if(f.source&&f.source!==source)return false;
+  if(f.dismissed==='hide'&&dismissed||f.dismissed==='only'&&!dismissed)return false;
+  if(f.summary&&(kind!=='candidate'||(record.summary_status||'PENDING')!==f.summary))return false;
+  if(f.activity&&(kind!=='story'||!(f.activity==='recent'?state.recent.includes(id):state.favorites.has(id))))return false;
+  if(f.sourceStatus&&(kind!=='source'||(record.active?'active':'disabled')!==f.sourceStatus))return false;
+  const hay=[...Object.values(record).filter(v=>typeof v==='string'),source,laneLabels[lane]].join(' ').toLowerCase();
+  return hay.includes(state.query.trim().toLowerCase());
+}
 function statusClass(s){const stage=storyStage(s);return stage==='Phase 3'?'phase3':stage==='Phase 2'||stage==='Phase 2 pending'?'phase2':'stub'}
 const stageOrder={'Phase 3':0,'Phase 2':1,'Phase 2 pending':2};
 function storyDate(s){const explicit=s.dateAdded||s.addedAt||s.createdAt||s.updated_at||s.created_at;if(explicit)return Date.parse(explicit)||0;const match=String(s.eventKey||'').match(/(20\d{2}-\d{2}-\d{2})/);return match?Date.parse(match[1]):0}
@@ -184,31 +214,30 @@ function candidateCard(c){
 }
 
 function render(){
-  const shown=state.stories.filter(matches).sort(storySort);
-  $('#storyGrid').innerHTML=shown.map(card).join('');
-  $('#resultsCount').textContent=`${shown.length} ${shown.length===1?'story':'stories'}`;
-  $('#resultsHeading').textContent=state.query||state.filter!=='All'?state.filter:'Promoted stories';
-  $('#emptyState').hidden=shown.length>0;
-  const recent=state.recent.map(id=>state.stories.find(s=>(s.id||String(s.story_id))===id)).filter(Boolean);
-  $('#recentSection').hidden=!recent.length;
-  $('#recentGrid').innerHTML=recent.slice(0,4).map(card).join('');
-  const failedCount=state.candidates.filter(c=>(c.summary_status||'PENDING')==='FAILED').length;
-  const dismissedCount=state.candidates.filter(c=>c.status==='DISMISSED').length;
-  const candidates=state.candidates.filter(c=>{
-    const hay=[c.display_headline,c.headline,c.gist,c.source,c.lane,c.status,c.summary_status].join(' ').toLowerCase();
-    return (state.showFailed||c.summary_status!=='FAILED')&&(state.showDismissed||c.status!=='DISMISSED')&&(!state.candidateLane||c.lane===state.candidateLane)&&hay.includes(state.query.toLowerCase())
-  }).sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+  const stories=state.stories.filter(s=>matchesRecord(s,'story')).sort(storySort);
+  const candidates=state.candidates.filter(c=>matchesRecord(c,'candidate')).sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+  const proposals=state.proposals.filter(p=>matchesRecord(p,'discovery'));
+  const sources=state.sources.filter(s=>matchesRecord(s,'source'));
+  $('#storyGrid').innerHTML=stories.map(card).join('');
+  $('#resultsCount').textContent=`${stories.length} stories`;
+  $('#resultsHeading').textContent=state.filters.phase||'Promoted stories';
+  $('#promotedSection').hidden=!stories.length;
   $('#candidateGrid').innerHTML=candidates.map(candidateCard).join('');
-  const hidden=[];
-  if(failedCount&&!state.showFailed)hidden.push(`${failedCount} failed hidden`);
-  if(dismissedCount&&!state.showDismissed)hidden.push(`${dismissedCount} dismissed hidden`);
-  $('#candidateCount').textContent=`${candidates.length} shown${hidden.length?' · '+hidden.join(' · '):''}`;
-  $('#storyCount').textContent=`${state.candidates.length} candidates · ${state.stories.length} promoted stories`;
+  $('#candidateCount').textContent=`${candidates.length} candidates`;
+  $('#candidateSection').hidden=!candidates.length;
+  renderSources({source_proposals:proposals});
+  $('#sourceReviewSection').hidden=!proposals.length;
+  renderSourceManagement(sources);
+  $('#sourceManagementSection').hidden=!sources.length;
+  const total=stories.length+candidates.length+proposals.length+sources.length;
+  $('#storyCount').textContent=`${total} matching items`;
+  $('#visibleCount').textContent=`${candidates.length} candidates · ${stories.length} stories · ${proposals.length} discovery items · ${sources.length} sources`;
+  $('#emptyState').hidden=total>0;
 }
 
 function renderSources(d){const proposals=d.source_proposals||[];const c=d.coverage||{};$('#sourceProposalCount').textContent=`${proposals.length} proposals · approval remains CLI-only`;const laneCounts=(c.active_by_lane||[]).map(x=>`<span><b>Lane ${esc(x.lane)}</b> ${x.count} active</span>`).join('');$('#coverageGrid').innerHTML=laneCounts||'<span>No coverage statistics yet</span>';$('#sourceProposalGrid').innerHTML=proposals.map(p=>`<article class="source-proposal"><h3>${esc(p.name)}</h3><p>${esc(p.jurisdiction)} · Lane ${esc(p.lane)} · ${esc(p.publication_type||p.collector_type||'publication source')}</p><p class="muted">${esc(p.validation_status)} · ${esc(p.status)}</p>${p.source_url?action(p.source_url,'Open source','primary'):''}<p>${esc(p.reason)}</p></article>`).join('')}
 
-function renderSourceManagement(){const q=state.sourceQuery.toLowerCase();const shown=state.sources.filter(s=>(!state.sourceLane||s.lane===state.sourceLane)&&(!state.sourceStatus||(state.sourceStatus==='active'?s.active:!s.active))&&[s.name,s.jurisdiction,s.lane,laneLabels[s.lane],s.publication_url,s.collector_type].join(' ').toLowerCase().includes(q));$('#sourceManagementCount').textContent=`${shown.length} of ${state.sources.length} sources`;$('#sourceManagementGrid').innerHTML=shown.map(s=>`<article class="source-management-card"><div class="source-management-top"><span class="source-status ${s.active?'active':'disabled'}">${s.active?'Active':'Disabled'}</span><span class="muted">ID ${esc(s.source_id)}</span></div><h3>${esc(s.name)}</h3><p>${esc(s.jurisdiction)} · ${esc(laneLabels[s.lane]||'Other content')} · ${esc(s.collector_type||s.source_type)}</p><p><a href="${esc(s.publication_url||s.source_url)}" target="_blank" rel="noreferrer">${esc(s.publication_url||s.source_url)} ↗</a></p><p>Last successful poll: ${esc(s.last_success_at||'Never')}</p><p>Publications in last 30 days: <strong>${esc(s.publications_last_30_days)}</strong></p>${s.last_error?`<p class="source-error">Latest error: ${esc(s.last_error)}</p>`:''}<div class="actions"><a class="action telegram" href="${esc(s.telegram_action_url)}" target="_blank" rel="noreferrer">${esc(s.telegram_action_label)} ↗</a></div></article>`).join('')||'<p class="muted">No matching sources.</p>'}
+function renderSourceManagement(shown){$('#sourceManagementCount').textContent=`${shown.length} of ${state.sources.length} sources`;$('#sourceManagementGrid').innerHTML=shown.map(s=>`<article class="source-management-card"><div class="source-management-top"><span class="source-status ${s.active?'active':'disabled'}">${s.active?'Active':'Disabled'}</span><span class="muted">ID ${esc(s.source_id)}</span></div><h3>${esc(s.name)}</h3><p>${esc(s.jurisdiction)} · ${esc(laneLabels[s.lane]||'Other content')} · ${esc(s.collector_type||s.source_type)}</p><p><a href="${esc(s.publication_url||s.source_url)}" target="_blank" rel="noreferrer">${esc(s.publication_url||s.source_url)} ↗</a></p><p>Last successful poll: ${esc(s.last_success_at||'Never')}</p><p>Publications in last 30 days: <strong>${esc(s.publications_last_30_days)}</strong></p>${s.last_error?`<p class="source-error">Latest error: ${esc(s.last_error)}</p>`:''}<div class="actions"><a class="action telegram" href="${esc(s.telegram_action_url)}" target="_blank" rel="noreferrer">${esc(s.telegram_action_label)} ↗</a></div></article>`).join('')||'<p class="muted">No matching sources.</p>'}
 
 // ── Dismiss panel ─────────────────────────────────────────────────
 let dismissTarget=null;
@@ -321,8 +350,7 @@ function showSnackbar(html,ms){
 
 // ── Event delegation ─────────────────────────────────────────────────
 document.addEventListener('click',e=>{
-  const f=e.target.closest('[data-filter]');
-  if(f){state.filter=f.dataset.filter;renderFilters();render();return}
+  if(e.target.closest('#resetFilters')){state.filters={...defaultFilters};state.query='';$('#searchInput').value='';$('#clearSearch').style.display='none';renderFilters();render();return}
   const fav=e.target.closest('[data-favorite]');
   if(fav){const id=fav.dataset.favorite;state.favorites.has(id)?state.favorites.delete(id):state.favorites.add(id);save();render();return}
   const phase2Btn=e.target.closest('[data-phase2-item]');
@@ -357,14 +385,8 @@ document.addEventListener('click',e=>{
 // bind existing controls
 $('#searchInput').addEventListener('input',e=>{state.query=e.target.value;$('#clearSearch').style.display=state.query?'block':'none';render()});
 $('#clearSearch').addEventListener('click',()=>{$('#searchInput').value='';state.query='';$('#clearSearch').style.display='none';render()});
-$('#clearRecent').addEventListener('click',()=>{state.recent=[];save();render()});
 $('#themeToggle').addEventListener('click',()=>{const dark=document.documentElement.dataset.theme==='dark';document.documentElement.dataset.theme=dark?'':'dark';localStorage.setItem('stories-theme',dark?'light':'dark');$('#themeToggle').textContent=dark?'☼':'☾'});
-$('#candidateLane').addEventListener('change',e=>{state.candidateLane=e.target.value;render()});
-$('#showFailed').addEventListener('change',e=>{state.showFailed=e.target.checked;render()});
-$('#showDismissed').addEventListener('change',e=>{state.showDismissed=e.target.checked;render()});
-$('#sourceManagementSearch').addEventListener('input',e=>{state.sourceQuery=e.target.value;renderSourceManagement()});
-$('#sourceManagementLane').addEventListener('change',e=>{state.sourceLane=e.target.value;renderSourceManagement()});
-$('#sourceManagementStatus').addEventListener('change',e=>{state.sourceStatus=e.target.value;renderSourceManagement()});
+document.addEventListener('change',e=>{const key=e.target.dataset.globalFilter;if(key&&Object.hasOwn(defaultFilters,key)){state.filters[key]=e.target.value;render();}});
 
 // ── Init ──────────────────────────────────────────────────────────────
 async function init(){
