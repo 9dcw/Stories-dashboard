@@ -16,6 +16,7 @@ from api.auth import (
 from api.config import RuntimeConfig
 from api.models import DismissRequest, GoogleCredential, RestoreRequest
 from api.read_model import build_live_read_model, sanitize_feedback
+from export_stories import phase2_action_url
 from story_store import StoryStore
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -246,6 +247,24 @@ def create_app(config: RuntimeConfig | None = None) -> FastAPI:
     def dashboard(session: dict[str, str] = Depends(session_dependency)) -> dict:
         try:
             return build_live_read_model(store)
+        except sqlite3.OperationalError as error:
+            _database_unavailable(error)
+
+    @app.post("/api/v1/items/{item_id}/phase2", status_code=201)
+    def request_phase2(
+        item_id: int,
+        session: dict[str, str] = Depends(mutation_session),
+    ) -> dict:
+        try:
+            item = store.get_item(item_id)
+            title = item["display_headline"] or item["headline"]
+            story_id = store.request_phase2(item_id, title)
+            return {
+                "story": store.get_story(story_id),
+                "telegram_handoff_url": phase2_action_url(item_id, title, item["raw_url"]),
+            }
+        except ValueError as error:
+            raise _store_error(error) from None
         except sqlite3.OperationalError as error:
             _database_unavailable(error)
 

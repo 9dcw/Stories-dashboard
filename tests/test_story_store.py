@@ -58,12 +58,36 @@ def test_promote_and_update_links(tmp_path):
     assert store.get_item(item_id)["status"] == "PROMOTED"
 
 
+def test_request_phase2_marks_story_pending_and_is_idempotent(tmp_path):
+    store = StoryStore(tmp_path / "stories.sqlite3")
+    source_id = store.add_source("Court", "B", "US", "https://court.example")
+    item = store.add_item(source_id, "Court order", "https://court.example/order")
+
+    story_id = store.request_phase2(item.item_id, title="Court order story")
+    replayed_story_id = store.request_phase2(item.item_id, title="Changed on retry")
+
+    assert replayed_story_id == story_id
+    assert store.get_story(story_id)["status"] == "Phase 2 pending"
+    assert store.get_story(story_id)["title"] == "Court order story"
+    assert store.get_item(item.item_id)["status"] == "PROMOTED"
+
+
+def test_request_phase2_upgrades_legacy_story_stub(tmp_path):
+    store = StoryStore(tmp_path / "stories.sqlite3")
+    source_id = store.add_source("Court", "B", "US", "https://court.example")
+    item = store.add_item(source_id, "Court order", "https://court.example/order")
+    story_id = store.promote_item(item.item_id, title="Legacy stub", status="Story stub")
+
+    assert store.request_phase2(item.item_id, title="Legacy stub") == story_id
+    assert store.get_story(story_id)["status"] == "Phase 2 pending"
+
+
 def test_export_has_read_model_sections_and_is_deterministic(tmp_path):
     db_path = tmp_path / "stories.sqlite3"
     store = StoryStore(db_path)
     source_id = store.add_source("Regulator", "C", "NJ", "https://regulator.example")
     item_id = store.add_item(source_id, "Regulatory item", "https://regulator.example/item")
-    store.promote_item(item_id, title="Regulatory story")
+    store.promote_item(item_id, title="Regulatory story", status="Phase 2")
     output = tmp_path / "data" / "stories.json"
 
     export_json(db_path, output, generated_at="2026-10-07T00:00:00Z")
@@ -77,6 +101,23 @@ def test_export_has_read_model_sections_and_is_deterministic(tmp_path):
     assert payload["recent_candidates"] == []
     assert payload["stories"][0]["title"] == "Regulatory story"
     assert payload["sources"][0]["name"] == "Regulator"
+
+
+def test_export_treats_only_phase2_work_as_promoted_and_returns_stubs_to_candidates(tmp_path):
+    db_path = tmp_path / "stories.sqlite3"
+    store = StoryStore(db_path)
+    source_id = store.add_source("Regulator", "C", "NJ", "https://regulator.example")
+    stub = store.add_item(source_id, "Still a candidate", "https://regulator.example/stub")
+    final = store.add_item(source_id, "Phase 2 work", "https://regulator.example/phase2")
+    store.promote_item(stub.item_id, title="Legacy story stub", status="Story stub")
+    store.promote_item(final.item_id, title="Phase 2 project", status="Phase 2")
+
+    payload = json.loads(export_json(
+        db_path, tmp_path / "stories.json", generated_at="2026-10-07T00:00:00Z"
+    ).read_text())
+
+    assert [story["title"] for story in payload["stories"]] == ["Phase 2 project"]
+    assert [candidate["item_id"] for candidate in payload["recent_candidates"]] == [stub.item_id]
 
 
 def test_schema_foreign_key_and_status_validation(tmp_path):

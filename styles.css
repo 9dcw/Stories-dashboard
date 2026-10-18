@@ -12,5 +12,6 @@
 .btn-dismiss-interactive{display:inline-block;background:var(--accent);color:#fff;border:none;padding:8px 18px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;min-height:44px;min-width:80px}.btn-dismiss-interactive:disabled{opacity:.5;cursor:not-allowed}.btn-dismiss-interactive:hover{filter:brightness(1.1)}.btn-restore{display:inline-block;background:#0b9b68;color:#fff;border:none;padding:8px 18px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;min-height:44px}.btn-restore:hover{filter:brightness(1.1)}
 /* ── interactive: snackbar ──────────────────────────────── */
 .snackbar{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:160;background:var(--surface);border:1px solid var(--border);color:var(--text);padding:12px 20px;border-radius:14px;box-shadow:0 6px 24px rgba(0,0,0,.15);font-size:14px;font-weight:600;max-width:90vw;text-align:center}.snackbar-undo{background:transparent;border:none;color:var(--accent);font-weight:700;cursor:pointer;margin-left:12px;font-size:14px;text-decoration:underline}
+.btn-phase2{font:inherit;cursor:pointer}.btn-phase2:disabled{cursor:wait;opacity:.6}
 /* ── mobile tweaks ──────────────────────────────── */
 @media(max-width:600px){.candidate-grid{grid-template-columns:1fr}.dismiss-panel-inner{padding:20px 16px 28px}}

@@ -684,6 +684,40 @@ class StoryStore:
                   )""", item_ids).fetchall()
             return {int(row["item_id"]): dict(row) for row in rows}
 
+    def request_phase2(self, item_id: int | Item, title: str) -> int:
+        """Immediately reserve a promoted lane while Telegram builds Phase 2 artifacts."""
+        item_id = self._item_id(item_id)
+        now = utc_now()
+        with self._connect() as connection:
+            connection.execute("BEGIN IMMEDIATE")
+            item = connection.execute(
+                "SELECT status FROM items WHERE item_id = ?", (item_id,)
+            ).fetchone()
+            if item is None:
+                raise ValueError(f"Unknown item_id: {item_id}")
+            if item["status"] == "DISMISSED":
+                raise ValueError("DISMISSED items must be transitioned with restore_item before promotion")
+            existing = connection.execute(
+                "SELECT story_id, status FROM story_projects WHERE origin_item_id = ?", (item_id,)
+            ).fetchone()
+            if existing:
+                story_id = int(existing["story_id"])
+                if existing["status"] not in {"Phase 2 pending", "Phase 2", "Phase 3"}:
+                    connection.execute(
+                        "UPDATE story_projects SET status = 'Phase 2 pending', updated_at = ? WHERE story_id = ?",
+                        (now, story_id),
+                    )
+            else:
+                cursor = connection.execute(
+                    """INSERT INTO story_projects
+                       (origin_item_id, title, status, created_at, updated_at)
+                       VALUES (?, ?, 'Phase 2 pending', ?, ?)""",
+                    (item_id, title, now, now),
+                )
+                story_id = int(cursor.lastrowid or 0)
+            connection.execute("UPDATE items SET status = 'PROMOTED' WHERE item_id = ?", (item_id,))
+            return story_id
+
     def promote_item(self, item_id: int | Item, title: str, status: str = "ACTIVE") -> int:
         item_id = self._item_id(item_id)
         now = utc_now()

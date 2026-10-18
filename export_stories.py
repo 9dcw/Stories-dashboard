@@ -9,6 +9,7 @@ from urllib.parse import urlencode
 from story_store import StoryStore
 
 TELEGRAM_BOT_USERNAME = "mehyanbot"
+PROMOTED_STORY_STATUSES = {"Phase 2 pending", "Phase 2", "Phase 3"}
 
 
 def public_source_url(value: str) -> str:
@@ -33,9 +34,13 @@ def phase2_action_url(item_id: int, headline: str, source_url: str) -> str:
 
 def build_read_model(store: StoryStore, generated_at: str | None = None) -> dict:
     """Build the deterministic, public static dashboard representation."""
+    project_rows = store.list_stories()
+    promoted_item_ids = {
+        row["origin_item_id"] for row in project_rows if row["status"] in PROMOTED_STORY_STATUSES
+    }
     candidates = []
     for row in store.list_items():
-        if row["status"] in {"PROMOTED", "IGNORED"}:
+        if row["status"] == "IGNORED" or row["item_id"] in promoted_item_ids:
             continue
         source_link = public_source_url(row["raw_url"])
         candidates.append({
@@ -56,7 +61,9 @@ def build_read_model(store: StoryStore, generated_at: str | None = None) -> dict
             "summarized_at": row["summarized_at"],
         })
     stories = []
-    for row in store.list_stories():
+    for row in project_rows:
+        if row["status"] not in PROMOTED_STORY_STATUSES:
+            continue
         stories.append({
             "story_id": row["story_id"], "title": row["title"], "status": row["status"],
             "source": row["source_name"], "origin_item_id": row["origin_item_id"],

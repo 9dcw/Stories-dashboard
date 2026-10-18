@@ -139,7 +139,7 @@ async function loadDashboard(){
     if(!r.ok)throw new Error('Dashboard unavailable');
     const d=await r.json();
     state.stories=d.stories||[];
-    state.candidates=(d.recent_candidates||[]).filter(c=>c.status!=='PROMOTED'&&c.status!=='IGNORED');
+    state.candidates=(d.recent_candidates||[]).filter(c=>c.status!=='IGNORED');
     state.sources=d.sources||[];
     renderSources(d);
     renderSourceManagement();
@@ -158,7 +158,7 @@ async function loadStaticDashboard(){
     const r=await fetch('./data/stories.json');
     const d=await r.json();
     state.stories=d.stories||[];
-    state.candidates=(d.recent_candidates||[]).filter(c=>c.status!=='PROMOTED'&&c.status!=='IGNORED');
+    state.candidates=(d.recent_candidates||[]).filter(c=>c.status!=='IGNORED');
     state.sources=d.sources||[];
     renderSources(d);
     renderSourceManagement();
@@ -173,13 +173,14 @@ async function loadStaticDashboard(){
 
 // ── Render helpers (preserving original card layouts) ─────────────
 const laneLabels={A:'Enforcement & regulatory actions',B:'Courts & legal opinions',C:'Public agencies & public-interest news',D:'Insurance industry & risk news'};
-function filters(){return ['All','Phase 3','Phase 2','Story stub','★ Favorites']}
+function storyStage(s){return s.stage||s.status||'Phase 2'}
+function filters(){return ['All','Phase 2 pending','Phase 2','Phase 3','★ Favorites']}
 function renderFilters(){$('#filters').innerHTML=filters().map(x=>`<button class="filter ${x===state.filter?'active':''}" data-filter="${esc(x)}">${esc(x)}</button>`).join('')}
-function matches(s){const hay=[s.title,s.hook,s.whatHappened,s.humanAngle,s.actors,s.category,s.status,s.eventKey,s.source].join(' ').toLowerCase();return (state.filter==='All'||(state.filter==='★ Favorites'?state.favorites.has(s.id):s.stage===state.filter))&&hay.includes(state.query.toLowerCase())}
-function statusClass(s){return s.stage==='Phase 3'?'phase3':s.stage==='Phase 2'?'phase2':'stub'}
-const stageOrder={'Phase 3':0,'Phase 2':1,'Story stub':2};
+function matches(s){const hay=[s.title,s.hook,s.whatHappened,s.humanAngle,s.actors,s.category,s.status,s.eventKey,s.source].join(' ').toLowerCase();return (state.filter==='All'||(state.filter==='★ Favorites'?state.favorites.has(s.id||String(s.story_id)):storyStage(s)===state.filter))&&hay.includes(state.query.toLowerCase())}
+function statusClass(s){const stage=storyStage(s);return stage==='Phase 3'?'phase3':stage==='Phase 2'||stage==='Phase 2 pending'?'phase2':'stub'}
+const stageOrder={'Phase 3':0,'Phase 2':1,'Phase 2 pending':2};
 function storyDate(s){const explicit=s.dateAdded||s.addedAt||s.createdAt||s.updated_at||s.created_at;if(explicit)return Date.parse(explicit)||0;const match=String(s.eventKey||'').match(/(20\d{2}-\d{2}-\d{2})/);return match?Date.parse(match[1]):0}
-function storySort(a,b){const stageDiff=(stageOrder[a.stage]??99)-(stageOrder[b.stage]??99);if(stageDiff!==0)return stageDiff;return storyDate(b)-storyDate(a)}
+function storySort(a,b){const stageDiff=(stageOrder[storyStage(a)]??99)-(stageOrder[storyStage(b)]??99);if(stageDiff!==0)return stageDiff;return storyDate(b)-storyDate(a)}
 function action(url,label,kind=''){return url?`<a class="action ${kind}" href="${esc(url)}" target="_blank" rel="noreferrer">${label} ↗</a>`:''}
 function card(s){const id=s.id||String(s.story_id);const fav=state.favorites.has(id);const stage=s.stage||s.status||'Promoted';return `<article class="story-card"><div class="card-top"><span class="stage ${statusClass({...s,stage})}">${esc(stage)}</span><button class="favorite ${fav?'active':''}" data-favorite="${esc(id)}" aria-label="${fav?'Remove from':'Add to'} favorites">${fav?'★':'☆'}</button></div><h3>${esc(s.title)}</h3><p class="hook">${esc(s.hook||s.whatHappened||`Origin: ${s.source||'Unknown source'}`)}</p><div class="card-meta"><span>${esc(s.source||'Unknown source')}</span>${s.origin_item_id?`<span>· item ${esc(s.origin_item_id)}</span>`:''}</div><div class="actions">${action(s.doc||s.google_doc_url,'Doc','primary')}${action(s.telegramTopicLink||s.telegram_thread_url,'Telegram','telegram')}${action(s.phase2Folder||s.research_folder_url,'Research')}${action(s.phase3Doc,'Visual script')}${action(s.source||s.origin_url,'Source')}</div></article>`}
 
@@ -198,7 +199,7 @@ function candidateCard(c){
     }else{
       actions=`<button class="btn-dismiss-interactive" data-item="${esc(c.item_id)}" data-headline="${esc(display)}"${state.pending[c.item_id]?' disabled':''}>Dismiss</button>`;
       actions+=`${action(c.source_link,'Source','primary')}`;
-      if(c.phase2_action_url)actions+=action(c.phase2_action_url,c.phase2_action_label||'Promote to Phase 2 via Telegram','telegram phase2-action');
+      if(c.phase2_action_url)actions+=`<button class="action telegram phase2-action btn-phase2" data-phase2-item="${esc(c.item_id)}"${state.pending[c.item_id]?' disabled':''}>${state.pending[c.item_id]?'Starting Phase 2…':'Promote to Phase 2'}</button>`;
     }
   }else{
     actions+=`${action(c.source_link,'Source','primary')}`;
@@ -322,6 +323,22 @@ async function restoreItem(itemId,feedbackId){
     showSnackbar(`Restore failed: ${e.message}`,4000);
   }finally{delete state.pending[itemId];render();}
 }
+async function requestPhase2(itemId){
+  const parsedItemId=parseInt(itemId,10);
+  state.pending[parsedItemId]=true;
+  render();
+  try{
+    const r=await API.fetch(`/api/v1/items/${parsedItemId}/phase2`,{
+      method:'POST',headers:API.headers()
+    });
+    const d=await API.json(r);
+    await refreshAfterMutation();
+    showSnackbar('Moved to Promoted as Phase 2 pending',3000);
+    if(d.telegram_handoff_url)window.location.assign(d.telegram_handoff_url);
+  }catch(e){
+    showSnackbar(`Promotion failed: ${e.message}`,4000);
+  }finally{delete state.pending[parsedItemId];render();}
+}
 async function refreshAfterMutation(){
   if(state.mode==='interactive'){
     try{await loadDashboard();}catch(_){}
@@ -340,6 +357,8 @@ document.addEventListener('click',e=>{
   if(f){state.filter=f.dataset.filter;renderFilters();render();return}
   const fav=e.target.closest('[data-favorite]');
   if(fav){const id=fav.dataset.favorite;state.favorites.has(id)?state.favorites.delete(id):state.favorites.add(id);save();render();return}
+  const phase2Btn=e.target.closest('[data-phase2-item]');
+  if(phase2Btn){requestPhase2(phase2Btn.dataset.phase2Item);return}
   const link=e.target.closest('a.action');
   if(link){const c=link.closest('.story-card');const s=state.stories.find(x=>c&&c.querySelector('[data-favorite]')?.dataset.favorite===(x.id||String(x.story_id)));if(s){state.recent=[s.id||String(s.story_id),...state.recent.filter(x=>x!==(s.id||String(s.story_id)))];save()}}
   // interactive dismiss button
