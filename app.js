@@ -408,7 +408,7 @@ async function init(){
 
   let modeResponse;
   try{
-    modeResponse=await fetch('/deployment-mode.json',{cache:'no-store'});
+    modeResponse=await fetch('./deployment-mode.json',{cache:'no-store'});
     if(!modeResponse.ok)throw new Error(`Mode declaration returned ${modeResponse.status}`);
     const declaration=await modeResponse.json();
     if(declaration.mode==='static'){

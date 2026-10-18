@@ -22,7 +22,7 @@ class Element {
   querySelectorAll() { return []; }
 }
 
-function loadApp({ configResponse } = {}) {
+function loadApp({ configResponse, pageHref = 'https://stories.example/', deploymentMode = 'interactive' } = {}) {
   const elements = new Map();
   const getElement = key => {
     if (!elements.has(key)) elements.set(key, new Element());
@@ -38,15 +38,21 @@ function loadApp({ configResponse } = {}) {
   let requestCounter = 0;
   const context = vm.createContext({
     document,
-    window: { location: { origin: 'https://stories.example' } },
+    window: { location: { origin: new URL(pageHref).origin, href: pageHref } },
     navigator: {},
     localStorage: {
       getItem: key => storage.get(key) || null,
       setItem: (key, value) => storage.set(key, value),
     },
     fetch: async request => {
-      if (String(request).includes('/deployment-mode.json')) {
-        return { ok: true, status: 200, json: async () => ({ mode: 'interactive' }) };
+      const url = new URL(String(request), pageHref);
+      if (url.pathname.endsWith('/deployment-mode.json')) {
+        const expectedBase = new URL(pageHref).pathname.startsWith('/Stories-dashboard/')
+          ? '/Stories-dashboard/' : '/';
+        if (!url.pathname.startsWith(expectedBase)) {
+          return { ok: false, status: 404, json: async () => ({}) };
+        }
+        return { ok: true, status: 200, json: async () => ({ mode: deploymentMode }) };
       }
       if (String(request).includes('/api/v1/config')) {
         return configResponse || { ok: false, status: 404, json: async () => ({}) };
@@ -124,6 +130,17 @@ test('missing interactive API does not silently downgrade to static mode', async
   assert.equal(vm.runInContext('state.mode', context), 'unavailable');
   assert.match(getElement('#updatedAt').textContent, /interactive service/i);
 });
+
+test('static dashboard resolves deployment mode from its GitHub Pages subpath', async () => {
+  const { context } = loadApp({
+    pageHref: 'https://stories.example/Stories-dashboard/',
+    deploymentMode: 'static',
+  });
+  await new Promise(resolve => setTimeout(resolve, 10));
+
+  assert.equal(vm.runInContext('state.mode', context), 'static');
+});
+
 
 test('HTML escaping handles backslashes without emitting undefined', () => {
   const { context } = loadApp();
