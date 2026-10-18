@@ -27,6 +27,8 @@ def test_phase2_action_url_opens_hermes_chat_with_exact_drive_topic_handoff():
     assert "Research & Treatment Doc" in text
     assert "Images folder" in text
     assert "phase2 row" in text
+    assert "Phase 2 pending" in text
+    assert "Stories Dashboard project" in text
     assert "https://example.gov/order/42" in text
 
 

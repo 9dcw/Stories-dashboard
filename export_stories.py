@@ -27,6 +27,8 @@ def phase2_action_url(item_id: int, headline: str, source_url: str) -> str:
         "then create or verify the Google Drive package under Insurance Research / Active Stories "
         "with one story folder, a Research & Treatment Doc, and an Images folder. "
         "Resolve the exact story_root_key and event_key first, preserve evidence labels, and write/read back the phase2 row. "
+        "The app has already created a Stories Dashboard project with status Phase 2 pending; "
+        "after every Phase 2 artifact is verified, update that project to status Phase 2. "
         f"Source: {source_url}"
     )
     return f"https://t.me/{TELEGRAM_BOT_USERNAME}?" + urlencode({"text": instruction})
