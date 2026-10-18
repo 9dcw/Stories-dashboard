@@ -152,14 +152,17 @@ test('HTML escaping handles backslashes without emitting undefined', () => {
   assert.equal(vm.runInContext("esc('a\\\\b')", context), 'a&bsol;b');
 });
 
-test('phase filter controls the entire dashboard and reset restores all item types', () => {
+test('default filters show complete court/legal candidates and reset restores those defaults', () => {
   const { context, getElement } = loadApp();
+  assert.deepEqual(JSON.parse(JSON.stringify(vm.runInContext('defaultFilters', context))), {
+    kind:'candidate',phase:'Candidate',lane:'B',source:'',dismissed:'hide',summary:'COMPLETE',activity:'',sourceStatus:''
+  });
   vm.runInContext(`
     state.sources=[{name:'Regulator',lane:'A',source_id:1,active:true}];
     state.stories=[{story_id:1,title:'Phase two',status:'Phase 2',source:'Regulator'},{story_id:2,title:'Phase three',status:'Phase 3',source:'Regulator'}];
     state.candidates=[{item_id:3,headline:'Candidate',source:'Regulator',lane:'A',status:'NEW'}];
     state.proposals=[{name:'New source',lane:'B'}];
-    state.filters={...defaultFilters,phase:'Phase 2'};render();
+    state.filters={...defaultFilters,kind:'',phase:'Phase 2',lane:'',summary:''};render();
   `, context);
   assert.equal(getElement('#candidateSection').hidden, true);
   assert.equal(getElement('#sourceReviewSection').hidden, true);
@@ -168,9 +171,10 @@ test('phase filter controls the entire dashboard and reset restores all item typ
   assert.match(getElement('#storyGrid').innerHTML, /Phase two/);
   assert.doesNotMatch(getElement('#storyGrid').innerHTML, /Phase three/);
   vm.runInContext('state.filters={...defaultFilters};render()', context);
-  for (const section of ['candidateSection','sourceReviewSection','sourceManagementSection','promotedSection']) {
-    assert.equal(getElement(`#${section}`).hidden, false);
-  }
+  assert.equal(getElement('#candidateSection').hidden, true);
+  assert.equal(getElement('#promotedSection').hidden, true);
+  assert.equal(getElement('#sourceReviewSection').hidden, true);
+  assert.equal(getElement('#sourceManagementSection').hidden, true);
 });
 
 test('source, content area, dismissal, summary and activity facets compose consistently', () => {
@@ -179,16 +183,16 @@ test('source, content area, dismissal, summary and activity facets compose consi
     state.sources=[{name:'Regulator',lane:'A',active:true}];
     const story={story_id:1,source:'Regulator',status:'Phase 2',title:'Court case'};
     const candidate={item_id:2,source:'Regulator',lane:'A',status:'DISMISSED',summary_status:'FAILED'};
-    state.filters={...defaultFilters,source:'Regulator',lane:'A'};
+    state.filters={...defaultFilters,kind:'',phase:'',lane:'',source:'Regulator',summary:''};
     const sourceAndLane=matchesRecord(story,'story');
     state.filters.source='Other';const wrongSource=matchesRecord(story,'story');
-    state.filters={...defaultFilters,dismissed:'only',summary:'FAILED'};
+    state.filters={...defaultFilters,kind:'',phase:'',lane:'',dismissed:'only',summary:'FAILED'};
     const dismissed=matchesRecord(candidate,'candidate');
     const unrelated=matchesRecord(story,'story');
-    state.filters={...defaultFilters,activity:'recent'};state.recent=['1'];
+    state.filters={...defaultFilters,kind:'',phase:'',lane:'',summary:'',activity:'recent'};state.recent=['1'];
     const recent=matchesRecord(story,'story');
     const recentCandidate=matchesRecord(candidate,'candidate');
-    state.filters={...defaultFilters,phase:'Phase 3'};state.stories=[story];render();
+    state.filters={...defaultFilters,kind:'',phase:'Phase 3',lane:'',summary:''};state.stories=[story];render();
     return {sourceAndLane,wrongSource,dismissed,unrelated,recent,recentCandidate};
   })()`,context);
   assert.deepEqual(JSON.parse(JSON.stringify(result)), {sourceAndLane:true,wrongSource:false,dismissed:true,unrelated:false,recent:true,recentCandidate:false});

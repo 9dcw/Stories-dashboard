@@ -15,7 +15,7 @@ const state={
   csrfExpires:0,
   googleClientId:'',
   stories:[],candidates:[],sources:[],proposals:[],
-  query:'', filters:{kind:'',phase:'',lane:'',source:'',dismissed:'hide',summary:'',activity:'',sourceStatus:''},
+  query:'', filters:{kind:'candidate',phase:'Candidate',lane:'B',source:'',dismissed:'hide',summary:'COMPLETE',activity:'',sourceStatus:''},
   favorites:new Set(JSON.parse(localStorage.getItem('stories-favorites')||'[]')),
   recent:JSON.parse(localStorage.getItem('stories-recent')||'[]'),
   pending:{},               // item_id → true during API call
@@ -151,7 +151,7 @@ async function loadDashboard(){
 // ── Render helpers (preserving original card layouts) ─────────────
 const laneLabels={A:'Enforcement & regulatory actions',B:'Courts & legal opinions',C:'Public agencies & public-interest news',D:'Insurance industry & risk news'};
 function storyStage(s){return s.stage||s.status||'Phase 2'}
-const defaultFilters={kind:'',phase:'',lane:'',source:'',dismissed:'hide',summary:'',activity:'',sourceStatus:''};
+const defaultFilters={kind:'candidate',phase:'Candidate',lane:'B',source:'',dismissed:'hide',summary:'COMPLETE',activity:'',sourceStatus:''};
 function filterSelect(key,label,options){return `<label>${label}<select data-global-filter="${key}">${options.map(([value,text])=>`<option value="${esc(value)}"${state.filters[key]===value?' selected':''}>${esc(text)}</option>`).join('')}</select></label>`}
 function renderFilters(){
   const names=[...new Set([...state.sources.map(s=>s.name),...state.candidates.map(s=>s.source),...state.stories.map(s=>s.source),...state.proposals.map(s=>s.name)].filter(Boolean))].sort();
