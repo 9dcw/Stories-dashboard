@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-18T14:03:35Z",
+  "generated_at": "2026-10-18T14:17:01Z",
   "recent_candidates": [
     {
       "item_id": 29,
@@ -1548,24 +1548,6 @@
       "phase2_action_label": "Promote to Phase 2 via Telegram",
       "summary_prompt_version": "gist_v2",
       "summarized_at": "2026-10-14T12:50:52Z"
-    },
-    {
-      "item_id": 664,
-      "headline": "25-30528  USA v. Tekippe",
-      "display_headline": "Fifth Circuit affirms sentence finding in chiropractor health care fraud case",
-      "source": "Fifth Circuit opinions",
-      "lane": "B",
-      "jurisdiction": "US",
-      "date": "2026-10-12T17:05:02Z",
-      "source_link": "https://www.ca5.uscourts.gov/opinions/pub/25/25-30528-CR0.pdf",
-      "status": "NEW",
-      "gist": "What happened: The Fifth Circuit affirmed Benjamin Tekippe’s sentence after finding the district court’s determination of pervasive fraud was plausible. Who/what is involved: Tekippe, owner of Metairie Chiropractic, was convicted of six health care fraud counts and one wire fraud count involving claims to Blue Cross and Blue Shield of Louisiana. Stakes: The ruling leaves the sentence in place. Notable detail: At least 93% of his billed claims included the same six service codes, and employees said he offered $2 per fabricated note.",
-      "summary_status": "COMPLETE",
-      "dismissal_action_url": "https://t.me/mehyanbot?text=Dismiss+story+item+664+from+the+Stories+Dashboard%3A+25-30528++USA+v.+Tekippe.+Set+its+status+to+DISMISSED%2C+preserve+the+record%2C+and+refresh+the+dashboard+export.+Source%3A+https%3A%2F%2Fwww.ca5.uscourts.gov%2Fopinions%2Fpub%2F25%2F25-30528-CR0.pdf",
-      "phase2_action_url": "https://t.me/mehyanbot?text=Promote+Stories+Dashboard+item+664+to+Phase+2%3A+25-30528++USA+v.+Tekippe.+Open+or+reuse+the+canonical+dedicated+Telegram+Stories+topic+for+this+exact+story%2Fevent%2C+then+create+or+verify+the+Google+Drive+package+under+Insurance+Research+%2F+Active+Stories+with+one+story+folder%2C+a+Research+%26+Treatment+Doc%2C+and+an+Images+folder.+Resolve+the+exact+story_root_key+and+event_key+first%2C+preserve+evidence+labels%2C+and+write%2Fread+back+the+phase2+row.+Source%3A+https%3A%2F%2Fwww.ca5.uscourts.gov%2Fopinions%2Fpub%2F25%2F25-30528-CR0.pdf",
-      "phase2_action_label": "Promote to Phase 2 via Telegram",
-      "summary_prompt_version": "gist_v2",
-      "summarized_at": "2026-10-14T12:51:29Z"
     },
     {
       "item_id": 663,
@@ -9039,6 +9021,19 @@
     }
   ],
   "stories": [
+    {
+      "story_id": 99,
+      "title": "Benjamin Tekippe / Metairie Chiropractic health-care fraud sentence affirmed",
+      "status": "Phase 2",
+      "source": "Fifth Circuit opinions",
+      "origin_item_id": 664,
+      "origin_url": "https://www.ca5.uscourts.gov/opinions/pub/25/25-30528-CR0.pdf",
+      "google_doc_url": "https://docs.google.com/document/d/1oeIAkmOO_q2vUkW_KVPl6Nj7VU9pwxK5ssoLoivJXUU/edit",
+      "telegram_thread_url": "https://t.me/c/3984316484/450?thread=449&topic",
+      "research_folder_url": "https://drive.google.com/drive/folders/1WSGlu6ZG3kP2x456dSyyZ0bc3xWh5V97",
+      "created_at": "2026-10-18T14:17:00Z",
+      "updated_at": "2026-10-18T14:17:00Z"
+    },
     {
       "story_id": 98,
       "title": "Ratcliff v. Old American: pedestrian collision, conspiracy claim, and procedural dismissal",
