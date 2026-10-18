@@ -374,15 +374,13 @@ def test_deploy_docs_pin_the_host_key_algorithm_used_by_ssh_action():
     assert "ssh-keyscan -t ecdsa" in deployment_guide
 
 
-def test_static_host_declares_mode_explicitly():
+def test_pages_assets_and_mode_switch_are_not_part_of_the_live_app():
     root = Path(__file__).resolve().parents[1]
-    assert json.loads((root / "deployment-mode.json").read_text()) == {"mode": "static"}
-
-
-def test_deployment_mode_is_never_service_worker_cached():
-    root = Path(__file__).resolve().parents[1]
-    worker = (root / "sw.js").read_text()
-    assert "url.pathname==='/deployment-mode.json'" in worker
+    assert not (root / "deployment-mode.json").exists()
+    assert not (root / ".github/workflows/pages.yml").exists()
+    app = (root / "app.js").read_text()
+    assert "loadStaticDashboard" not in app
+    assert "deployment-mode.json" not in app
 
 
 def test_hidden_overlays_are_not_forced_visible_by_component_css():

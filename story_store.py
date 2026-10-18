@@ -7,6 +7,8 @@ import json
 import re
 import sqlite3
 import copy
+import secrets
+import hmac
 from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import datetime, timezone, timedelta
@@ -173,6 +175,9 @@ class StoryStore:
             item_columns = {row[1] for row in connection.execute("PRAGMA table_info(items)")}
             if "validation_reason" not in item_columns:
                 connection.execute("ALTER TABLE items ADD COLUMN validation_reason TEXT NOT NULL DEFAULT ''")
+            project_columns = {row[1] for row in connection.execute("PRAGMA table_info(story_projects)")}
+            if "phase2_completion_token_hash" not in project_columns:
+                connection.execute("ALTER TABLE story_projects ADD COLUMN phase2_completion_token_hash TEXT NOT NULL DEFAULT ''")
 
             # Commit unrelated historical schema upgrades before opening the
             # all-or-nothing feedback migration transaction.
@@ -764,6 +769,44 @@ class StoryStore:
             )
             if cursor.rowcount == 0:
                 raise ValueError(f"Unknown story_id: {story_id}")
+
+    def issue_phase2_completion_token(self, story_id: int) -> str:
+        """Issue an item-scoped, one-way capability for Telegram to finish Phase 2."""
+        token = secrets.token_urlsafe(32)
+        digest = hashlib.sha256(token.encode("utf-8")).hexdigest()
+        with self._connect() as connection:
+            cursor = connection.execute(
+                """UPDATE story_projects SET phase2_completion_token_hash = ?, updated_at = ?
+                   WHERE story_id = ? AND status = 'Phase 2 pending'""",
+                (digest, utc_now(), story_id),
+            )
+            if cursor.rowcount != 1:
+                raise ValueError("Phase 2 completion token can only be issued for pending stories")
+        return token
+
+    def complete_phase2(self, story_id: int, token: str) -> dict:
+        """Mark pending Phase 2 work complete; valid replays never downgrade Phase 3."""
+        if not token or len(token) > 256:
+            raise ValueError("Invalid Phase 2 completion token")
+        supplied_hash = hashlib.sha256(token.encode("utf-8")).hexdigest()
+        with self._connect() as connection:
+            connection.execute("BEGIN IMMEDIATE")
+            row = connection.execute(
+                "SELECT status, phase2_completion_token_hash FROM story_projects WHERE story_id = ?",
+                (story_id,),
+            ).fetchone()
+            if row is None or not row["phase2_completion_token_hash"] or not hmac.compare_digest(
+                supplied_hash, row["phase2_completion_token_hash"]
+            ):
+                raise ValueError("Invalid Phase 2 completion token")
+            if row["status"] == "Phase 2 pending":
+                connection.execute(
+                    "UPDATE story_projects SET status = 'Phase 2', updated_at = ? WHERE story_id = ?",
+                    (utc_now(), story_id),
+                )
+            elif row["status"] not in {"Phase 2", "Phase 3"}:
+                raise ValueError("Story is not in a completable Phase 2 state")
+        return self.get_story(story_id)
 
     def get_story(self, story_id: int) -> dict:
         with self._connect() as connection:

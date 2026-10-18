@@ -1,8 +1,6 @@
 /* ================================================================
-   Stories Dashboard — dual-mode interactive frontend
-   Static GitHub Pages mode: loads data/stories.json (unchanged).
-   Contabo interactive mode: Google Sign-In → live API, dismiss,
-   restore, undo snackbar.
+   Stories Dashboard — authenticated live application
+   Google Sign-In → live API, dismiss, restore, Phase 2 handoff.
    ================================================================ */
 
 // ── compact query helper ──────────────────────────────────────────
@@ -12,7 +10,7 @@ const esc=s=>String(s??'').replace(/[&<>\\"]/g,c=>ESCAPES[c]);
 
 // ── shared state ──────────────────────────────────────────────────
 const state={
-  mode:'loading',           // 'static' | 'interactive'
+  mode:'interactive',
   csrf:'',
   csrfExpires:0,
   googleClientId:'',
@@ -153,24 +151,6 @@ async function loadDashboard(){
   }
 }
 
-async function loadStaticDashboard(){
-  try{
-    const r=await fetch('./data/stories.json');
-    const d=await r.json();
-    state.stories=d.stories||[];
-    state.candidates=(d.recent_candidates||[]).filter(c=>c.status!=='IGNORED');
-    state.sources=d.sources||[];
-    renderSources(d);
-    renderSourceManagement();
-    $('#updatedAt').textContent=`Registry export · ${d.generated_at||'recently'}`;
-    renderFilters();
-    render();
-  }catch(e){
-    $('#storyCount').textContent='Could not load story registry';
-    $('#updatedAt').textContent='Check data/stories.json';
-  }
-}
-
 // ── Render helpers (preserving original card layouts) ─────────────
 const laneLabels={A:'Enforcement & regulatory actions',B:'Courts & legal opinions',C:'Public agencies & public-interest news',D:'Insurance industry & risk news'};
 function storyStage(s){return s.stage||s.status||'Phase 2'}
@@ -190,25 +170,15 @@ function candidateCard(c){
   const summaryStatus=c.summary_status||'PENDING';
   const itemStatus=c.status||'NEW';
   let actions='';
-  if(state.mode==='interactive'){
-    if(itemStatus==='DISMISSED'){
-      actions=`<span class="candidate-dismissed-label">Dismissed</span>`;
-      if(c.active_dismissal){
-        actions+=`<button class="btn-restore" data-item="${esc(c.item_id)}" data-feedback="${esc(c.active_dismissal.feedback_id)}"${state.pending[c.item_id]?' disabled':''}>Restore</button>`;
-      }
-    }else{
-      actions=`<button class="btn-dismiss-interactive" data-item="${esc(c.item_id)}" data-headline="${esc(display)}"${state.pending[c.item_id]?' disabled':''}>Dismiss</button>`;
-      actions+=`${action(c.source_link,'Source','primary')}`;
-      if(c.phase2_action_url)actions+=`<button class="action telegram phase2-action btn-phase2" data-phase2-item="${esc(c.item_id)}"${state.pending[c.item_id]?' disabled':''}>${state.pending[c.item_id]?'Starting Phase 2…':'Promote to Phase 2'}</button>`;
+  if(itemStatus==='DISMISSED'){
+    actions=`<span class="candidate-dismissed-label">Dismissed</span>`;
+    if(c.active_dismissal){
+      actions+=`<button class="btn-restore" data-item="${esc(c.item_id)}" data-feedback="${esc(c.active_dismissal.feedback_id)}"${state.pending[c.item_id]?' disabled':''}>Restore</button>`;
     }
   }else{
+    actions=`<button class="btn-dismiss-interactive" data-item="${esc(c.item_id)}" data-headline="${esc(display)}"${state.pending[c.item_id]?' disabled':''}>Dismiss</button>`;
     actions+=`${action(c.source_link,'Source','primary')}`;
-    if(itemStatus==='DISMISSED'){
-      actions+=`<span class="candidate-dismissed-label">Dismissed</span>`;
-    }else{
-      actions+=`${action(c.dismissal_action_url,'Dismiss via Telegram','telegram')}`;
-      actions+=`${action(c.phase2_action_url,c.phase2_action_label||'Promote to Phase 2 via Telegram','telegram phase2-action')}`;
-    }
+    if(c.can_promote_to_phase2!==false)actions+=`<button class="action telegram phase2-action btn-phase2" data-phase2-item="${esc(c.item_id)}"${state.pending[c.item_id]?' disabled':''}>${state.pending[c.item_id]?'Starting Phase 2…':'Promote to Phase 2'}</button>`;
   }
   return `<article class="candidate-card"><div class="candidate-top"><span class="candidate-summary-status ${summaryStatus.toLowerCase()}">${esc(summaryStatus)}</span><span class="candidate-lane">${esc(laneLabels[c.lane]||'Other content')}</span></div><h3 class="candidate-display-headline">${esc(display)}</h3><details class="candidate-original"><summary>Original headline</summary><p>${esc(c.headline)}</p></details><p class="candidate-meta"><strong>${esc(c.source)}</strong> · ${esc(c.date||'Undated')} · item ${esc(c.item_id)}</p>${gist}<div class="actions">${actions}</div></article>`;
 }
@@ -340,9 +310,7 @@ async function requestPhase2(itemId){
   }finally{delete state.pending[parsedItemId];render();}
 }
 async function refreshAfterMutation(){
-  if(state.mode==='interactive'){
-    try{await loadDashboard();}catch(_){}
-  }
+  try{await loadDashboard();}catch(_){}
 }
 function showSnackbar(html,ms){
   const el=$('#snackbar');
@@ -406,24 +374,6 @@ async function init(){
   }
   if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
 
-  let modeResponse;
-  try{
-    modeResponse=await fetch('./deployment-mode.json',{cache:'no-store'});
-    if(!modeResponse.ok)throw new Error(`Mode declaration returned ${modeResponse.status}`);
-    const declaration=await modeResponse.json();
-    if(declaration.mode==='static'){
-      state.mode='static';
-      await loadStaticDashboard();
-      return;
-    }
-    if(declaration.mode!=='interactive')throw new Error('Invalid deployment mode');
-  }catch(_){
-    state.mode='unavailable';
-    $('#storyCount').textContent='Dashboard unavailable';
-    $('#updatedAt').textContent='Could not determine the deployment mode. Try again when connected.';
-    return;
-  }
-
   let configResponse;
   try{
     configResponse=await fetch('/api/v1/config',{headers:{Origin:API.origin}});
@@ -469,7 +419,7 @@ init();
 window.appTests=function(){
   const results=[];
   function ok(cond,msg){results.push(cond?'PASS '+msg:'FAIL '+msg);}
-  ok(state.mode==='static'||state.mode==='interactive','mode is static or interactive');
+  ok(state.mode==='interactive'||state.mode==='unavailable','only the interactive app is supported');
   ok(API.requestId().length>0,'requestId generates string');
   ok(esc('<scrpt>').indexOf('<')===-1,'esc escapes angle');
   ok(typeof dismissTarget==='object'||dismissTarget===null,'dismissTarget is object or null');

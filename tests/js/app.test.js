@@ -35,6 +35,7 @@ function loadApp({ configResponse, pageHref = 'https://stories.example/', deploy
     addEventListener() {},
   };
   const storage = new Map();
+  const fetchCalls = [];
   let requestCounter = 0;
   const context = vm.createContext({
     document,
@@ -45,6 +46,7 @@ function loadApp({ configResponse, pageHref = 'https://stories.example/', deploy
       setItem: (key, value) => storage.set(key, value),
     },
     fetch: async request => {
+      fetchCalls.push(String(request));
       const url = new URL(String(request), pageHref);
       if (url.pathname.endsWith('/deployment-mode.json')) {
         const expectedBase = new URL(pageHref).pathname.startsWith('/Stories-dashboard/')
@@ -71,7 +73,7 @@ function loadApp({ configResponse, pageHref = 'https://stories.example/', deploy
   });
   const source = fs.readFileSync(path.join(__dirname, '..', '..', 'app.js'), 'utf8');
   vm.runInContext(source, context, { filename: 'app.js' });
-  return { context, getElement };
+  return { context, getElement, fetchCalls };
 }
 
 test('dismiss retains the candidate and reports an HTTP mutation failure', async () => {
@@ -122,23 +124,26 @@ test('restore reports an HTTP mutation failure without refreshing', async () => 
 });
 
 test('missing interactive API does not silently downgrade to static mode', async () => {
-  const { context, getElement } = loadApp({
+  const { context, getElement, fetchCalls } = loadApp({
     configResponse: { ok: false, status: 404, json: async () => ({}) },
   });
   await new Promise(resolve => setTimeout(resolve, 10));
 
   assert.equal(vm.runInContext('state.mode', context), 'unavailable');
   assert.match(getElement('#updatedAt').textContent, /interactive service/i);
+  assert.ok(fetchCalls.includes('/api/v1/config'));
+  assert.ok(!fetchCalls.some(url => url.includes('deployment-mode.json')));
 });
 
-test('static dashboard resolves deployment mode from its GitHub Pages subpath', async () => {
-  const { context } = loadApp({
-    pageHref: 'https://stories.example/Stories-dashboard/',
-    deploymentMode: 'static',
+test('live dashboard initializes directly against the interactive API', async () => {
+  const { context, fetchCalls } = loadApp({
+    configResponse: { ok: true, status: 200, json: async () => ({ google_client_id: 'client-id' }) },
   });
   await new Promise(resolve => setTimeout(resolve, 10));
 
-  assert.equal(vm.runInContext('state.mode', context), 'static');
+  assert.equal(vm.runInContext('state.mode', context), 'interactive');
+  assert.ok(fetchCalls.includes('/api/v1/config'));
+  assert.ok(!fetchCalls.some(url => url.includes('deployment-mode.json')));
 });
 
 

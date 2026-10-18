@@ -1,6 +1,6 @@
-const CACHE='stories-dashboard-v6';
-const FILES=['./','./index.html','./styles.css','./app.js','./data/stories.json','./data/assets.json','./manifest.json'];
-const APP_SHELL_PATH=/\/(?:index\.html|styles\.css|app\.js|data\/(?:stories|assets)\.json|manifest\.json)$|\/$/;
+const CACHE='stories-dashboard-v7';
+const FILES=['./','./index.html','./styles.css','./app.js','./manifest.json'];
+const APP_SHELL_PATH=/\/(?:index\.html|styles\.css|app\.js|manifest\.json)$|\/$/;
 
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(FILES)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim())));
@@ -8,8 +8,8 @@ self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=
 self.addEventListener('fetch',event=>{
   if(event.request.method!=='GET') return;
   const url=new URL(event.request.url);
-  // API paths and deployment mode are network-only — never cache, never fall back to app shell
-  if(url.pathname.startsWith('/api/')||url.pathname==='/deployment-mode.json'){
+  // API traffic stays network-only; offline cache must never mask current status.
+  if(url.pathname.startsWith('/api/')){
     event.respondWith(fetch(event.request));
     return;
   }

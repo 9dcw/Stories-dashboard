@@ -28,6 +28,5 @@ STAGE2_SOURCES = [
     ("SEC administrative proceedings", "A", "US", "https://www.sec.gov/litigation/admin/admin.shtml", "html_list", "https://www.sec.gov/litigation/admin/admin.shtml", '{"allowed_path_prefixes":["/litigation/admin/"]}'),
     ("U.S. Fire Administration blog", "D", "US", "https://www.usfa.fema.gov/blog/", "rss", "https://www.usfa.fema.gov/rss/blog.xml", "{}"),
     ("Insurance Day", "D", "US", "https://www.insuranceday.com/rss-feeds", "rss", "https://www.insuranceday.com/rss/insuranceday-all", '{"allow_archive_segments":["news"]}'),
-    ("Stories dashboard catalog", "D", "US", "https://9dcw.github.io/Stories-dashboard/", "json", "https://9dcw.github.io/Stories-dashboard/data/stories.json", '{"items_path":"recent_candidates"}'),
     ("PR Newswire insurance public-interest", "C", "US", "https://www.prnewswire.com/news/national-association-of-insurance-commissioners-(naic)/", "rss", "https://www.prnewswire.com/rss/policy-public-interest-latest-news/policy-public-interest-latest-news-list.rss", "{}"),
 ]

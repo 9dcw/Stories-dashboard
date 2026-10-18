@@ -1,4 +1,4 @@
-"""Export the SQLite system of record to the GitHub Pages read model."""
+"""Build the SQLite-backed live dashboard read model and optional JSON export."""
 from __future__ import annotations
 
 import json
@@ -19,23 +19,36 @@ def public_source_url(value: str) -> str:
     return value
 
 
-def phase2_action_url(item_id: int, headline: str, source_url: str) -> str:
+def phase2_action_url(
+    item_id: int,
+    headline: str,
+    source_url: str,
+    *,
+    story_id: int,
+    completion_token: str,
+    api_origin: str,
+) -> str:
     """Build a reviewable Telegram handoff for the manual Phase 2 workflow."""
     instruction = (
         f"Promote Stories Dashboard item {item_id} to Phase 2: {headline}. "
-        "Open or reuse the canonical dedicated Telegram Stories topic for this exact story/event, "
-        "then create or verify the Google Drive package under Insurance Research / Active Stories "
+        "Use the canonical dedicated Telegram Stories topic for this exact story/event. "
+        "Create or verify the Google Drive package under Insurance Research / Active Stories "
         "with one story folder, a Research & Treatment Doc, and an Images folder. "
-        "Resolve the exact story_root_key and event_key first, preserve evidence labels, and write/read back the phase2 row. "
-        "The app has already created a Stories Dashboard project with status Phase 2 pending; "
-        "after every Phase 2 artifact is verified, update that project to status Phase 2. "
+        "Resolve exact story_root_key and event_key, preserve evidence labels, and write/read back the phase2 row. "
+        "The dashboard has already set this project to Phase 2 pending. "
+        "ONLY after all required Phase 2 work and artifacts are verified, update the dashboard from Telegram "
+        "by running this request and checking the returned story.status is exactly 'Phase 2': "
+        f"curl -fsS -X POST '{api_origin}/api/v1/telegram/phase2-complete' "
+        "-H 'Content-Type: application/json' "
+        f"--data '{{\"story_id\":{story_id},\"completion_token\":\"{completion_token}\"}}'. "
+        "If this request fails or returns another status, report Phase 2 as still pending. "
         f"Source: {source_url}"
     )
     return f"https://t.me/{TELEGRAM_BOT_USERNAME}?" + urlencode({"text": instruction})
 
 
 def build_read_model(store: StoryStore, generated_at: str | None = None) -> dict:
-    """Build the deterministic, public static dashboard representation."""
+    """Build a deterministic view from SQLite; promoted Phase 2 work is not a candidate."""
     project_rows = store.list_stories()
     promoted_item_ids = {
         row["origin_item_id"] for row in project_rows if row["status"] in PROMOTED_STORY_STATUSES
@@ -57,8 +70,7 @@ def build_read_model(store: StoryStore, generated_at: str | None = None) -> dict
                         "Set its status to DISMISSED, preserve the record, and refresh the dashboard export. "
                         f"Source: {source_link}",
             }),
-            "phase2_action_url": phase2_action_url(row["item_id"], row["headline"], source_link),
-            "phase2_action_label": "Promote to Phase 2 via Telegram",
+            "can_promote_to_phase2": row["status"] == "NEW",
             "summary_prompt_version": row["summary_prompt_version"],
             "summarized_at": row["summarized_at"],
         })

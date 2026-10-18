@@ -1,18 +1,18 @@
 # Stories Dashboard
 
-Mobile-first, read-only GitHub Pages UI for the insurance story discovery workflow.
+Authenticated, mobile-first live dashboard for the insurance story discovery workflow.
 
-Live site: https://9dcw.github.io/Stories-dashboard/
+Canonical live site: https://vmi3298003.contaboserver.net/
 
 ## Stage 1 architecture
 
-- `story-data/stories.sqlite3` is the authoritative local SQLite database.
-- `data/stories.json` is a generated read model consumed by GitHub Pages.
+- `story-data/stories.sqlite3` is the authoritative SQLite database used by the live Contabo service.
+- `data/stories.json` is an optional generated export for offline inspection; it is not served by the live application.
 - `story_store.py` contains URL canonicalization and deterministic database operations.
 - `scripts/story_cli.py` provides the small manual CLI.
 - `scripts/seed_data.py` creates the schema and imports the existing dashboard catalog. Synthetic candidate fixtures are opt-in with `--include-fixtures` and must not be used for a published catalog.
-- `scripts/refresh.sh` regenerates the JSON snapshot from SQLite.
-- GitHub Pages deploys the committed snapshot; it does not read Google Sheets or SQLite.
+- `.github/workflows/deploy-contabo.yml` deploys the authenticated live application from `main`.
+- GitHub Pages deployment has been retired; state-changing actions are served only by the authenticated live API.
 
 Automated feed polling and LLM summarization are intentionally out of scope for Stage 1.
 
@@ -56,7 +56,6 @@ Collectors fetch listing/feed metadata only. They do not fetch article bodies, s
 ```bash
 cd /home/david/.hermes/work/stories-dashboard
 python3 scripts/seed_data.py
-./scripts/refresh.sh
 ```
 
 The seed is safe to inspect locally and creates `story-data/stories.sqlite3`. It preserves the existing story catalog by importing the pre-Stage-1 `data/stories.json` before adding test candidates.
@@ -109,21 +108,17 @@ python3 scripts/story_cli.py update-links STORY_ID \
   --research-folder-url https://drive.google.com/drive/folders/FOLDER_ID
 ```
 
-Refresh the Pages read model:
+Create an optional local JSON export (not needed for the live dashboard):
 
 ```bash
-./scripts/refresh.sh
-git add data/stories.json
-# Review the generated snapshot, then commit and push when ready.
-git commit -m "chore: refresh story discovery snapshot"
-git push origin main
+python3 scripts/story_cli.py export --output data/stories.json
 ```
 
-The Pages read model also contains an enrolled-source management section. It includes active and disabled rows, source IDs, publication/feed URLs, lane, jurisdiction, last successful poll, publications discovered in the last 30 days, latest errors, and Telegram share links. The links only prepopulate a message for manual review; they do not implement a bot, token, authentication, or backend action.
+The live dashboard includes enrolled-source management. It shows active and disabled rows, source IDs, publication/feed URLs, lane, jurisdiction, last successful poll, publications discovered in the last 30 days, and latest errors. Source enable/disable remains a CLI operation.
 
-Candidate cards also include a **Dismiss via Telegram** link. It opens the dedicated `@mehyanbot` chat directly and prepopulates a precise instruction containing the stable item ID, headline, and source URL, instead of opening Telegram's generic share-recipient picker. Acting on that instruction currently means sending the draft and applying `update-status ITEM_ID DISMISSED` through the manual Telegram/CLI workflow, then exporting the snapshot. Dismissed items remain in SQLite and the JSON read model but are hidden in the dashboard by default; **Show dismissed** reveals them for review. This deliberate manual boundary can later be replaced by a Google Cloud backend without changing the dashboard's item/status contract.
+Candidate cards include an authenticated **Dismiss** action. It records the dismissal in SQLite and supports undo/restore while preserving the audit event. Dismissed items remain in SQLite but are hidden from active candidates by default; **Show dismissed** reveals them for review.
 
-Candidate cards also include **Promote to Phase 2 via Telegram**. The link prepopulates a precise handoff containing the stable item ID and headline. It directs the manual workflow to resolve the exact `story_root_key` and `event_key`, open or reuse the canonical dedicated Stories topic, and create or verify the historical Phase 2 Drive package: one story folder under `Insurance Research / Active Stories`, one `Research & Treatment` Doc, and an `Images` child folder. It also calls for evidence labels and a read-back of the shared `phase2` row. The dashboard remains read-only: opening the link does not itself promote the item, create Telegram topics, or write Google Drive.
+Candidate cards include **Promote to Phase 2**. The authenticated API immediately records the project as `Phase 2 pending` and removes it from Phase 1 investigation. The Telegram handoff then directs the research workflow to resolve the exact `story_root_key` and `event_key`, use the canonical dedicated Stories topic, and create or verify the Phase 2 Drive package under `Insurance Research / Active Stories` (story folder, `Research & Treatment` Doc, `Images` folder), including evidence labels and a read-back of the shared `phase2` row. Only after those artifacts are verified should Telegram call `/api/v1/telegram/phase2-complete` with the story-scoped capability in the handoff. The API changes the state to `Phase 2`; pending and completed work remain out of Phase 1 investigation. The capability must not be exposed outside the private handoff.
 
 Disable or enable sources through the existing CLI:
 
@@ -211,7 +206,7 @@ Stage 4 is an independent proposal workflow. It does not run as part of daily in
 - `source_candidates`, `discovery_targets`, and `discovery_runs` persist proposals, prior decisions, and coverage rotation state. Duplicate URLs are suppressed against both `sources` and prior proposals, including rejected proposals.
 - `scripts/source_discovery.py` supports `prompt`, `run`, `list`, `approve`, `reject`, `test`, `enroll`, and `coverage`. Equivalent review commands are also available from `scripts/story_cli.py`.
 - `discovery/pilot_sources.json` contains the initial 20-institution pilot across lanes A-D; `discovery/coverage_targets.json` supplies rotating target categories.
-- The Pages export now includes `source_proposals` and `coverage`, rendered in a separate read-only review section. Approval and enrollment remain CLI-only.
+- The optional JSON export includes `source_proposals` and `coverage`; approval and enrollment remain CLI-only.
 
 ```bash
 python3 scripts/source_discovery.py run --input discovery/pilot_sources.json

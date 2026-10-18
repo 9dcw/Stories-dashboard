@@ -14,7 +14,7 @@ from api.auth import (
     verify_google_credential,
 )
 from api.config import RuntimeConfig
-from api.models import DismissRequest, GoogleCredential, RestoreRequest
+from api.models import DismissRequest, GoogleCredential, Phase2CompletionRequest, RestoreRequest
 from api.read_model import build_live_read_model, sanitize_feedback
 from export_stories import phase2_action_url
 from story_store import StoryStore
@@ -37,15 +37,13 @@ _PROCESS_GLOBAL_LOGIN_LIMITER = LoginRateLimiter(
 _PROCESS_LOGIN_VERIFICATION_GATE = threading.BoundedSemaphore(LOGIN_VERIFY_CONCURRENCY)
 
 _BODY_LIMITED_PATH = re.compile(
-    r"^/api/v1/(?:auth/(?:google|logout)|items/[^/]+/(?:dismiss|restore))$"
+    r"^/api/v1/(?:auth/(?:google|logout)|items/[^/]+/(?:dismiss|restore)|telegram/phase2-complete)$"
 )
 STATIC_FILES = {
     "app.js": ROOT / "app.js",
     "styles.css": ROOT / "styles.css",
     "sw.js": ROOT / "sw.js",
     "manifest.json": ROOT / "manifest.json",
-    "data/stories.json": ROOT / "data" / "stories.json",
-    "data/assets.json": ROOT / "data" / "assets.json",
 }
 
 
@@ -132,6 +130,11 @@ def _mutation_response(event: dict) -> dict:
     }
 
 
+def _public_story(story: dict) -> dict:
+    """Do not return the persisted hash backing the Telegram completion capability."""
+    return {key: value for key, value in story.items() if key != "phase2_completion_token_hash"}
+
+
 def create_app(config: RuntimeConfig | None = None) -> FastAPI:
     """Application factory: configuration is intentionally loaded only when called."""
     runtime = config or RuntimeConfig.from_env()
@@ -186,10 +189,6 @@ def create_app(config: RuntimeConfig | None = None) -> FastAPI:
     def health() -> dict[str, str]:
         return {"status": "ok"}
 
-    @app.get("/deployment-mode.json", include_in_schema=False)
-    def deployment_mode(response: Response) -> dict[str, str]:
-        response.headers["Cache-Control"] = "no-store"
-        return {"mode": "interactive"}
 
     @app.get("/api/v1/config")
     def public_config() -> dict[str, str]:
@@ -260,11 +259,30 @@ def create_app(config: RuntimeConfig | None = None) -> FastAPI:
             title = item["display_headline"] or item["headline"]
             story_id = store.request_phase2(item_id, title)
             return {
-                "story": store.get_story(story_id),
-                "telegram_handoff_url": phase2_action_url(item_id, title, item["raw_url"]),
+                "story": _public_story(store.get_story(story_id)),
+                "telegram_handoff_url": phase2_action_url(
+                    item_id, title, item["raw_url"], story_id=story_id,
+                    completion_token=store.issue_phase2_completion_token(story_id),
+                    api_origin=runtime.public_origin,
+                ),
             }
         except ValueError as error:
             raise _store_error(error) from None
+        except sqlite3.OperationalError as error:
+            _database_unavailable(error)
+
+    @app.post("/api/v1/telegram/phase2-complete")
+    def telegram_complete_phase2(payload: Phase2CompletionRequest) -> dict:
+        """Accept the story-scoped capability delivered in the private Telegram handoff."""
+        try:
+            return {"story": _public_story(store.complete_phase2(payload.story_id, payload.completion_token))}
+        except ValueError as error:
+            message = str(error)
+            if message == "Invalid Phase 2 completion token":
+                raise HTTPException(status_code=403, detail="Invalid Phase 2 completion token") from None
+            if message.startswith("Unknown story_id"):
+                raise HTTPException(status_code=404, detail="Story not found") from None
+            raise HTTPException(status_code=409, detail=message) from None
         except sqlite3.OperationalError as error:
             _database_unavailable(error)
 

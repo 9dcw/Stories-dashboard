@@ -16,7 +16,10 @@ def test_placeholder_source_urls_are_not_published():
 def test_phase2_action_url_opens_hermes_chat_with_exact_drive_topic_handoff():
     from urllib.parse import parse_qs, urlsplit
 
-    url = phase2_action_url(42, "A regulator announces a settlement", "https://example.gov/order/42")
+    url = phase2_action_url(
+        42, "A regulator announces a settlement", "https://example.gov/order/42",
+        story_id=7, completion_token="capability-token", api_origin="https://stories.example",
+    )
     parsed = urlsplit(url)
     query = parse_qs(parsed.query)
     assert parsed.netloc == "t.me"
@@ -28,7 +31,13 @@ def test_phase2_action_url_opens_hermes_chat_with_exact_drive_topic_handoff():
     assert "Images folder" in text
     assert "phase2 row" in text
     assert "Phase 2 pending" in text
-    assert "Stories Dashboard project" in text
+    assert "The dashboard has already set this project to Phase 2 pending" in text
+    assert '"completion_token":"capability-token"' in text
+    assert "phase2-complete" in text
+    assert "ONLY after all required Phase 2 work and artifacts are verified" in text
+    assert "curl -fsS -X POST" in text
+    assert '"story_id":7' in text
+    assert "https://stories.example/api/v1/telegram/phase2-complete" in text
     assert "https://example.gov/order/42" in text
 
 
@@ -113,14 +122,13 @@ def test_dismissed_status_is_persisted_and_exported_with_telegram_action(tmp_pat
     assert "https://example.gov/order/1" in text
 
 
-def test_export_includes_phase2_promotion_action(tmp_path):
+def test_export_marks_new_candidates_available_for_phase2_promotion(tmp_path):
     store, item = make_store(tmp_path)
     output = tmp_path / "stories.json"
     export_json(tmp_path / "stories.sqlite3", output)
     candidate = json.loads(output.read_text())["recent_candidates"][0]
-    assert candidate["phase2_action_label"] == "Promote to Phase 2 via Telegram"
-    assert f"item+{item.item_id}" in candidate["phase2_action_url"]
-    assert "Research+%26+Treatment+Doc" in candidate["phase2_action_url"]
+    assert candidate["can_promote_to_phase2"] is True
+    assert "phase2_action_url" not in candidate
 
 
 def test_legacy_items_table_is_migrated_without_changing_item_ids(tmp_path):

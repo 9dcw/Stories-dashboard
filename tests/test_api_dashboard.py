@@ -34,8 +34,55 @@ def test_app_promotion_moves_candidate_to_phase2_pending_before_telegram_finishe
     body = response.json()
     assert body["story"]["status"] == "Phase 2 pending"
     assert body["story"]["origin_item_id"] == item_id
+    assert "phase2_completion_token_hash" not in body["story"]
     assert body["telegram_handoff_url"].startswith("https://t.me/mehyanbot?")
     dashboard = client.get("/api/v1/dashboard").json()
     assert item_id not in [row["item_id"] for row in dashboard["recent_candidates"]]
     assert body["story"]["story_id"] in [row["story_id"] for row in dashboard["stories"]]
     assert store.get_item(item_id)["status"] == "PROMOTED"
+
+
+def test_telegram_completes_phase2_with_handoff_capability(client, api_db):
+    from urllib.parse import parse_qs, urlsplit
+
+    csrf = login(client)
+    _db, store, item_id, _second_id = api_db
+    promoted = client.post(
+        f"/api/v1/items/{item_id}/phase2", headers=mutation_headers(csrf)
+    ).json()
+    story_id = promoted["story"]["story_id"]
+    text = parse_qs(urlsplit(promoted["telegram_handoff_url"]).query)["text"][0]
+    import json
+    import re
+    match = re.search(r"--data '([^']+)'", text)
+    assert match
+    completion = json.loads(match.group(1))
+    assert completion["story_id"] == story_id
+    token = completion["completion_token"]
+
+    response = client.post(
+        "/api/v1/telegram/phase2-complete",
+        json={"story_id": story_id, "completion_token": token},
+    )
+
+    assert response.status_code == 200
+    assert response.json()["story"]["status"] == "Phase 2"
+    assert store.get_story(story_id)["status"] == "Phase 2"
+    candidates = client.get("/api/v1/dashboard").json()["recent_candidates"]
+    assert item_id not in [candidate["item_id"] for candidate in candidates]
+
+
+def test_phase2_completion_rejects_missing_or_invalid_capability(client, api_db):
+    csrf = login(client)
+    _db, _store, item_id, _second_id = api_db
+    promoted = client.post(
+        f"/api/v1/items/{item_id}/phase2", headers=mutation_headers(csrf)
+    ).json()
+    story_id = promoted["story"]["story_id"]
+
+    assert client.post("/api/v1/telegram/phase2-complete", json={
+        "story_id": story_id, "completion_token": "invalid",
+    }).status_code == 403
+    assert client.post("/api/v1/telegram/phase2-complete", json={
+        "story_id": story_id, "completion_token": "",
+    }).status_code == 422

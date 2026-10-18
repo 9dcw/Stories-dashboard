@@ -75,6 +75,6 @@ def test_static_server_serves_only_allowlisted_frontend_and_spa(client):
     assert client.get("/app.js").status_code == 200
     assert client.get("/styles.css").status_code == 200
     assert client.get("/manifest.json").status_code == 200
-    assert client.get("/data/stories.json").status_code == 200
+    assert client.get("/data/stories.json").status_code == 404
     assert "<!doctype html>" in client.get("/candidate/123").text.lower()
     assert client.get("/api/v1/not-real").status_code == 404

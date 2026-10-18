@@ -190,7 +190,8 @@ def test_html_collector_recovers_secondary_header_date():
 def test_poll_report_has_all_quality_buckets_and_circuit_source_registry(tmp_path):
     from polling_sources import STAGE2_SOURCES
 
-    assert len(STAGE2_SOURCES) == 29
+    assert len(STAGE2_SOURCES) == 28
+    assert all("9dcw.github.io" not in source[3] for source in STAGE2_SOURCES)
     expected = {"candidates_extracted", "rejected_navigation_archive", "rejected_old", "accepted_publications", "ambiguous"}
     store, rss_id, html_id = make_store(tmp_path)
     result = poll_sources(store, source_ids=[rss_id, html_id], fetcher={"https://example.gov/feed": RSS, "https://agency.gov/notices": HTML}.__getitem__)

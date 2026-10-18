@@ -1,5 +1,7 @@
 # Contabo Interactive Stories Dashboard — Implementation Plan
 
+> Historical plan, retained as an implementation record. GitHub Pages was subsequently retired; the Contabo app is the canonical live dashboard. Telegram handoff and persisted Phase 2 completion are described in the current README.
+
 **Goal:** Replace the Telegram round trip for routine story review with a secure, phone-first, same-origin web application while preserving SQLite as the authoritative database and GitHub Pages as a read-only fallback.
 
 **Architecture:** A single FastAPI process serves the existing static frontend and authenticated JSON API on Contabo. Google Identity Services supplies a Google ID token; the server verifies it and authorizes one configured email plus immutable Google subject. SQLite remains authoritative. Interactive dismiss/restore operations are short transactions with immutable feedback events. Caddy terminates TLS. Docker Compose runs Caddy and one API worker. GitHub Actions tests/builds and later deploys immutable images after a protected-environment approval.

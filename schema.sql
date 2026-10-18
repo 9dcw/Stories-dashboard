@@ -44,6 +44,7 @@ CREATE TABLE IF NOT EXISTS story_projects (
     google_doc_url TEXT NOT NULL DEFAULT '',
     telegram_thread_url TEXT NOT NULL DEFAULT '',
     research_folder_url TEXT NOT NULL DEFAULT '',
+    phase2_completion_token_hash TEXT NOT NULL DEFAULT '',
     created_at TEXT NOT NULL,
     updated_at TEXT NOT NULL
 );

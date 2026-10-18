@@ -22,3 +22,9 @@ class RestoreRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
     dismissal_feedback_id: int = Field(gt=0)
     request_id: UUID
+
+
+class Phase2CompletionRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    story_id: int = Field(gt=0)
+    completion_token: str = Field(min_length=1, max_length=256)

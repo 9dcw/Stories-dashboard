@@ -82,6 +82,34 @@ def test_request_phase2_upgrades_legacy_story_stub(tmp_path):
     assert store.get_story(story_id)["status"] == "Phase 2 pending"
 
 
+def test_telegram_completion_capability_transitions_pending_to_phase2_once(tmp_path):
+    store = StoryStore(tmp_path / "stories.sqlite3")
+    source_id = store.add_source("Court", "B", "US", "https://court.example")
+    item = store.add_item(source_id, "Court order", "https://court.example/order")
+    story_id = store.request_phase2(item.item_id, title="Court order story")
+    token = store.issue_phase2_completion_token(story_id)
+
+    with pytest.raises(ValueError, match="Invalid Phase 2 completion token"):
+        store.complete_phase2(story_id, "wrong-token")
+    completed = store.complete_phase2(story_id, token)
+    replayed = store.complete_phase2(story_id, token)
+
+    assert completed["status"] == "Phase 2"
+    assert replayed["status"] == "Phase 2"
+    assert store.get_item(item.item_id)["status"] == "PROMOTED"
+
+
+def test_phase2_completion_does_not_downgrade_phase3(tmp_path):
+    store = StoryStore(tmp_path / "stories.sqlite3")
+    source_id = store.add_source("Court", "B", "US", "https://court.example")
+    item = store.add_item(source_id, "Court order", "https://court.example/order")
+    story_id = store.request_phase2(item.item_id, title="Court order story")
+    token = store.issue_phase2_completion_token(story_id)
+    store.update_story_links(story_id, status="Phase 3")
+
+    assert store.complete_phase2(story_id, token)["status"] == "Phase 3"
+
+
 def test_export_has_read_model_sections_and_is_deterministic(tmp_path):
     db_path = tmp_path / "stories.sqlite3"
     store = StoryStore(db_path)
@@ -103,21 +131,27 @@ def test_export_has_read_model_sections_and_is_deterministic(tmp_path):
     assert payload["sources"][0]["name"] == "Regulator"
 
 
-def test_export_treats_only_phase2_work_as_promoted_and_returns_stubs_to_candidates(tmp_path):
+def test_pending_and_complete_phase2_work_stay_out_of_phase1_candidates(tmp_path):
     db_path = tmp_path / "stories.sqlite3"
     store = StoryStore(db_path)
     source_id = store.add_source("Regulator", "C", "NJ", "https://regulator.example")
     stub = store.add_item(source_id, "Still a candidate", "https://regulator.example/stub")
+    pending = store.add_item(source_id, "Phase 2 pending work", "https://regulator.example/pending")
     final = store.add_item(source_id, "Phase 2 work", "https://regulator.example/phase2")
+    active = store.add_item(source_id, "Still active Phase 1 work", "https://regulator.example/active")
     store.promote_item(stub.item_id, title="Legacy story stub", status="Story stub")
+    pending_story_id = store.request_phase2(pending.item_id, title="Pending project")
+    completion_token = store.issue_phase2_completion_token(pending_story_id)
+    store.complete_phase2(pending_story_id, completion_token)
     store.promote_item(final.item_id, title="Phase 2 project", status="Phase 2")
 
     payload = json.loads(export_json(
         db_path, tmp_path / "stories.json", generated_at="2026-10-07T00:00:00Z"
     ).read_text())
 
-    assert [story["title"] for story in payload["stories"]] == ["Phase 2 project"]
-    assert [candidate["item_id"] for candidate in payload["recent_candidates"]] == [stub.item_id]
+    assert {story["title"] for story in payload["stories"]} == {"Phase 2 project", "Pending project"}
+    assert {candidate["item_id"] for candidate in payload["recent_candidates"]} == {stub.item_id, active.item_id}
+    assert {row["item_id"] for row in store.list_unsummarized_items(active_only=True)} == {active.item_id}
 
 
 def test_schema_foreign_key_and_status_validation(tmp_path):
