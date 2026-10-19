@@ -57,7 +57,8 @@ class Phase2Jobs:
                 raise PermissionError('Invalid callback capability')
             if row['state'] == 'complete':
                 return
-            if row['state'] not in {'dispatching', 'waiting', 'queued'} or not row['attempts']:
+            recovering = row['state'] == 'failed' and row['deadline'] > time.time()
+            if (row['state'] not in {'dispatching', 'waiting', 'queued'} and not recovering) or not row['attempts']:
                 raise ValueError('Run is no longer active; retry from the dashboard')
             artifacts = json.loads(row['artifacts'])
             artifacts.update(payload.artifacts)
@@ -90,7 +91,10 @@ class Phase2Jobs:
                 return
             db.execute("UPDATE phase2_jobs SET state='dispatching',attempts=attempts+1,due=?,deadline=? WHERE story_id=?", (now+60, now+SETUP_TIMEOUT, row['story_id']))
         story = self.store.get_story(row['story_id'])
+        item = self.store.get_item(story['origin_item_id'])
+        identity = hashlib.sha256(item['canonical_url'].encode()).hexdigest()[:16]
         payload = dict(story_id=row['story_id'], item_id=story['origin_item_id'], title=story['title'],
+                       proposed_story_root_key='story-'+identity, proposed_event_key='event-'+identity,
                        source_url=story['origin_url'], idempotency_key=f"stories-phase2-{row['story_id']}",
                        callback_url=f"{self.config.public_origin}/api/v1/stories/{row['story_id']}/phase2/callback",
                        completion_token=self.token(row['run_id']), previous_artifacts=json.loads(row['artifacts']))

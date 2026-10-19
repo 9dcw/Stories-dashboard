@@ -143,6 +143,18 @@ def test_callback_can_arrive_before_webhook_acknowledgement(setup, monkeypatch):
     assert jobs.public(story)['state'] == 'waiting'
 
 
+def test_same_run_can_report_recovery_before_deadline(setup, monkeypatch):
+    jobs, store, story = setup
+    calls = accepted(monkeypatch)
+    jobs.tick()
+    payload = json.loads(calls[0]['data'])
+    assert payload['proposed_story_root_key'].startswith('story-')
+    callback(jobs, story, calls, state='failed', step='failed', error='Temporary setup error')
+    callback(jobs, story, calls, state='waiting', step='verification')
+    callback(jobs, story, calls, state='complete', step='complete', artifacts=ARTIFACTS)
+    assert store.get_story(story)['status'] == 'Phase 2'
+
+
 def test_callback_api_authentication_and_body_limit(client, api_db):
     from tests.conftest import login
     csrf = login(client)
