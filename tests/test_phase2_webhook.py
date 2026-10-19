@@ -110,6 +110,15 @@ def test_missing_or_invalid_artifacts_cannot_complete(setup, monkeypatch):
     assert store.get_story(story)['status'] == 'Phase 2 pending'
 
 
+def test_canonical_topic_helper_link_is_accepted(setup, monkeypatch):
+    jobs, store, story = setup
+    calls = accepted(monkeypatch)
+    jobs.tick()
+    callback(jobs, story, calls, state='complete', step='complete', artifacts={
+        **ARTIFACTS, 'telegram_thread_url': 'https://t.me/c/123456/789?thread=789&topic'})
+    assert store.get_story(story)['status'] == 'Phase 2'
+
+
 def test_concurrent_workers_only_dispatch_once(setup, monkeypatch):
     jobs, _, story = setup
     calls = accepted(monkeypatch)

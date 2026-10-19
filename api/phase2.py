@@ -140,7 +140,7 @@ def validate_artifacts(artifacts):
         'google_doc_url': r'https://docs\.google\.com/document/d/[\w-]+(?:/[^\s]*)?',
         'research_folder_url': r'https://drive\.google\.com/drive/(?:u/\d+/)?folders/[\w-]+(?:\?[^\s]*)?',
         'images_folder_url': r'https://drive\.google\.com/drive/(?:u/\d+/)?folders/[\w-]+(?:\?[^\s]*)?',
-        'telegram_thread_url': r'https://t\.me/(?:c/\d+|[A-Za-z][\w]+)/\d+',
+        'telegram_thread_url': r'https://t\.me/(?:c/\d+|[A-Za-z][\w]+)/\d+(?:/\d+)?(?:\?thread=\d+(?:&topic)?)?',
     }
     if any(not re.fullmatch(pattern, artifacts.get(key, '')) for key, pattern in patterns.items()):
         raise ValueError('Completion requires valid Doc, research folder, Images folder and direct topic links')
