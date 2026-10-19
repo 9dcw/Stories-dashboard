@@ -28,3 +28,12 @@ class Phase2CompletionRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
     story_id: int = Field(gt=0)
     completion_token: str = Field(min_length=1, max_length=256)
+
+
+class Phase2Callback(BaseModel):
+    model_config = ConfigDict(extra='forbid')
+    completion_token: str = Field(min_length=1, max_length=256)
+    state: Literal['waiting', 'complete', 'failed']
+    step: Literal['topic', 'drive', 'document', 'verification', 'complete', 'failed']
+    error: str = Field(default='', max_length=1000)
+    artifacts: dict[str, str] = Field(default_factory=dict, max_length=10)

@@ -4,6 +4,9 @@ services:
     restart: unless-stopped
     env_file:
       - /etc/stories/stories.env
+      - /srv/stories-dashboard/phase2.env
+    network_mode: host
+    command: ["uvicorn", "api.main:create_app", "--factory", "--host", "127.0.0.1", "--port", "8000", "--workers", "1"]
     volumes:
       - /srv/stories-dashboard/story-data:/app/story-data
       - /srv/stories-dashboard/backups:/app/backups
@@ -13,15 +16,10 @@ services:
       timeout: 5s
       retries: 3
       start_period: 10s
-    networks:
-      - stories
-
   caddy:
     image: caddy:2-alpine
     restart: unless-stopped
-    ports:
-      - "80:80"
-      - "443:443"
+    network_mode: host
     environment:
       DOMAIN: ${DOMAIN:?DOMAIN must be set}
     volumes:
@@ -31,12 +29,7 @@ services:
     depends_on:
       app:
         condition: service_healthy
-    networks:
-      - stories
 
 volumes:
   caddy_data:
   caddy_config:
-
-networks:
-  stories:

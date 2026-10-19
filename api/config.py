@@ -46,6 +46,8 @@ class RuntimeConfig:
     session_max_age_seconds: int = DEFAULT_SESSION_AGE
     testing: bool = False
     trust_x_forwarded_for: bool = False
+    hermes_webhook_url: str = ''
+    hermes_webhook_secret: str = ''
 
     def __post_init__(self) -> None:
         db_path = Path(self.stories_db_path).expanduser().resolve()
@@ -125,4 +127,6 @@ class RuntimeConfig:
             session_max_age_seconds=age,
             testing=testing,
             trust_x_forwarded_for=raw_trust_proxy == "true",
+            hermes_webhook_url=env.get('HERMES_WEBHOOK_URL', '').strip(),
+            hermes_webhook_secret=env.get('HERMES_WEBHOOK_SECRET', '').strip(),
         )

@@ -69,6 +69,7 @@ function loadApp({ configResponse, pageHref = 'https://stories.example/', deploy
     URL,
     console,
     setTimeout,
+    setInterval() {},
     clearTimeout,
   });
   const source = fs.readFileSync(path.join(__dirname, '..', '..', 'app.js'), 'utf8');
@@ -197,4 +198,23 @@ test('source, content area, dismissal, summary and activity facets compose consi
   })()`,context);
   assert.deepEqual(JSON.parse(JSON.stringify(result)), {sourceAndLane:true,wrongSource:false,dismissed:true,unrelated:false,recent:true,recentCandidate:false});
   assert.equal(getElement('#emptyState').hidden,false);
+});
+
+
+test('Phase 2 promotion stays in dashboard and setup failures expose a safe retry', async () => {
+  const { context } = loadApp();
+  const result = await vm.runInContext(`(async () => {
+    let redirected=false;
+    window.location.assign=()=>{redirected=true};
+    API.fetch=async()=>({ok:true,status:202,json:async()=>({story:{status:'Phase 2 pending'},telegram_handoff_url:'https://t.me/old'})});
+    refreshAfterMutation=async()=>{};
+    showSnackbar=()=>{};
+    await requestPhase2(1);
+    const html=phase2Progress({story_id:7,status:'Phase 2 pending',phase2_job:{state:'failed',step:'drive',attempts:5,error:'<script>bad</script>'}});
+    return {redirected,html};
+  })()`, context);
+  assert.equal(result.redirected, false);
+  assert.match(result.html,/data-phase2-retry="7"/);
+  assert.match(result.html,/&lt;script&gt;/);
+  assert.doesNotMatch(result.html,/<script>/);
 });

@@ -4,6 +4,7 @@ import json
 import re
 import sqlite3
 import threading
+from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import NoReturn
 from fastapi import Cookie, Depends, FastAPI, HTTPException, Request, Response
@@ -14,9 +15,9 @@ from api.auth import (
     verify_google_credential,
 )
 from api.config import RuntimeConfig
-from api.models import DismissRequest, GoogleCredential, Phase2CompletionRequest, RestoreRequest
+from api.models import DismissRequest, GoogleCredential, Phase2Callback, RestoreRequest
+from api.phase2 import Phase2Jobs
 from api.read_model import build_live_read_model, sanitize_feedback
-from export_stories import phase2_action_url
 from story_store import StoryStore
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -37,7 +38,7 @@ _PROCESS_GLOBAL_LOGIN_LIMITER = LoginRateLimiter(
 _PROCESS_LOGIN_VERIFICATION_GATE = threading.BoundedSemaphore(LOGIN_VERIFY_CONCURRENCY)
 
 _BODY_LIMITED_PATH = re.compile(
-    r"^/api/v1/(?:auth/(?:google|logout)|items/[^/]+/(?:dismiss|restore)|telegram/phase2-complete)$"
+    r"^/api/v1/(?:auth/(?:google|logout)|items/[^/]+/(?:dismiss|restore|phase2)|stories/[^/]+/phase2/(?:callback|retry))$"
 )
 STATIC_FILES = {
     "app.js": ROOT / "app.js",
@@ -139,6 +140,20 @@ def create_app(config: RuntimeConfig | None = None) -> FastAPI:
     """Application factory: configuration is intentionally loaded only when called."""
     runtime = config or RuntimeConfig.from_env()
     store = StoryStore(runtime.stories_db_path)
+    jobs = Phase2Jobs(store, runtime)
+
+    @asynccontextmanager
+    async def lifespan(app):
+        stop = threading.Event()
+        worker = threading.Thread(target=jobs.run, args=(stop,), daemon=True)
+        if not runtime.testing:
+            worker.start()
+        try:
+            yield
+        finally:
+            stop.set()
+            if worker.is_alive():
+                worker.join(timeout=30)
     codec = SessionCodec(runtime)
     login_limiter = LoginRateLimiter()
     if runtime.testing:
@@ -157,9 +172,11 @@ def create_app(config: RuntimeConfig | None = None) -> FastAPI:
         docs_url=None,
         redoc_url=None,
         openapi_url=None,
+        lifespan=lifespan,
     )
     app.state.config = runtime
     app.state.store = store
+    app.state.phase2_jobs = jobs
     app.state.login_rate_limiter = login_limiter
     app.state.global_login_rate_limiter = global_login_limiter
     app.state.login_verification_gate = login_verification_gate
@@ -245,11 +262,14 @@ def create_app(config: RuntimeConfig | None = None) -> FastAPI:
     @app.get("/api/v1/dashboard")
     def dashboard(session: dict[str, str] = Depends(session_dependency)) -> dict:
         try:
-            return build_live_read_model(store)
+            model = build_live_read_model(store)
+            for story in model['stories']:
+                story['phase2_job'] = jobs.public(story['story_id'])
+            return model
         except sqlite3.OperationalError as error:
             _database_unavailable(error)
 
-    @app.post("/api/v1/items/{item_id}/phase2", status_code=201)
+    @app.post("/api/v1/items/{item_id}/phase2", status_code=202)
     def request_phase2(
         item_id: int,
         session: dict[str, str] = Depends(mutation_session),
@@ -258,31 +278,34 @@ def create_app(config: RuntimeConfig | None = None) -> FastAPI:
             item = store.get_item(item_id)
             title = item["display_headline"] or item["headline"]
             story_id = store.request_phase2(item_id, title)
+            jobs.enqueue(story_id)
             return {
                 "story": _public_story(store.get_story(story_id)),
-                "telegram_handoff_url": phase2_action_url(
-                    item_id, title, item["raw_url"], story_id=story_id,
-                    completion_token=store.issue_phase2_completion_token(story_id),
-                    api_origin=runtime.public_origin,
-                ),
+                "phase2_job": jobs.public(story_id),
             }
         except ValueError as error:
             raise _store_error(error) from None
         except sqlite3.OperationalError as error:
             _database_unavailable(error)
 
-    @app.post("/api/v1/telegram/phase2-complete")
-    def telegram_complete_phase2(payload: Phase2CompletionRequest) -> dict:
-        """Accept the story-scoped capability delivered in the private Telegram handoff."""
+    @app.post('/api/v1/stories/{story_id}/phase2/retry', status_code=202)
+    def retry_phase2(story_id: int, session: dict = Depends(mutation_session)):
         try:
-            return {"story": _public_story(store.complete_phase2(payload.story_id, payload.completion_token))}
+            store.get_story(story_id)
+            jobs.enqueue(story_id, retry=True)
+            return {'phase2_job': jobs.public(story_id)}
+        except ValueError:
+            raise HTTPException(404, 'Story not found') from None
+
+    @app.post('/api/v1/stories/{story_id}/phase2/callback')
+    def phase2_callback(story_id: int, payload: Phase2Callback):
+        try:
+            jobs.callback(story_id, payload)
+            return {'story': _public_story(store.get_story(story_id))}
+        except PermissionError:
+            raise HTTPException(403, 'Invalid callback capability') from None
         except ValueError as error:
-            message = str(error)
-            if message == "Invalid Phase 2 completion token":
-                raise HTTPException(status_code=403, detail="Invalid Phase 2 completion token") from None
-            if message.startswith("Unknown story_id"):
-                raise HTTPException(status_code=404, detail="Story not found") from None
-            raise HTTPException(status_code=409, detail=message) from None
+            raise HTTPException(409, str(error)) from None
         except sqlite3.OperationalError as error:
             _database_unavailable(error)
 
