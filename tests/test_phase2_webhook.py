@@ -86,6 +86,15 @@ def test_http_error_classification(setup, monkeypatch, status, state):
     assert jobs.public(story)['state'] == state
 
 
+@pytest.mark.parametrize('data', [{'status': 'complete'}, ['accepted']])
+def test_malformed_acknowledgement_cannot_mark_complete(setup, monkeypatch, data):
+    jobs, store, story = setup
+    accepted(monkeypatch, data=data)
+    jobs.tick()
+    assert jobs.public(story)['state'] == 'failed'
+    assert store.get_story(story)['status'] == 'Phase 2 pending'
+
+
 def test_timeout_retry_rejects_stale_callback_and_reuses_partial_artifacts(setup, monkeypatch):
     jobs, store, story = setup
     calls = accepted(monkeypatch)

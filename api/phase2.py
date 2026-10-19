@@ -111,7 +111,7 @@ class Phase2Jobs:
                 error = f'Hermes webhook returned HTTP {response.status_code}.'
             else:
                 result = response.json()
-                if result.get('status') not in {'accepted', 'duplicate'}:
+                if not isinstance(result, dict) or result.get('status') not in {'accepted', 'duplicate'}:
                     raise ValueError('Unexpected Hermes acknowledgement; setup has not been confirmed.')
         except requests.RequestException:
             state, error = 'queued', 'Hermes could not be reached; delivery will retry.'
