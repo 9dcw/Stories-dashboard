@@ -25,6 +25,8 @@ jobs:
       - name: Verify lock files
         run: |
           pip install pip-tools
+          # Reuse committed pins; new upstream releases must not break a code-only release.
+          cp requirements.lock /tmp/req.lock
           pip-compile --generate-hashes --resolver=backtracking -o /tmp/req.lock requirements.txt
           diff <(grep -v '^#' requirements.lock) <(grep -v '^#' /tmp/req.lock)
 
