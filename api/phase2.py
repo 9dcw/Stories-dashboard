@@ -16,6 +16,10 @@ MAX_ATTEMPTS = 5
 SETUP_TIMEOUT = 1800
 
 
+class ArtifactValidationError(ValueError):
+    pass
+
+
 class Phase2Jobs:
     def __init__(self, store, config):
         self.store, self.config = store, config
@@ -50,6 +54,7 @@ class Phase2Jobs:
         return hmac.new(self.config.session_secret.encode(), ('phase2:'+run_id).encode(), hashlib.sha256).hexdigest()
 
     def callback(self, story_id, payload):
+        validation_error = None
         with self.store._connect() as db:
             db.execute('BEGIN IMMEDIATE')
             row = db.execute('SELECT * FROM phase2_jobs WHERE story_id=?', (story_id,)).fetchone()
@@ -62,14 +67,22 @@ class Phase2Jobs:
                 raise ValueError('Run is no longer active; retry from the dashboard')
             artifacts = json.loads(row['artifacts'])
             artifacts.update(payload.artifacts)
+            state, step, error = payload.state, payload.step, payload.error
             if payload.state == 'complete':
-                validate_artifacts(artifacts)
-                db.execute("""UPDATE story_projects SET status=CASE WHEN status='Phase 2 pending'
-                    THEN 'Phase 2' ELSE status END, google_doc_url=?,telegram_thread_url=?,
-                    research_folder_url=?,updated_at=strftime('%Y-%m-%dT%H:%M:%SZ','now') WHERE story_id=?""",
-                    (artifacts['google_doc_url'], artifacts['telegram_thread_url'], artifacts['research_folder_url'], story_id))
+                try:
+                    validate_artifacts(artifacts)
+                except ValueError as exception:
+                    validation_error = str(exception)
+                    state, step, error = 'failed', 'verification', validation_error
+                else:
+                    db.execute("""UPDATE story_projects SET status=CASE WHEN status='Phase 2 pending'
+                        THEN 'Phase 2' ELSE status END, google_doc_url=?,telegram_thread_url=?,
+                        research_folder_url=?,updated_at=strftime('%Y-%m-%dT%H:%M:%SZ','now') WHERE story_id=?""",
+                        (artifacts['google_doc_url'], artifacts['telegram_thread_url'], artifacts['research_folder_url'], story_id))
             db.execute('UPDATE phase2_jobs SET state=?,step=?,error=?,artifacts=? WHERE story_id=?',
-                       (payload.state, payload.step, payload.error, json.dumps(artifacts), story_id))
+                       (state, step, error, json.dumps(artifacts), story_id))
+        if validation_error:
+            raise ArtifactValidationError(validation_error)
 
     def tick(self, now=None):
         now = time.time() if now is None else now

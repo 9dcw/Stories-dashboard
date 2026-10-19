@@ -16,7 +16,7 @@ from api.auth import (
 )
 from api.config import RuntimeConfig
 from api.models import DismissRequest, GoogleCredential, Phase2Callback, RestoreRequest
-from api.phase2 import Phase2Jobs
+from api.phase2 import ArtifactValidationError, Phase2Jobs
 from api.read_model import build_live_read_model, sanitize_feedback
 from story_store import StoryStore
 
@@ -304,6 +304,8 @@ def create_app(config: RuntimeConfig | None = None) -> FastAPI:
             return {'story': _public_story(store.get_story(story_id))}
         except PermissionError:
             raise HTTPException(403, 'Invalid callback capability') from None
+        except ArtifactValidationError as error:
+            raise HTTPException(422, str(error)) from None
         except ValueError as error:
             raise HTTPException(409, str(error)) from None
         except sqlite3.OperationalError as error:

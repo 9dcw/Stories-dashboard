@@ -116,6 +116,7 @@ def test_missing_or_invalid_artifacts_cannot_complete(setup, monkeypatch):
     for artifacts in ({}, {**ARTIFACTS, 'google_doc_url': 'https://evil.test/document'}):
         with pytest.raises(ValueError):
             callback(jobs, story, calls, state='complete', step='complete', artifacts=artifacts)
+        assert jobs.public(story)['state'] == 'failed'
     assert store.get_story(story)['status'] == 'Phase 2 pending'
 
 
