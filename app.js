@@ -58,7 +58,13 @@ API.finishMutation=key=>{delete state.mutationRequestIds[key];};
 
 // ── Google Sign-In ────────────────────────────────────────────────
 function initGoogleSignIn(){
-  if(!window.google||!state.googleClientId)return;
+  if(!state.googleClientId)return;
+  if(!window.google?.accounts?.id){
+    $('#loginButtonContainer').textContent='Loading Google sign-in…';
+    return;
+  }
+  $('#loginButtonContainer').textContent='';
+  hideLoginError();
   google.accounts.id.initialize({
     client_id:state.googleClientId,callback:async resp=>{
       try{
@@ -79,6 +85,16 @@ function initGoogleSignIn(){
   const btn=document.getElementById('loginButtonContainer');
   if(btn)google.accounts.id.renderButton(btn,{theme:'filled_blue',size:'large',text:'signin_with',shape:'rectangular'});
 }
+
+// The Google SDK is async and may arrive after the session check.
+const googleSignInScript=document.querySelector('script[src="https://accounts.google.com/gsi/client"]');
+googleSignInScript?.addEventListener('load',()=>{
+  if(!$('#loginGate').hidden)initGoogleSignIn();
+});
+googleSignInScript?.addEventListener('error',()=>{
+  $('#loginButtonContainer').textContent='';
+  showLoginError('Google sign-in could not load. Check your connection and reload this page.');
+});
 
 async function checkSession(){
   try{

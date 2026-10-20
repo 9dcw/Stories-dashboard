@@ -6,6 +6,7 @@ const vm = require('node:vm');
 
 class Element {
   constructor() {
+    this.listeners = {};
     this.hidden = false;
     this.textContent = '';
     this.innerHTML = '';
@@ -16,7 +17,7 @@ class Element {
     this.dataset = {};
     this.classList = { add() {}, remove() {} };
   }
-  addEventListener() {}
+  addEventListener(event, callback) { this.listeners[event] = callback; }
   closest() { return null; }
   querySelector() { return null; }
   querySelectorAll() { return []; }
@@ -217,4 +218,25 @@ test('Phase 2 promotion stays in dashboard and setup failures expose a safe retr
   assert.match(result.html,/data-phase2-retry="7"/);
   assert.match(result.html,/&lt;script&gt;/);
   assert.doesNotMatch(result.html,/<script>/);
+});
+
+
+test('late Google SDK load renders sign-in after the session check', () => {
+  const { context, getElement } = loadApp();
+  vm.runInContext("state.googleClientId='test-client';showLoginGate()",context);
+  assert.match(getElement('#loginButtonContainer').textContent,/Loading Google/);
+  let rendered=0;
+  const google={accounts:{id:{initialize(){},renderButton(){rendered++;}}}};
+  context.google=google;
+  context.window.google=google;
+  getElement('script[src="https://accounts.google.com/gsi/client"]').listeners.load();
+  assert.equal(rendered,1);
+  assert.equal(getElement('#loginButtonContainer').textContent,'');
+});
+
+test('blocked Google SDK reports an actionable sign-in error', () => {
+  const { getElement } = loadApp();
+  getElement('script[src="https://accounts.google.com/gsi/client"]').listeners.error();
+  assert.equal(getElement('#loginError').hidden,false);
+  assert.match(getElement('#loginError').textContent,/could not load/);
 });
