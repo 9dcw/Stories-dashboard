@@ -154,53 +154,110 @@ test('HTML escaping handles backslashes without emitting undefined', () => {
   assert.equal(vm.runInContext("esc('a\\\\b')", context), 'a&bsol;b');
 });
 
-test('default filters show retained court/legal candidates including pending summaries and reset restores those defaults', () => {
-  const { context, getElement } = loadApp();
-  assert.deepEqual(JSON.parse(JSON.stringify(vm.runInContext('defaultFilters', context))), {
-    kind:'candidate',phase:'Candidate',lane:'B',source:'',dismissed:'hide',summary:'',screening:'retained',activity:'',sourceStatus:''
-  });
+test('category switching clears incompatible filters and includes every Phase 2 state', () => {
+  const {context,getElement}=loadApp();
   vm.runInContext(`
-    state.sources=[{name:'Regulator',lane:'A',source_id:1,active:true}];
-    state.stories=[{story_id:1,title:'Phase two',status:'Phase 2',source:'Regulator'},{story_id:2,title:'Phase three',status:'Phase 3',source:'Regulator'}];
-    state.candidates=[{item_id:3,headline:'Candidate',source:'Regulator',lane:'A',status:'NEW'}];
-    state.proposals=[{name:'New source',lane:'B'}];
-    state.filters={...defaultFilters,kind:'',phase:'Phase 2',lane:'',summary:''};render();
-  `, context);
-  assert.equal(getElement('#candidateSection').hidden, true);
-  assert.equal(getElement('#sourceReviewSection').hidden, true);
-  assert.equal(getElement('#sourceManagementSection').hidden, true);
-  assert.equal(getElement('#promotedSection').hidden, false);
-  assert.match(getElement('#storyGrid').innerHTML, /Phase two/);
-  assert.doesNotMatch(getElement('#storyGrid').innerHTML, /Phase three/);
-  vm.runInContext('state.filters={...defaultFilters};render()', context);
-  assert.equal(getElement('#candidateSection').hidden, true);
-  assert.equal(getElement('#promotedSection').hidden, true);
-  assert.equal(getElement('#sourceReviewSection').hidden, true);
-  assert.equal(getElement('#sourceManagementSection').hidden, true);
+    state.stories=[{story_id:1,title:'Ready story',status:'Phase 2'},
+      {story_id:2,title:'Pending story',status:'Phase 2 pending'},
+      {story_id:3,title:'Failed story',status:'Phase 2 pending',phase2_job:{state:'failed'}},
+      {story_id:4,title:'Final story',status:'Phase 3'}];
+    state.filters.source='Missing';state.filters.lane='B';state.query='no match';
+    selectView('phase2');
+  `,context);
+  assert.match(getElement('#storyGrid').innerHTML,/Ready story/);
+  assert.match(getElement('#storyGrid').innerHTML,/Pending story/);
+  assert.match(getElement('#storyGrid').innerHTML,/Failed story/);
+  assert.doesNotMatch(getElement('#storyGrid').innerHTML,/Final story/);
+  assert.equal(vm.runInContext('state.query',context),'');
+  assert.equal(vm.runInContext('state.filters.source',context),'');
+  vm.runInContext("state.filters.setup='failed';render()",context);
+  assert.match(getElement('#storyGrid').innerHTML,/Failed story/);
+  assert.doesNotMatch(getElement('#storyGrid').innerHTML,/Ready story|Pending story/);
+  vm.runInContext("selectView('phase3')",context);
+  assert.match(getElement('#storyGrid').innerHTML,/Final story/);
+  assert.doesNotMatch(getElement('#storyGrid').innerHTML,/Failed story/);
 });
 
-test('source, content area, dismissal, summary and activity facets compose consistently', () => {
-  const { context, getElement } = loadApp();
-  const result = vm.runInContext(`(() => {
-    state.sources=[{name:'Regulator',lane:'A',active:true}];
-    const story={story_id:1,source:'Regulator',status:'Phase 2',title:'Court case'};
-    const candidate={item_id:2,source:'Regulator',lane:'A',status:'DISMISSED',summary_status:'FAILED'};
-    state.filters={...defaultFilters,kind:'',phase:'',lane:'',source:'Regulator',summary:''};
-    const sourceAndLane=matchesRecord(story,'story');
-    state.filters.source='Other';const wrongSource=matchesRecord(story,'story');
-    state.filters={...defaultFilters,kind:'',phase:'',lane:'',dismissed:'only',summary:'FAILED'};
-    const dismissed=matchesRecord(candidate,'candidate');
-    const unrelated=matchesRecord(story,'story');
-    state.filters={...defaultFilters,kind:'',phase:'',lane:'',summary:'',activity:'recent'};state.recent=['1'];
-    const recent=matchesRecord(story,'story');
-    const recentCandidate=matchesRecord(candidate,'candidate');
-    state.filters={...defaultFilters,kind:'',phase:'Phase 3',lane:'',summary:''};state.stories=[story];render();
-    return {sourceAndLane,wrongSource,dismissed,unrelated,recent,recentCandidate};
-  })()`,context);
-  assert.deepEqual(JSON.parse(JSON.stringify(result)), {sourceAndLane:true,wrongSource:false,dismissed:true,unrelated:false,recent:true,recentCandidate:false});
+test('new candidates include all content areas and pending summaries, with opt-in dismissal and exclusions', () => {
+  const {context,getElement}=loadApp();
+  vm.runInContext(`
+    state.candidates=[
+      {item_id:1,headline:'Agency candidate',source:'Agency',lane:'A',status:'NEW',summary_status:'COMPLETE'},
+      {item_id:2,headline:'Court pending',source:'Court',lane:'B',status:'NEW',summary_status:'PENDING'},
+      {item_id:3,headline:'Dismissed item',status:'DISMISSED',summary_status:'FAILED'},
+      {item_id:4,headline:'Promoted item',status:'PROMOTED'},
+      {item_id:5,headline:'Failed item',summary_status:'FAILED'},
+      {item_id:6,headline:'Excluded item',screening:{decision:'EXCLUDED'}},
+      {item_id:7,headline:'Already a story',status:'NEW'}];
+    state.stories=[{story_id:9,origin_item_id:7,status:'Phase 2'}];renderFilters();render();
+  `,context);
+  assert.match(getElement('#candidateGrid').innerHTML,/Agency candidate/);
+  assert.match(getElement('#candidateGrid').innerHTML,/Court pending/);
+  assert.doesNotMatch(getElement('#candidateGrid').innerHTML,/Dismissed item|Promoted item|Failed item|Excluded item|Already a story/);
+  assert.match(getElement('#filters').innerHTML,/All sources/);
+  vm.runInContext("state.filters.source='Court';state.query='pending';render()",context);
+  assert.match(getElement('#candidateGrid').innerHTML,/Court pending/);
+  assert.doesNotMatch(getElement('#candidateGrid').innerHTML,/Agency candidate/);
+  assert.equal(vm.runInContext("categoryCount('candidates')",context),2);
+  vm.runInContext("clearFilters();state.filters.dismissed='only';render()",context);
+  assert.match(getElement('#candidateGrid').innerHTML,/Dismissed item/);
+  assert.doesNotMatch(getElement('#candidateGrid').innerHTML,/Agency candidate/);
+  vm.runInContext("clearFilters();state.filters.screening='EXCLUDED';render()",context);
+  assert.match(getElement('#candidateGrid').innerHTML,/Excluded item/);
+});
+
+test('Problems combines failures and review, counts each record once and preserves Phase 2 overlap', () => {
+  const {context,getElement}=loadApp();
+  vm.runInContext(`
+    state.candidates=[{item_id:1,headline:'Needs attention',summary_status:'FAILED',screening:{needs_review:true}},
+      {item_id:2,headline:'Uncertain opinion',screening:{decision:'PASS',needs_review:true}},
+      {item_id:3,headline:'Dismissed failure',status:'DISMISSED',summary_status:'FAILED'},
+      {item_id:4,headline:'Promoted failure',status:'PROMOTED',summary_status:'FAILED'}];
+    state.sources=[{name:'Broken source',last_error:'Timeout',active:true},{name:'Healthy source',last_error:''}];
+    state.stories=[{story_id:7,title:'Setup failure',status:'Phase 2 pending',phase2_job:{state:'failed',step:'drive',attempts:1}}];
+    selectView('problems');
+  `,context);
+  assert.equal(vm.runInContext("categoryCount('problems')",context),4);
+  assert.match(getElement('#candidateGrid').innerHTML,/Needs attention|Uncertain opinion/);
+  assert.doesNotMatch(getElement('#candidateGrid').innerHTML,/Dismissed failure|Promoted failure/);
+  assert.match(getElement('#storyGrid').innerHTML,/data-phase2-retry="7"/);
+  assert.match(getElement('#sourceManagementGrid').innerHTML,/Broken source/);
+  assert.doesNotMatch(getElement('#sourceManagementGrid').innerHTML,/Healthy source/);
+  vm.runInContext("state.filters.problem='review';render()",context);
+  assert.equal(getElement('#sourceManagementSection').hidden,true);
+  assert.equal(getElement('#promotedSection').hidden,true);
+  assert.equal(getElement('#candidateSection').hidden,false);
+  vm.runInContext("selectView('phase2')",context);
+  assert.match(getElement('#storyGrid').innerHTML,/Setup failure/);
+  vm.runInContext("selectView('candidates')",context);
+  assert.match(getElement('#candidateGrid').innerHTML,/Uncertain opinion/);
+  assert.doesNotMatch(getElement('#candidateGrid').innerHTML,/Needs attention/);
+});
+
+test('empty categories remain visible and clearing filters keeps the selected category', () => {
+  const {context,getElement}=loadApp();
+  vm.runInContext("selectView('phase2');state.filters.setup='failed';state.query='absent';render()",context);
   assert.equal(getElement('#emptyState').hidden,false);
+  assert.equal(getElement('#promotedSection').hidden,false);
+  assert.equal(getElement('#viewHeading').textContent,'Phase 2');
+  vm.runInContext('clearFilters()',context);
+  assert.equal(vm.runInContext('state.view',context),'phase2');
+  assert.equal(vm.runInContext('state.query',context),'');
+  assert.equal(vm.runInContext('state.filters.setup',context),'');
 });
 
+test('source management filters remain isolated from work categories', () => {
+  const {context,getElement}=loadApp();
+  vm.runInContext(`state.sources=[{name:'Disabled',active:false},{name:'Active',active:true}];
+    selectView('sources');state.filters.sourceStatus='disabled';render()`,context);
+  assert.match(getElement('#sourceManagementGrid').innerHTML,/Disabled/);
+  assert.doesNotMatch(getElement('#sourceManagementGrid').innerHTML,/>Active</);
+  assert.equal(getElement('#courtPipelineStatus').hidden,false);
+  vm.runInContext("selectView('candidates')",context);
+  assert.equal(getElement('#sourceManagementSection').hidden,true);
+  assert.equal(getElement('#courtPipelineStatus').hidden,true);
+  assert.equal(vm.runInContext('state.filters.sourceStatus',context),'');
+});
 
 test('Phase 2 promotion stays in dashboard and setup failures expose a safe retry', async () => {
   const { context } = loadApp();
