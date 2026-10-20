@@ -8,6 +8,9 @@ import threading
 import time
 from dataclasses import dataclass
 from email.utils import parsedate_to_datetime
+from datetime import datetime, timedelta
+from urllib.parse import urlencode
+from zoneinfo import ZoneInfo
 from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 
@@ -76,7 +79,7 @@ def _retry_delay(response_headers, attempt: int) -> float:
 
 
 def _headers(url: str, policy: FetchPolicy) -> dict[str, str]:
-    headers = {"User-Agent": policy.user_agent, "Accept": "text/html, application/xhtml+xml, application/json, application/rss+xml, application/atom+xml, application/xml, text/xml"}
+    headers = {"User-Agent": policy.user_agent, "Accept": "application/pdf, text/html, application/xhtml+xml, application/json, application/rss+xml, application/atom+xml, application/xml, text/xml"}
     if _host(url) == "www.sec.gov":
         contact = os.environ.get(policy.contact_env, "").strip()
         if contact:
@@ -95,9 +98,18 @@ def _headers(url: str, policy: FetchPolicy) -> dict[str, str]:
     return headers
 
 
-def fetch_url_content(url: str, *, source_config: str | dict | None = None, timeout: int = 20) -> tuple[bytes, str]:
+def fetch_resource(url: str, *, source_config: str | dict | None = None, timeout: int = 20, max_bytes: int = 2_000_000) -> tuple[bytes, str, str]:
     policy = policy_for(url, source_config)
     request_url = _adapt_endpoint(url, policy)
+    config = json.loads(source_config or "{}") if isinstance(source_config, str) else (source_config or {})
+    form = None
+    if config.get('ca2_date_search') and '/dtSearch/' in request_url:
+        end = datetime.now(ZoneInfo('America/New_York')).date()
+        start = end - timedelta(days=30)
+        form = {'index':'*{aa12e167958cdbcaa709fa14b9161a4a} OPN','request':'','searchType':'allwords',
+                'cmd':'search','SearchForm':'%%SearchForm%%','dtsPdfWh':'*','OrigSearchForm':'/decisions.html',
+                'autoStopLimit':'5000','pageSize':'1000','sort':'date','StartDate':str(start),'EndDate':str(end),
+                'fileConditions':f'xfilter(date "{start:%Y/%m/%d}~~{end:%Y/%m/%d}")','booleanConditions':''}
     key = f"{_host(request_url)}:{policy.endpoint_adapter}"
     last_error: Exception | None = None
     for attempt in range(1, max(1, policy.max_attempts) + 1):
@@ -106,14 +118,17 @@ def fetch_url_content(url: str, *, source_config: str | dict | None = None, time
             if wait > 0:
                 time.sleep(wait)
             _LAST_REQUEST[key] = time.monotonic()
-        request = Request(request_url, headers=_headers(request_url, policy))
+        request = Request(request_url, data=urlencode(form).encode() if form else None, headers=_headers(request_url, policy))
         try:
             with urlopen(request, timeout=timeout) as response:
                 content_type = response.headers.get_content_type()
                 allowed = {"text/html", "application/xhtml+xml", "application/json", "application/pdf", "application/rss+xml", "application/atom+xml", "application/xml", "text/xml"}
                 if content_type not in allowed:
                     raise ValueError(f"unsupported content type: {content_type}")
-                return response.read(2_000_000), content_type
+                body = response.read(max_bytes + 1)
+                if len(body) > max_bytes:
+                    raise ValueError(f"Source exceeds {max_bytes} byte limit; content was not truncated")
+                return body, content_type, response.geturl() if hasattr(response, "geturl") else request_url
         except HTTPError as exc:
             last_error = exc
             if exc.code not in {429, 500, 502, 503, 504} or attempt >= policy.max_attempts:
@@ -125,6 +140,11 @@ def fetch_url_content(url: str, *, source_config: str | dict | None = None, time
                 raise
             time.sleep(min(60.0, 2.0 ** (attempt - 1)))
     raise last_error or RuntimeError("source fetch failed")
+
+
+def fetch_url_content(url: str, *, source_config: str | dict | None = None, timeout: int = 20) -> tuple[bytes, str]:
+    body, content_type, _ = fetch_resource(url, source_config=source_config, timeout=timeout)
+    return body, content_type
 
 
 def fetch_url(url: str, *, source_config: str | dict | None = None, timeout: int = 20) -> str:

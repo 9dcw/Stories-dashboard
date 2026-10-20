@@ -94,3 +94,29 @@ def test_retry_after_is_honored_for_rate_limit(monkeypatch):
     source_fetch._LAST_REQUEST.clear()
     assert source_fetch.fetch_url("https://example.test/story") == "<p>ok</p>"
     assert calls == [0.0]
+
+
+def test_court_fetch_keeps_redirect_destination_and_rejects_truncation(monkeypatch):
+    response = FakeResponse('123456', 'application/pdf')
+    response.geturl = lambda: 'https://cdn.ca9.uscourts.gov/final.pdf'
+    monkeypatch.setattr(source_fetch, 'urlopen', lambda *a, **kw: response)
+    body, kind, final = source_fetch.fetch_resource('https://www.ca9.uscourts.gov/a', max_bytes=10)
+    assert (body, kind, final) == (b'123456', 'application/pdf', 'https://cdn.ca9.uscourts.gov/final.pdf')
+    import pytest
+    with pytest.raises(ValueError, match='not truncated'):
+        source_fetch.fetch_resource('https://www.ca9.uscourts.gov/a', max_bytes=5)
+
+
+def test_second_circuit_uses_date_filtered_post(monkeypatch):
+    from urllib.parse import parse_qs
+    requests = []
+    def opener(request, timeout):
+        requests.append(request)
+        return FakeResponse('<html>Results</html>')
+    monkeypatch.setattr(source_fetch, 'urlopen', opener)
+    source_fetch.fetch_resource('https://ww3.ca2.uscourts.gov/dtSearch/dtisapi6.dll',
+        source_config={'ca2_date_search': True})
+    assert requests[0].get_method() == 'POST'
+    fields = parse_qs(requests[0].data.decode())
+    assert fields['cmd'] == ['search'] and fields['pageSize'] == ['1000']
+    assert fields['fileConditions'][0].startswith('xfilter(date "')

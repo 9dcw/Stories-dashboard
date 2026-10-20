@@ -223,3 +223,7 @@ python3 scripts/story_cli.py export --output data/stories.json
 ```
 
 Discovery failures are recorded per proposal and do not interrupt `scripts/daily_refresh.py`. Enrolled sources are ordinary rows in `sources` and therefore participate in the existing polling, gist, and export workflow. The discovery process performs listing tests only; it does not backfill historical publications.
+
+## Court-only daily intake
+
+See [daily court polling](docs/court-polling.md) for the exclusion-only policy, schedule, dashboard status, source audit, and operational commands.

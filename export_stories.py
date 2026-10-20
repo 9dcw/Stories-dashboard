@@ -49,6 +49,8 @@ def phase2_action_url(
 
 def build_read_model(store: StoryStore, generated_at: str | None = None) -> dict:
     """Build a deterministic view from SQLite; promoted Phase 2 work is not a candidate."""
+    from court_pipeline import read_court_state
+    screenings, court_pipeline, court_sources = read_court_state(store)
     project_rows = store.list_stories()
     promoted_item_ids = {
         row["origin_item_id"] for row in project_rows if row["status"] in PROMOTED_STORY_STATUSES
@@ -65,6 +67,7 @@ def build_read_model(store: StoryStore, generated_at: str | None = None) -> dict
             "date": row["published_at"] or row["first_seen_at"], "source_link": source_link,
             "status": row["status"], "gist": row["gist"],
             "summary_status": row["summary_status"],
+            "screening": screenings.get(row["item_id"]),
             "dismissal_action_url": f"https://t.me/{TELEGRAM_BOT_USERNAME}?" + urlencode({
                 "text": f"Dismiss story item {row['item_id']} from the Stories Dashboard: {row['headline']}. "
                         "Set its status to DISMISSED, preserve the record, and refresh the dashboard export. "
@@ -105,6 +108,7 @@ def build_read_model(store: StoryStore, generated_at: str | None = None) -> dict
             "collector_type": row["collector_type"], "active": bool(row["active"]),
             "last_success_at": row["last_success_at"], "last_error": row["last_error"] or "",
             "publications_last_30_days": row["publications_last_30_days"],
+            "court_poll": court_sources.get(row["source_id"]),
             "telegram_action_label": f"{action} via Telegram",
             "telegram_action_url": telegram_action_url,
         })
@@ -118,6 +122,7 @@ def build_read_model(store: StoryStore, generated_at: str | None = None) -> dict
     } for row in store.list_source_candidates()]
     return {
         "generated_at": export_time, "recent_candidates": candidates, "stories": stories,
+        "court_pipeline": court_pipeline,
         "sources": sources, "source_proposals": proposals, "coverage": store.coverage_report(),
     }
 

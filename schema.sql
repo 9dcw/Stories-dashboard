@@ -117,3 +117,28 @@ CREATE TABLE IF NOT EXISTS discovery_runs (
     sources_failed INTEGER NOT NULL DEFAULT 0,
     summary TEXT NOT NULL DEFAULT '{}'
 );
+
+
+-- Court screening is independent of editorial dismissal/promotion state.
+CREATE TABLE IF NOT EXISTS court_documents (
+ item_id INTEGER PRIMARY KEY REFERENCES items(item_id), document_json TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS court_screenings (
+ item_id INTEGER PRIMARY KEY REFERENCES items(item_id),
+ decision TEXT NOT NULL CHECK(decision IN ('PASS','EXCLUDED','ERROR')),
+ reason_code TEXT NOT NULL DEFAULT '', needs_review INTEGER NOT NULL DEFAULT 0,
+ result_json TEXT NOT NULL, content_hash TEXT NOT NULL DEFAULT '', rule_version TEXT NOT NULL,
+ screened_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS court_runs (
+ run_id INTEGER PRIMARY KEY, started_at TEXT NOT NULL, finished_at TEXT,
+ status TEXT NOT NULL, stats_json TEXT NOT NULL DEFAULT '{}', error TEXT NOT NULL DEFAULT ''
+);
+CREATE TABLE IF NOT EXISTS court_source_runs (
+ run_id INTEGER NOT NULL REFERENCES court_runs(run_id), source_id INTEGER NOT NULL REFERENCES sources(source_id),
+ result_json TEXT NOT NULL, PRIMARY KEY(run_id,source_id)
+);
+CREATE TABLE IF NOT EXISTS court_schedule (
+ singleton INTEGER PRIMARY KEY CHECK(singleton=1), enabled INTEGER NOT NULL DEFAULT 0,
+ timezone TEXT NOT NULL DEFAULT 'Europe/Berlin', hour INTEGER NOT NULL DEFAULT 7, minute INTEGER NOT NULL DEFAULT 0
+);

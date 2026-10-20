@@ -1,0 +1,281 @@
+{
+  "checked_at": "2026-10-20",
+  "scope": "All 13 active court listings and first document per nonempty listing; not an exhaustive recall benchmark",
+  "sources": [
+    {
+      "source_id": 36,
+      "name": "D.C. Circuit opinions",
+      "url": "https://media.cadc.uscourts.gov/opinions/rss.xml",
+      "documents_found": 15,
+      "sample_links": [
+        {
+          "title": "23-3233 | USA v. James Trankle",
+          "url": "https://media.cadc.uscourts.gov/opinions/docs/2026/10/23-3233-2197329.pdf"
+        },
+        {
+          "title": "25-1060 | Basin Electric Power Cooperative v. FERC",
+          "url": "https://media.cadc.uscourts.gov/opinions/docs/2026/10/25-1060.pdf"
+        },
+        {
+          "title": "25-7130 | Solon Phillips v. WCP Fund I LLC",
+          "url": "https://media.cadc.uscourts.gov/opinions/docs/2026/09/25-7130-2195382.pdf"
+        }
+      ],
+      "sample_pages": 33,
+      "sample_characters": 59750,
+      "sample_nonprecedential": null
+    },
+    {
+      "source_id": 33,
+      "name": "Eighth Circuit opinions",
+      "url": "https://ecf.ca8.uscourts.gov/rss/ca8opns_rss.xml",
+      "documents_found": 3,
+      "sample_links": [
+        {
+          "title": "25-2870     United States v.  Roberto Orellana",
+          "url": "https://ecf.ca8.uscourts.gov/opndir/26/10/252870P.pdf"
+        },
+        {
+          "title": "25-2954     Charlie Foster v.  United States",
+          "url": "https://ecf.ca8.uscourts.gov/opndir/26/10/252954P.pdf"
+        },
+        {
+          "title": "26-1425     United States v.  Arryel Waters",
+          "url": "https://ecf.ca8.uscourts.gov/opndir/26/10/261425U.pdf"
+        }
+      ],
+      "sample_pages": 7,
+      "sample_characters": 14001,
+      "sample_nonprecedential": null
+    },
+    {
+      "source_id": 35,
+      "name": "Eleventh Circuit published opinions",
+      "url": "https://media.ca11.uscourts.gov/opinions/rss/pubopnsfeed.php",
+      "documents_found": 100,
+      "sample_links": [
+        {
+          "title": "Pen American Center, Inc., et al v. Kevin Adams, et al",
+          "url": "https://media.ca11.uscourts.gov/opinions/pub/files/202513298.pdf"
+        },
+        {
+          "title": "NetChoice v. Attorney General, State of Georgia",
+          "url": "https://media.ca11.uscourts.gov/opinions/pub/files/202512436.pdf"
+        },
+        {
+          "title": "Computer & Communications Industry Association, et al v. Attorney General, State of Florida",
+          "url": "https://media.ca11.uscourts.gov/opinions/pub/files/202511881.pdf"
+        }
+      ],
+      "sample_pages": 46,
+      "sample_characters": 90785,
+      "sample_nonprecedential": null
+    },
+    {
+      "source_id": 37,
+      "name": "Federal Circuit opinions and orders",
+      "url": "https://www.cafc.uscourts.gov/category/opinion-order/feed",
+      "error": "Feed timed out during final audit; retained active and retried daily"
+    },
+    {
+      "source_id": 30,
+      "name": "Fifth Circuit opinions",
+      "url": "https://www.ca5.uscourts.gov/rss.aspx?Feed=Opinions&Style=Detail&Which=All",
+      "documents_found": 44,
+      "sample_links": [
+        {
+          "title": "25-11343  Reyna v. Thompson",
+          "url": "https://www.ca5.uscourts.gov/opinions/unpub/25/25-11343.0.pdf"
+        },
+        {
+          "title": "26-50352  Webb v. Johnston",
+          "url": "https://www.ca5.uscourts.gov/opinions/unpub/26/26-50352.0.pdf"
+        },
+        {
+          "title": "26-30168  USA v. Brown",
+          "url": "https://www.ca5.uscourts.gov/opinions/unpub/26/26-30168.0.pdf"
+        }
+      ],
+      "sample_pages": 2,
+      "sample_characters": 3558,
+      "sample_nonprecedential": {
+        "page": 1,
+        "quote": "* This opinion is not designated for publication. See 5th Cir. R. 47.5.",
+        "location": "publication-status footnote"
+      }
+    },
+    {
+      "source_id": 26,
+      "name": "First Circuit opinions",
+      "url": "https://www.ca1.uscourts.gov/opinions",
+      "documents_found": 15,
+      "sample_links": [
+        {
+          "title": "25-2027 Morillo v. US",
+          "url": "https://www.ca1.uscourts.gov/sites/ca1/files/opnfiles/25-2027P-01A.pdf"
+        },
+        {
+          "title": "25-2238 Alawieh v. Mullin",
+          "url": "https://www.ca1.uscourts.gov/sites/ca1/files/opnfiles/25-2238E-01A.pdf"
+        },
+        {
+          "title": "24-1447 Alvarado-Hernandez v. Blanche",
+          "url": "https://www.ca1.uscourts.gov/sites/ca1/files/opnfiles/24-1447P-01A.pdf"
+        }
+      ],
+      "sample_pages": 36,
+      "sample_characters": 56813,
+      "sample_nonprecedential": null
+    },
+    {
+      "source_id": 29,
+      "name": "Fourth Circuit opinions",
+      "url": "https://www.ca4.uscourts.gov/opinions/recent-opinions",
+      "documents_found": 159,
+      "sample_links": [
+        {
+          "title": "https://www.ca4.uscourts.gov/opinions/201766A.P.pdf",
+          "url": "https://www.ca4.uscourts.gov/opinions/201766A.P.pdf"
+        },
+        {
+          "title": "https://www.ca4.uscourts.gov/opinions/241099.P.pdf",
+          "url": "https://www.ca4.uscourts.gov/opinions/241099.P.pdf"
+        },
+        {
+          "title": "https://www.ca4.uscourts.gov/opinions/251858.P.pdf",
+          "url": "https://www.ca4.uscourts.gov/opinions/251858.P.pdf"
+        }
+      ],
+      "sample_pages": 17,
+      "sample_characters": 29328,
+      "sample_nonprecedential": null
+    },
+    {
+      "source_id": 20,
+      "name": "Ninth Circuit opinions",
+      "url": "https://www.ca9.uscourts.gov/opinions/index.xml",
+      "documents_found": 25,
+      "sample_links": [
+        {
+          "title": "USA V. ANDERSON",
+          "url": "https://cdn.ca9.uscourts.gov/datastore/opinions/2026/10/19/24-2385.pdf"
+        },
+        {
+          "title": "WHITFIELD V. MULLIN",
+          "url": "https://cdn.ca9.uscourts.gov/datastore/opinions/2026/10/16/25-5220.pdf"
+        },
+        {
+          "title": "USA V. LE",
+          "url": "https://cdn.ca9.uscourts.gov/datastore/opinions/2026/10/15/23-1814.pdf"
+        }
+      ],
+      "sample_pages": 11,
+      "sample_characters": 16605,
+      "sample_nonprecedential": null
+    },
+    {
+      "source_id": 27,
+      "name": "Second Circuit opinions",
+      "url": "https://ww3.ca2.uscourts.gov/dtSearch/dtisapi6.dll",
+      "documents_found": 9,
+      "sample_links": [
+        {
+          "title": "25-2357",
+          "url": "https://ww3.ca2.uscourts.gov/decisions/OPN/25-2357_complete_opn.pdf"
+        },
+        {
+          "title": "22-1691-cr",
+          "url": "https://ww3.ca2.uscourts.gov/decisions/OPN/22-1691_opn.pdf"
+        },
+        {
+          "title": "25-2763-cv",
+          "url": "https://ww3.ca2.uscourts.gov/decisions/OPN/25-2763_complete_opn_.pdf"
+        }
+      ],
+      "sample_pages": 30,
+      "sample_characters": 43672,
+      "sample_nonprecedential": null
+    },
+    {
+      "source_id": 32,
+      "name": "Seventh Circuit opinions",
+      "url": "https://media.ca7.uscourts.gov/cgi-bin/OpinionsWeb/processWebInputExternal.pl?Time=month&Author=any&Case=any&OpsOnly=yes&Submit=Submit",
+      "documents_found": 33,
+      "sample_links": [
+        {
+          "title": "Final Opinion",
+          "url": "https://media.ca7.uscourts.gov/cgi-bin/OpinionsWeb/processWebInputExternal.pl?Submit=Display&Path=Y2026/D10-15/C:23-2890:J:Lee:aut:T:fnOp:N:3626696:S:0"
+        },
+        {
+          "title": "Final Opinion",
+          "url": "https://media.ca7.uscourts.gov/cgi-bin/OpinionsWeb/processWebInputExternal.pl?Submit=Display&Path=Y2026/D10-15/C:23-2890:J:Jackson-Akiwumi:con:T:fnOp:N:3626696:S:0"
+        },
+        {
+          "title": "Final Opinion",
+          "url": "https://media.ca7.uscourts.gov/cgi-bin/OpinionsWeb/processWebInputExternal.pl?Submit=Display&Path=Y2026/D10-14/C:22-3043:J:Sykes:aut:T:fnOp:N:3625246:S:0"
+        }
+      ],
+      "sample_pages": 40,
+      "sample_characters": 69874,
+      "sample_nonprecedential": null
+    },
+    {
+      "source_id": 31,
+      "name": "Sixth Circuit opinions",
+      "url": "https://www.opn.ca6.uscourts.gov/opinions/",
+      "documents_found": 27,
+      "sample_links": [
+        {
+          "title": "26a0397n.06",
+          "url": "https://www.opn.ca6.uscourts.gov/opinions.pdf/26a0397n-06.pdf"
+        },
+        {
+          "title": "26a0398n.06",
+          "url": "https://www.opn.ca6.uscourts.gov/opinions.pdf/26a0398n-06.pdf"
+        },
+        {
+          "title": "26a0283p.06",
+          "url": "https://www.opn.ca6.uscourts.gov/opinions.pdf/26a0283p-06.pdf"
+        }
+      ],
+      "sample_pages": 8,
+      "sample_characters": 17505,
+      "sample_nonprecedential": {
+        "page": 1,
+        "quote": "NOT RECOMMENDED FOR PUBLICATION",
+        "location": "first-page status notice"
+      }
+    },
+    {
+      "source_id": 34,
+      "name": "Tenth Circuit opinions",
+      "url": "https://www.ca10.uscourts.gov/opinions/new/daily_decisions.rss",
+      "documents_found": 0,
+      "sample_links": [],
+      "status": "EMPTY_REQUIRES_MONITORING"
+    },
+    {
+      "source_id": 28,
+      "name": "Third Circuit precedential opinions",
+      "url": "https://www2.ca3.uscourts.gov/recentop/week/recopinions.xml",
+      "documents_found": 16,
+      "sample_links": [
+        {
+          "title": "26-2072, Filed 10/19/2026",
+          "url": "https://www2.ca3.uscourts.gov/opinarch/262072p.pdf"
+        },
+        {
+          "title": "25-2134, Filed 10/14/2026",
+          "url": "https://www2.ca3.uscourts.gov/opinarch/252134p.pdf"
+        },
+        {
+          "title": "25-2006, Filed 10/14/2026",
+          "url": "https://www2.ca3.uscourts.gov/opinarch/252006p.pdf"
+        }
+      ],
+      "sample_pages": 29,
+      "sample_characters": 49203,
+      "sample_nonprecedential": null
+    }
+  ]
+}

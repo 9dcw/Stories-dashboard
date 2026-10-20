@@ -15,7 +15,7 @@ const state={
   csrfExpires:0,
   googleClientId:'',
   stories:[],candidates:[],sources:[],proposals:[],
-  query:'', filters:{kind:'candidate',phase:'Candidate',lane:'B',source:'',dismissed:'hide',summary:'COMPLETE',activity:'',sourceStatus:''},
+  query:'', filters:{kind:'candidate',phase:'Candidate',lane:'B',source:'',dismissed:'hide',summary:'',screening:'retained',activity:'',sourceStatus:''},
   favorites:new Set(JSON.parse(localStorage.getItem('stories-favorites')||'[]')),
   recent:JSON.parse(localStorage.getItem('stories-recent')||'[]'),
   pending:{},               // item_id → true during API call
@@ -153,9 +153,11 @@ async function loadDashboard(){
     state.stories=d.stories||[];
     state.candidates=(d.recent_candidates||[]).filter(c=>c.status!=='IGNORED');
     state.sources=d.sources||[];
+    state.courtPipeline=d.court_pipeline;
     state.proposals=d.source_proposals||[];
     const gen=d.generated_at||new Date().toISOString();
     $('#updatedAt').textContent=`Live dashboard · ${gen.slice(0,16).replace('T',' ')}`;
+    renderCourtPipeline(d.court_pipeline);
     renderFilters();
     render();
   }catch(e){
@@ -167,7 +169,7 @@ async function loadDashboard(){
 // ── Render helpers (preserving original card layouts) ─────────────
 const laneLabels={A:'Enforcement & regulatory actions',B:'Courts & legal opinions',C:'Public agencies & public-interest news',D:'Insurance industry & risk news'};
 function storyStage(s){return s.stage||s.status||'Phase 2'}
-const defaultFilters={kind:'candidate',phase:'Candidate',lane:'B',source:'',dismissed:'hide',summary:'COMPLETE',activity:'',sourceStatus:''};
+const defaultFilters={kind:'candidate',phase:'Candidate',lane:'B',source:'',dismissed:'hide',summary:'',screening:'retained',activity:'',sourceStatus:''};
 function filterSelect(key,label,options){return `<label>${label}<select data-global-filter="${key}">${options.map(([value,text])=>`<option value="${esc(value)}"${state.filters[key]===value?' selected':''}>${esc(text)}</option>`).join('')}</select></label>`}
 function renderFilters(){
   const names=[...new Set([...state.sources.map(s=>s.name),...state.candidates.map(s=>s.source),...state.stories.map(s=>s.source),...state.proposals.map(s=>s.name)].filter(Boolean))].sort();
@@ -177,6 +179,7 @@ function renderFilters(){
     filterSelect('lane','Content area',[['','All content areas'],...Object.entries(laneLabels)]),
     filterSelect('source','Source',[['','All sources'],...names.map(n=>[n,n])]),
     filterSelect('dismissed','Dismissed',[['hide','Hide dismissed'],['include','Include dismissed'],['only','Dismissed only']]),
+    filterSelect('screening','Opinion screening',[['retained','Retained (including uncertain)'],['','All screening results'],['EXCLUDED','Excluded'],['review','Needs review'],['pending','Not screened']]),
     filterSelect('summary','Summary',[['','All summary states'],['COMPLETE','Complete'],['PENDING','Pending'],['FAILED','Failed'],['SKIPPED','Skipped']]),
     filterSelect('activity','Activity',[['','All activity'],['recent','Recently opened'],['favorites','Favorites']]),
     filterSelect('sourceStatus','Source status',[['','All source statuses'],['active','Active'],['disabled','Disabled']]),
@@ -197,6 +200,13 @@ function matchesRecord(record,kind){
   if(f.lane&&f.lane!==lane)return false;
   if(f.source&&f.source!==source)return false;
   if(f.dismissed==='hide'&&dismissed||f.dismissed==='only'&&!dismissed)return false;
+  if(kind==='candidate'){
+    const s=record.screening;
+    if(f.screening==='retained'&&s?.decision==='EXCLUDED')return false;
+    if(f.screening==='EXCLUDED'&&s?.decision!=='EXCLUDED')return false;
+    if(f.screening==='review'&&!s?.needs_review)return false;
+    if(f.screening==='pending'&&s)return false;
+  }
   if(f.summary&&(kind!=='candidate'||(record.summary_status||'PENDING')!==f.summary))return false;
   if(f.activity&&(kind!=='story'||!(f.activity==='recent'?state.recent.includes(id):state.favorites.has(id))))return false;
   if(f.sourceStatus&&(kind!=='source'||(record.active?'active':'disabled')!==f.sourceStatus))return false;
@@ -237,7 +247,7 @@ function candidateCard(c){
     actions+=`${action(c.source_link,'Source','primary')}`;
     if(c.can_promote_to_phase2!==false)actions+=`<button class="action telegram phase2-action btn-phase2" data-phase2-item="${esc(c.item_id)}"${state.pending[c.item_id]?' disabled':''}>${state.pending[c.item_id]?'Starting Phase 2…':'Promote to Phase 2'}</button>`;
   }
-  return `<article class="candidate-card"><div class="candidate-top"><span class="candidate-summary-status ${summaryStatus.toLowerCase()}">${esc(summaryStatus)}</span><span class="candidate-lane">${esc(laneLabels[c.lane]||'Other content')}</span></div><h3 class="candidate-display-headline">${esc(display)}</h3><details class="candidate-original"><summary>Original headline</summary><p>${esc(c.headline)}</p></details><p class="candidate-meta"><strong>${esc(c.source)}</strong> · ${esc(c.date||'Undated')} · item ${esc(c.item_id)}</p>${gist}<div class="actions">${actions}</div></article>`;
+  return `<article class="candidate-card"><div class="candidate-top"><span class="candidate-summary-status ${summaryStatus.toLowerCase()}">${esc(summaryStatus)}</span><span class="candidate-lane">${esc(laneLabels[c.lane]||'Other content')}</span></div><h3 class="candidate-display-headline">${esc(display)}</h3><details class="candidate-original"><summary>Original headline</summary><p>${esc(c.headline)}</p></details><p class="candidate-meta"><strong>${esc(c.source)}</strong> · ${esc(c.date||'Undated')} · item ${esc(c.item_id)}</p>${gist}${screeningDetail(c.screening)}<div class="actions">${actions}</div></article>`;
 }
 
 function render(){
@@ -264,7 +274,19 @@ function render(){
 
 function renderSources(d){const proposals=d.source_proposals||[];const c=d.coverage||{};$('#sourceProposalCount').textContent=`${proposals.length} proposals · approval remains CLI-only`;const laneCounts=(c.active_by_lane||[]).map(x=>`<span><b>Lane ${esc(x.lane)}</b> ${x.count} active</span>`).join('');$('#coverageGrid').innerHTML=laneCounts||'<span>No coverage statistics yet</span>';$('#sourceProposalGrid').innerHTML=proposals.map(p=>`<article class="source-proposal"><h3>${esc(p.name)}</h3><p>${esc(p.jurisdiction)} · Lane ${esc(p.lane)} · ${esc(p.publication_type||p.collector_type||'publication source')}</p><p class="muted">${esc(p.validation_status)} · ${esc(p.status)}</p>${p.source_url?action(p.source_url,'Open source','primary'):''}<p>${esc(p.reason)}</p></article>`).join('')}
 
-function renderSourceManagement(shown){$('#sourceManagementCount').textContent=`${shown.length} of ${state.sources.length} sources`;$('#sourceManagementGrid').innerHTML=shown.map(s=>`<article class="source-management-card"><div class="source-management-top"><span class="source-status ${s.active?'active':'disabled'}">${s.active?'Active':'Disabled'}</span><span class="muted">ID ${esc(s.source_id)}</span></div><h3>${esc(s.name)}</h3><p>${esc(s.jurisdiction)} · ${esc(laneLabels[s.lane]||'Other content')} · ${esc(s.collector_type||s.source_type)}</p><p><a href="${esc(s.publication_url||s.source_url)}" target="_blank" rel="noreferrer">${esc(s.publication_url||s.source_url)} ↗</a></p><p>Last successful poll: ${esc(s.last_success_at||'Never')}</p><p>Publications in last 30 days: <strong>${esc(s.publications_last_30_days)}</strong></p>${s.last_error?`<p class="source-error">Latest error: ${esc(s.last_error)}</p>`:''}<div class="actions"><a class="action telegram" href="${esc(s.telegram_action_url)}" target="_blank" rel="noreferrer">${esc(s.telegram_action_label)} ↗</a></div></article>`).join('')||'<p class="muted">No matching sources.</p>'}
+function renderSourceManagement(shown){$('#sourceManagementCount').textContent=`${shown.length} of ${state.sources.length} sources`;$('#sourceManagementGrid').innerHTML=shown.map(s=>`<article class="source-management-card"><div class="source-management-top"><span class="source-status ${s.active?'active':'disabled'}">${s.active?'Active':'Disabled'}</span><span class="muted">ID ${esc(s.source_id)}</span></div><h3>${esc(s.name)}</h3><p>${esc(s.jurisdiction)} · ${esc(laneLabels[s.lane]||'Other content')} · ${esc(s.collector_type||s.source_type)}</p><p><a href="${esc(s.publication_url||s.source_url)}" target="_blank" rel="noreferrer">${esc(s.publication_url||s.source_url)} ↗</a></p><p>Last successful poll: ${esc(s.last_success_at||'Never')}</p><p>Publications in last 30 days: <strong>${esc(s.publications_last_30_days)}</strong></p>${s.court_poll?`<p>Opinion extraction: ${esc(s.court_poll.status)} · ${esc(s.court_poll.documents_found)} links · ${esc(s.court_poll.new_items)} new</p>`:''}${s.last_error?`<p class="source-error">Latest error: ${esc(s.last_error)}</p>`:''}<div class="actions"><a class="action telegram" href="${esc(s.telegram_action_url)}" target="_blank" rel="noreferrer">${esc(s.telegram_action_label)} ↗</a></div></article>`).join('')||'<p class="muted">No matching sources.</p>'}
+
+function screeningDetail(s){
+  if(!s)return '<p class="muted">Opinion not screened yet</p>';
+  const label=s.decision==='EXCLUDED'?`Excluded: ${s.reason_code}`:s.decision==='ERROR'?'Document/screening error — retained':s.needs_review?'Passed — needs review':'Passed';
+  return `<details class="candidate-original"><summary>${esc(label)}</summary><p>${esc(s.reason||'')}</p>${(s.evidence||[]).map(e=>`<blockquote>Page ${esc(e.page)}: ${esc(e.quote)}</blockquote>`).join('')}<p class="muted">${esc(s.rule_version||'')} · ${esc(s.screened_at||'')}</p></details>`;
+}
+function renderCourtPipeline(p){
+  const el=$('#courtPipelineStatus');if(!el)return;
+  if(!p){el.textContent='Court polling schedule not configured';return;}
+  const s=p.schedule||{};const r=p.last_run;const n=r?.stats||{};
+  el.innerHTML=`<strong>Court opinions · exclusion-only screening</strong><p>${s.enabled?'Daily at '+String(s.hour).padStart(2,'0')+':'+String(s.minute).padStart(2,'0')+' '+esc(s.timezone):'Daily schedule inactive'} · Next: ${esc(s.next_run_at||'Not scheduled')}</p><p>${r?'Last run: '+esc(r.status)+' · started '+esc(r.started_at)+' · finished '+esc(r.finished_at||'in progress'):'No run recorded'}</p>${r?`<p>${esc(n.sources_checked||0)} sources · ${esc(n.sources_failed||0)} failed · ${esc(n.sources_empty||0)} empty · ${esc(n.documents_found||0)} opinion links · ${esc(n.new_items||0)} new · ${esc(n.passed||0)} passed · ${esc(n.excluded||0)} excluded · ${esc(n.errors||0)} errors · ${esc(n.pending||0)} pending</p>`:''}<p>Exclude explicit nonprecedential notices, immigration rulings, and violent-crime prosecutions or convictions. Everything else passes; uncertainty stays in the queue.</p>`;
+}
 
 // ── Dismiss panel ─────────────────────────────────────────────────
 let dismissTarget=null;
@@ -478,3 +500,5 @@ window.appTests=function(){
   return results;
 };
 setInterval(()=>{if(state.stories.some(s=>s.status==='Phase 2 pending'))loadDashboard();},5000);
+
+setInterval(()=>{if(state.courtPipeline?.last_run?.status==='RUNNING')loadDashboard();},15000);

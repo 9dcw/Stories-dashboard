@@ -17,3 +17,5 @@
 @media(max-width:600px){.candidate-grid{grid-template-columns:1fr}.dismiss-panel-inner{padding:20px 16px 28px}}
 
 .global-filter-panel{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:24px}.global-filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}.global-filters label{display:flex;flex-direction:column;gap:5px;font-size:12px;font-weight:700;color:var(--muted)}.global-filters select{width:100%;min-height:44px;padding:8px;border:1px solid var(--border);border-radius:9px;background:var(--surface);color:var(--text);font:inherit}.global-filter-panel p{margin:14px 0 0}@media(max-width:480px){.global-filters{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+.court-pipeline-status{padding:1.1rem;margin:1rem 0;border:1px solid var(--border,#334155);border-radius:12px}.court-pipeline-status p{margin:.5rem 0;font-size:.9rem}blockquote{margin:.6rem 0;padding-left:.8rem;border-left:2px solid #64748b;font-size:.85rem}

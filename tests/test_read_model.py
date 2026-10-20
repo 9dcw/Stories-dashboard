@@ -16,5 +16,5 @@ def test_build_read_model_preserves_static_export_contract(tmp_path):
     export_json(db, output, generated_at="2026-10-16T00:00:00Z")
 
     assert json.loads(output.read_text()) == payload
-    assert set(payload) == {"generated_at", "recent_candidates", "stories", "sources", "source_proposals", "coverage"}
+    assert set(payload) == {"generated_at", "recent_candidates", "stories", "sources", "source_proposals", "coverage", "court_pipeline"}
     assert "active_dismissal" not in payload["recent_candidates"][0]

@@ -1,0 +1,29 @@
+[
+  {
+    "source_id": 20,
+    "decision": "PASS",
+    "reason_code": "",
+    "needs_review": false,
+    "evidence": []
+  },
+  {
+    "source_id": 30,
+    "decision": "EXCLUDED",
+    "reason_code": "NONPRECEDENTIAL",
+    "needs_review": false,
+    "evidence": [
+      {
+        "page": 1,
+        "quote": "* This opinion is not designated for publication. See 5th Cir. R. 47.5.",
+        "location": "publication-status footnote"
+      }
+    ]
+  },
+  {
+    "source_id": 33,
+    "decision": "PASS",
+    "reason_code": "",
+    "needs_review": false,
+    "evidence": []
+  }
+]

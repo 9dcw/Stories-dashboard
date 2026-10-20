@@ -15,7 +15,7 @@ model = os.environ.get("STORY_GIST_MODEL", "gpt-5.6-luna")
 provider = os.environ.get("STORY_GIST_PROVIDER", "openai-codex")
 command = [
     "hermes", "chat", "-Q", "--source", "tool", "--max-turns", "1",
-    "--toolsets", "safe", "--provider", provider, "--model", model, "-q", prompt,
+    "--toolsets", os.environ.get("STORY_GIST_TOOLSETS", "safe"), "--provider", provider, "--model", model, "-q", prompt,
 ]
 image = os.environ.get("STORY_GIST_IMAGE", "").strip()
 if image:

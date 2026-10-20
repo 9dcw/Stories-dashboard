@@ -154,10 +154,10 @@ test('HTML escaping handles backslashes without emitting undefined', () => {
   assert.equal(vm.runInContext("esc('a\\\\b')", context), 'a&bsol;b');
 });
 
-test('default filters show complete court/legal candidates and reset restores those defaults', () => {
+test('default filters show retained court/legal candidates including pending summaries and reset restores those defaults', () => {
   const { context, getElement } = loadApp();
   assert.deepEqual(JSON.parse(JSON.stringify(vm.runInContext('defaultFilters', context))), {
-    kind:'candidate',phase:'Candidate',lane:'B',source:'',dismissed:'hide',summary:'COMPLETE',activity:'',sourceStatus:''
+    kind:'candidate',phase:'Candidate',lane:'B',source:'',dismissed:'hide',summary:'',screening:'retained',activity:'',sourceStatus:''
   });
   vm.runInContext(`
     state.sources=[{name:'Regulator',lane:'A',source_id:1,active:true}];
@@ -239,4 +239,19 @@ test('blocked Google SDK reports an actionable sign-in error', () => {
   getElement('script[src="https://accounts.google.com/gsi/client"]').listeners.error();
   assert.equal(getElement('#loginError').hidden,false);
   assert.match(getElement('#loginError').textContent,/could not load/);
+});
+
+
+test('opinion screening retains uncertain and failed items and exposes exclusions on demand', () => {
+  const {context}=loadApp();
+  const result=vm.runInContext(`(() => {
+    const base={item_id:1,lane:'B',status:'NEW'};
+    const pass=matchesRecord({...base,screening:{decision:'PASS',needs_review:true}},'candidate');
+    const error=matchesRecord({...base,screening:{decision:'ERROR',needs_review:true}},'candidate');
+    const excluded=matchesRecord({...base,screening:{decision:'EXCLUDED'}},'candidate');
+    state.filters.screening='EXCLUDED';
+    const audit=matchesRecord({...base,screening:{decision:'EXCLUDED'}},'candidate');
+    return {pass,error,excluded,audit};
+  })()`,context);
+  assert.deepEqual(JSON.parse(JSON.stringify(result)),{pass:true,error:true,excluded:false,audit:true});
 });
