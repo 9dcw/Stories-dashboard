@@ -1,0 +1,4 @@
+-r requirements.txt
+-c requirements.lock
+jsonschema>=4.23,<5
+google-api-python-client>=2.150,<3

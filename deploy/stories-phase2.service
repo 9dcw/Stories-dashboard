@@ -1,0 +1,21 @@
+[Unit]
+Description=Stories repository-controlled research worker
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=david
+WorkingDirectory=/srv/stories-dashboard
+EnvironmentFile=/etc/stories/phase2-worker.env
+ExecStart=/home/david/.hermes/hermes-agent/venv/bin/python /srv/stories-dashboard/scripts/phase2_worker.py
+Restart=on-failure
+RestartSec=10
+KillMode=control-group
+TimeoutStopSec=45
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

@@ -48,8 +48,16 @@ class RuntimeConfig:
     trust_x_forwarded_for: bool = False
     hermes_webhook_url: str = ''
     hermes_webhook_secret: str = ''
+    phase2_engine: str = 'legacy'
+    phase2_service_secret: str = ''
+    phase2_allowed_users: str = ''
+    phase2_chat_id: str = '-1003984316484'
 
     def __post_init__(self) -> None:
+        if self.phase2_engine not in {'legacy', 'repository'}:
+            raise ConfigError('PHASE2_ENGINE must be legacy or repository')
+        if self.phase2_engine == 'repository' and (len(self.phase2_service_secret)<32 or not self.phase2_allowed_users.strip() or '*' in self.phase2_allowed_users):
+            raise ConfigError('Repository Phase 2 requires a strong service secret and explicit Telegram users')
         db_path = Path(self.stories_db_path).expanduser().resolve()
         email = self.google_allowed_email.strip()
         origin = self.public_origin.strip()
@@ -129,4 +137,8 @@ class RuntimeConfig:
             trust_x_forwarded_for=raw_trust_proxy == "true",
             hermes_webhook_url=env.get('HERMES_WEBHOOK_URL', '').strip(),
             hermes_webhook_secret=env.get('HERMES_WEBHOOK_SECRET', '').strip(),
+            phase2_engine=env.get('PHASE2_ENGINE', 'legacy').strip(),
+            phase2_service_secret=env.get('PHASE2_SERVICE_SECRET', '').strip(),
+            phase2_allowed_users=env.get('PHASE2_ALLOWED_USERS', '').strip(),
+            phase2_chat_id=env.get('PHASE2_CHAT_ID', '-1003984316484').strip(),
         )

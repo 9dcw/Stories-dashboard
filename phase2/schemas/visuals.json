@@ -1,0 +1,202 @@
+{
+  "type": "object",
+  "properties": {
+    "summary": {
+      "type": "string",
+      "maxLength": 12000
+    },
+    "sections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "heading": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          },
+          "text": {
+            "type": "string",
+            "maxLength": 12000
+          }
+        },
+        "required": [
+          "heading",
+          "text"
+        ],
+        "additionalProperties": false
+      },
+      "maxItems": 100
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          },
+          "url": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          },
+          "publisher": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          },
+          "published_at": {
+            "type": "string",
+            "maxLength": 12000
+          },
+          "accessed_at": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          },
+          "locator": {
+            "type": "string",
+            "maxLength": 12000
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "url",
+          "publisher",
+          "published_at",
+          "accessed_at",
+          "locator"
+        ],
+        "additionalProperties": false
+      },
+      "maxItems": 100
+    },
+    "claims": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          },
+          "text": {
+            "type": "string",
+            "maxLength": 12000
+          },
+          "label": {
+            "enum": [
+              "Verified",
+              "Reported",
+              "Alleged",
+              "Inference",
+              "Unverified"
+            ]
+          },
+          "source_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1000
+            },
+            "maxItems": 100
+          },
+          "disposition": {
+            "type": "string",
+            "maxLength": 12000
+          },
+          "limitations": {
+            "type": "string",
+            "maxLength": 12000
+          }
+        },
+        "required": [
+          "id",
+          "text",
+          "label",
+          "source_ids",
+          "disposition",
+          "limitations"
+        ],
+        "additionalProperties": false
+      },
+      "maxItems": 100
+    },
+    "gaps": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "maxLength": 12000
+      },
+      "maxItems": 100
+    },
+    "visuals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string",
+            "maxLength": 12000
+          },
+          "source_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          },
+          "rights_status": {
+            "type": "string",
+            "maxLength": 12000
+          },
+          "intended_use": {
+            "type": "string",
+            "maxLength": 12000
+          },
+          "asset_status": {
+            "enum": [
+              "identified",
+              "obtained",
+              "illustration_proposed"
+            ]
+          },
+          "limitations": {
+            "type": "string",
+            "maxLength": 12000
+          }
+        },
+        "required": [
+          "description",
+          "source_id",
+          "rights_status",
+          "intended_use",
+          "asset_status",
+          "limitations"
+        ],
+        "additionalProperties": false
+      },
+      "maxItems": 100
+    }
+  },
+  "required": [
+    "summary",
+    "sections",
+    "sources",
+    "claims",
+    "gaps",
+    "visuals"
+  ],
+  "additionalProperties": false,
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "visuals v1"
+}

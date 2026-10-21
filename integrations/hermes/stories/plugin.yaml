@@ -1,0 +1,8 @@
+name: stories
+version: "1.0.0"
+description: Explicit Stories artifact operations through the repository backend
+provides_hooks:
+  - pre_gateway_dispatch
+  - pre_tool_call
+provides_tools:
+  - stories_read_artifact

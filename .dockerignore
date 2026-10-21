@@ -26,3 +26,4 @@ README.md
 .plans/
 *.md
 node_modules/
+!phase2/prompts/*.md

@@ -174,7 +174,7 @@ const categories=[['candidates','New Candidates'],['problems','Problems'],['phas
 function viewLabel(){return categories.find(([key])=>key===state.view)?.[1]||(state.view==='sources'?'Sources':'Discovery review')}
 function filterSelect(key,label,options){return `<label>${label}<select data-global-filter="${key}">${options.map(([value,text])=>`<option value="${esc(value)}"${state.filters[key]===value?' selected':''}>${esc(text)}</option>`).join('')}</select></label>`}
 function activeCandidate(c){return !['PROMOTED','IGNORED'].includes(c.status)&&!state.stories.some(s=>s.origin_item_id!=null&&String(s.origin_item_id)===String(c.item_id))}
-function setupStatus(s){return s.phase2_job?.state==='failed'?'failed':storyStage(s)==='Phase 2 pending'?'pending':'ready'}
+function setupStatus(s){return ['failed','blocked'].includes(s.phase2_job?.state)?'failed':(['queued','running'].includes(s.phase2_job?.state)||storyStage(s)==='Phase 2 pending')?'pending':'ready'}
 function problemTypes(r,kind){
   if(kind==='candidate')return activeCandidate(r)&&r.status!=='DISMISSED'?[...(r.summary_status==='FAILED'?['summary']:[]),...(r.screening?.needs_review||r.screening?.decision==='ERROR'?['review']:[])]:[];
   if(kind==='story')return ['Phase 2','Phase 2 pending'].includes(storyStage(r))&&setupStatus(r)==='failed'?['setup']:[];
@@ -243,8 +243,8 @@ function storySort(a,b){const stageDiff=(stageOrder[storyStage(a)]??99)-(stageOr
 function action(url,label,kind=''){return url?`<a class="action ${kind}" href="${esc(url)}" target="_blank" rel="noreferrer">${label} ↗</a>`:''}
 function phase2Progress(s){
   const j=s.phase2_job;
-  if(!j||s.status!=='Phase 2 pending')return '';
-  return `<p role="status">Phase 2 setup: ${esc(j.state)} · ${esc(j.step)} · attempt ${esc(j.attempts)}${j.error?`<br>${esc(j.error)}`:''}</p>${j.state==='failed'?`<button class="action" data-phase2-retry="${esc(s.story_id)}">Retry Phase 2 setup</button>`:''}`;
+  if(!j||!['Phase 2 pending','Phase 2'].includes(s.status))return '';
+  return `<p role="status">Phase 2: ${esc(j.state)} · ${esc(j.step||'workspace')} · attempt ${esc(j.attempts||1)}${j.error?`<br>${esc(j.error)}`:''}</p>${['failed','blocked'].includes(j.state)?`<button class="action" data-phase2-retry="${esc(s.story_id)}">Retry Phase 2</button>`:''}${j.can_start_research&&s.origin_item_id?`<button class="action" data-phase2-item="${esc(s.origin_item_id)}">Start research</button>`:''}`;
 }
 async function retryPhase2(storyId){
   try{
@@ -534,6 +534,6 @@ window.appTests=function(){
   console.log(results.join('\n'));
   return results;
 };
-setInterval(()=>{if(state.stories.some(s=>s.status==='Phase 2 pending'))loadDashboard();},5000);
+setInterval(()=>{if(state.stories.some(s=>s.status==='Phase 2 pending'||['queued','running'].includes(s.phase2_job?.state)))loadDashboard();},5000);
 
 setInterval(()=>{if(state.courtPipeline?.last_run?.status==='RUNNING')loadDashboard();},15000);

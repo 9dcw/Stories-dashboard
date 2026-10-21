@@ -1,0 +1,15 @@
+{
+  "version": "initial.v1",
+  "engine": {"model": "gpt-6-luna", "provider": "openai-codex", "hermes_commit": "e2b2d486102"},
+  "budgets": {"concurrency": 2, "step_seconds": 1800, "iterations": 40, "output_tokens": 8000, "run_tokens": 600000, "step_tokens": 200000, "max_attempts": 3},
+  "artifacts": {
+    "hub": {"number": "00", "title": "Story Hub", "depends_on": []},
+    "angles": {"number": "01", "title": "Narrative Angles", "depends_on": []},
+    "plan": {"number": "02", "title": "Research Plan", "depends_on": ["angles"]},
+    "evidence": {"number": "03", "title": "Evidence & Sources", "depends_on": ["angles", "plan"]},
+    "treatment": {"number": "04", "title": "Video Treatment", "depends_on": ["angles", "evidence", "visuals"]},
+    "visuals": {"number": "05", "title": "Visual Assets", "depends_on": ["plan"]},
+    "review": {"number": "06", "title": "Quality Review", "depends_on": ["angles", "plan", "evidence", "treatment", "visuals"]}
+  },
+  "steps": ["angles", "plan", "evidence", "visuals", "treatment", "review"]
+}

@@ -4,6 +4,8 @@ import json
 import re
 import sqlite3
 import threading
+import hmac
+import time
 from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import NoReturn
@@ -15,7 +17,7 @@ from api.auth import (
     verify_google_credential,
 )
 from api.config import RuntimeConfig
-from api.models import DismissRequest, GoogleCredential, Phase2Callback, RestoreRequest
+from api.models import DismissRequest, GoogleCredential, Phase2Callback, RestoreRequest, EditorialEvent
 from api.phase2 import ArtifactValidationError, Phase2Jobs
 from api.read_model import build_live_read_model, sanitize_feedback
 from story_store import StoryStore
@@ -38,7 +40,7 @@ _PROCESS_GLOBAL_LOGIN_LIMITER = LoginRateLimiter(
 _PROCESS_LOGIN_VERIFICATION_GATE = threading.BoundedSemaphore(LOGIN_VERIFY_CONCURRENCY)
 
 _BODY_LIMITED_PATH = re.compile(
-    r"^/api/v1/(?:auth/(?:google|logout)|items/[^/]+/(?:dismiss|restore|phase2)|stories/[^/]+/phase2/(?:callback|retry))$"
+    r"^/api/v1/(?:auth/(?:google|logout)|items/[^/]+/(?:dismiss|restore|phase2)|stories/[^/]+/phase2/(?:callback|retry)|internal/phase2/dispatch)$"
 )
 STATIC_FILES = {
     "app.js": ROOT / "app.js",
@@ -140,12 +142,16 @@ def create_app(config: RuntimeConfig | None = None) -> FastAPI:
     """Application factory: configuration is intentionally loaded only when called."""
     runtime = config or RuntimeConfig.from_env()
     store = StoryStore(runtime.stories_db_path)
-    jobs = Phase2Jobs(store, runtime)
+    legacy_jobs = Phase2Jobs(store, runtime)
+    jobs = legacy_jobs
+    if runtime.phase2_engine == 'repository':
+        from phase2.operations import Phase2Operations
+        jobs = Phase2Operations(store)
 
     @asynccontextmanager
     async def lifespan(app):
         stop = threading.Event()
-        worker = threading.Thread(target=jobs.run, args=(stop,), daemon=True)
+        worker = threading.Thread(target=legacy_jobs.run, args=(stop,), daemon=True)
         if not runtime.testing:
             worker.start()
         try:
@@ -294,13 +300,14 @@ def create_app(config: RuntimeConfig | None = None) -> FastAPI:
             store.get_story(story_id)
             jobs.enqueue(story_id, retry=True)
             return {'phase2_job': jobs.public(story_id)}
-        except ValueError:
-            raise HTTPException(404, 'Story not found') from None
+        except ValueError as error:
+            code=404 if str(error).startswith('Unknown story_id') else 409
+            raise HTTPException(code, str(error)[:1000]) from None
 
     @app.post('/api/v1/stories/{story_id}/phase2/callback')
     def phase2_callback(story_id: int, payload: Phase2Callback):
         try:
-            jobs.callback(story_id, payload)
+            legacy_jobs.callback(story_id, payload)
             return {'story': _public_story(store.get_story(story_id))}
         except PermissionError:
             raise HTTPException(403, 'Invalid callback capability') from None
@@ -310,6 +317,30 @@ def create_app(config: RuntimeConfig | None = None) -> FastAPI:
             raise HTTPException(409, str(error)) from None
         except sqlite3.OperationalError as error:
             _database_unavailable(error)
+
+    @app.post('/api/v1/internal/phase2/dispatch')
+    async def editorial_dispatch(request: Request):
+        if runtime.phase2_engine != 'repository':
+            raise HTTPException(404, 'Not found')
+        # The public reverse proxy also denies this route; application auth is mandatory.
+        timestamp=request.headers.get('X-Stories-Timestamp','')
+        signature=request.headers.get('X-Stories-Signature','')
+        try:
+            fresh=abs(time.time()-int(timestamp))<=60
+        except ValueError:
+            fresh=False
+        from phase2.telegram import signature as sign, dispatch
+        body=await request.body()
+        if not fresh or not hmac.compare_digest(sign(runtime.phase2_service_secret,timestamp,body),signature):
+            raise HTTPException(403, 'Invalid service authentication')
+        try:
+            event=EditorialEvent.model_validate_json(body)
+            result=dispatch(jobs.store,event.model_dump(),{s.strip() for s in runtime.phase2_allowed_users.split(',')},runtime.phase2_chat_id)
+            return {'result':result}
+        except PermissionError:
+            raise HTTPException(403, 'Unauthorized editorial event') from None
+        except ValueError as error:
+            raise HTTPException(409, str(error)[:1000]) from None
 
     @app.get("/api/v1/items/{item_id}/feedback")
     def feedback(item_id: int, session: dict[str, str] = Depends(session_dependency)) -> list[dict]:
