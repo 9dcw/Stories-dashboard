@@ -1,0 +1,1 @@
+Translate narrative hypotheses into prioritized research questions. Identify claims needing verification, authoritative source targets, disconfirming evidence, investigations and visual requirements. Define bounded investigations with a question, priority, source targets and narrative purpose. Do not assume the recommended angle is true.

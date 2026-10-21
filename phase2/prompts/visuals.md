@@ -1,0 +1,1 @@
+Investigate image, footage, document-exhibit and explanatory-graphic candidates needed by the research plan. Record provenance, source links, rights or licensing status, access constraints and intended narrative usage. A candidate is not a downloaded asset. Do not claim files exist in Images; repository code manages the folder. Include unresolved licensing tasks.

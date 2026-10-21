@@ -37,3 +37,12 @@ class Phase2Callback(BaseModel):
     step: Literal['topic', 'drive', 'document', 'verification', 'complete', 'failed']
     error: str = Field(default='', max_length=1000)
     artifacts: dict[str, str] = Field(default_factory=dict, max_length=10)
+
+
+class EditorialEvent(BaseModel):
+    model_config = ConfigDict(extra='forbid')
+    chat_id: str = Field(min_length=1, max_length=40)
+    thread_id: str = Field(min_length=1, max_length=40)
+    user_id: str = Field(min_length=1, max_length=40)
+    message_id: str = Field(min_length=1, max_length=40)
+    text: str = Field(min_length=1, max_length=6000)

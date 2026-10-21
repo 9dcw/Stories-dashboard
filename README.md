@@ -227,3 +227,6 @@ Discovery failures are recorded per proposal and do not interrupt `scripts/daily
 ## Court-only daily intake
 
 See [daily court polling](docs/court-polling.md) for the exclusion-only policy, schedule, dashboard status, source audit, and operational commands.
+# Repository-controlled Phase 2
+
+The optional artifact workflow, worker, Telegram commands, migration procedure and rollout safeguards are documented in [docs/phase2-workflow.md](docs/phase2-workflow.md). It is enabled explicitly with `PHASE2_ENGINE=repository`; existing setup behavior remains the default until rollout.

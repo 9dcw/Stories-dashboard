@@ -34,6 +34,8 @@ class Phase2Jobs:
     def enqueue(self, story_id, retry=False):
         with self.store._connect() as db:
             db.execute('BEGIN IMMEDIATE')
+            if self._repository_owned(db,story_id):
+                return
             story = db.execute('SELECT status FROM story_projects WHERE story_id=?', (story_id,)).fetchone()
             if not story or story['status'] != 'Phase 2 pending':
                 return
@@ -60,6 +62,8 @@ class Phase2Jobs:
             row = db.execute('SELECT * FROM phase2_jobs WHERE story_id=?', (story_id,)).fetchone()
             if not row or not hmac.compare_digest(self.token(row['run_id']), payload.completion_token):
                 raise PermissionError('Invalid callback capability')
+            if self._repository_owned(db,story_id):
+                raise ValueError('Legacy callback cannot modify a repository-owned workspace')
             if row['state'] == 'complete':
                 return
             recovering = row['state'] == 'failed' and row['deadline'] > time.time()
@@ -89,7 +93,10 @@ class Phase2Jobs:
         with self.store._connect() as db:
             db.execute('BEGIN IMMEDIATE')
             # Recover a process death between promotion and outbox insertion.
-            for pending in db.execute("SELECT story_id FROM story_projects WHERE status='Phase 2 pending' AND story_id NOT IN (SELECT story_id FROM phase2_jobs)").fetchall():
+            recover_pending = getattr(self.config, 'phase2_engine', 'legacy') == 'legacy'
+            migrated_column=any(r[1]=='workspace_id' for r in db.execute('PRAGMA table_info(story_projects)'))
+            unmapped=' AND workspace_id IS NULL' if migrated_column else ''
+            for pending in (db.execute("SELECT story_id FROM story_projects WHERE status='Phase 2 pending' AND story_id NOT IN (SELECT story_id FROM phase2_jobs)"+unmapped).fetchall() if recover_pending else []):
                 db.execute("INSERT INTO phase2_jobs(story_id,run_id,state,due) VALUES (?,?,'queued',?)", (pending['story_id'], uuid.uuid4().hex, now))
             db.execute("UPDATE phase2_jobs SET state='failed',error='Webhook delivery failed after 5 attempts.' WHERE state='queued' AND attempts>=?", (MAX_ATTEMPTS,))
             db.execute("""UPDATE phase2_jobs SET state='failed',error='Setup timed out. Check existing artifacts before retrying.'
@@ -145,6 +152,13 @@ class Phase2Jobs:
             except Exception:
                 log.exception('Phase 2 worker iteration failed')
             stop.wait(2)
+
+    @staticmethod
+    def _repository_owned(db,story_id):
+        if not any(r[1]=='workspace_id' for r in db.execute('PRAGMA table_info(story_projects)')):
+            return False
+        row=db.execute('SELECT workspace_id FROM story_projects WHERE story_id=?',(story_id,)).fetchone()
+        return bool(row and row[0])
 
 
 def validate_artifacts(artifacts):

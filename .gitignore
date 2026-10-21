@@ -6,3 +6,6 @@ __pycache__/
 !.env.example
 .pytest_cache/
 story-data/daily-refresh.jsonl
+story-data/phase2-locks/
+*.sqlite3-wal
+*.sqlite3-shm

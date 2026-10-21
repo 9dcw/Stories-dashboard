@@ -1,0 +1,8 @@
+{
+  "angles": {"prompt": "angles.md", "schema": "angles.json"},
+  "plan": {"prompt": "plan.md", "schema": "plan.json"},
+  "evidence": {"prompt": "evidence.md", "schema": "evidence.json"},
+  "visuals": {"prompt": "visuals.md", "schema": "visuals.json"},
+  "treatment": {"prompt": "treatment.md", "schema": "treatment.json"},
+  "review": {"prompt": "review.md", "schema": "review.json"}
+}

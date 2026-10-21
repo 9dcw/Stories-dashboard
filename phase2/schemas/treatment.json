@@ -1,0 +1,216 @@
+{
+  "type": "object",
+  "properties": {
+    "summary": {
+      "type": "string",
+      "maxLength": 12000
+    },
+    "sections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "heading": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          },
+          "text": {
+            "type": "string",
+            "maxLength": 12000
+          }
+        },
+        "required": [
+          "heading",
+          "text"
+        ],
+        "additionalProperties": false
+      },
+      "maxItems": 100
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          },
+          "url": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          },
+          "publisher": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          },
+          "published_at": {
+            "type": "string",
+            "maxLength": 12000
+          },
+          "accessed_at": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          },
+          "locator": {
+            "type": "string",
+            "maxLength": 12000
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "url",
+          "publisher",
+          "published_at",
+          "accessed_at",
+          "locator"
+        ],
+        "additionalProperties": false
+      },
+      "maxItems": 100
+    },
+    "claims": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          },
+          "text": {
+            "type": "string",
+            "maxLength": 12000
+          },
+          "label": {
+            "enum": [
+              "Verified",
+              "Reported",
+              "Alleged",
+              "Inference",
+              "Unverified"
+            ]
+          },
+          "source_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1000
+            },
+            "maxItems": 100
+          },
+          "disposition": {
+            "type": "string",
+            "maxLength": 12000
+          },
+          "limitations": {
+            "type": "string",
+            "maxLength": 12000
+          }
+        },
+        "required": [
+          "id",
+          "text",
+          "label",
+          "source_ids",
+          "disposition",
+          "limitations"
+        ],
+        "additionalProperties": false
+      },
+      "maxItems": 100
+    },
+    "gaps": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "maxLength": 12000
+      },
+      "maxItems": 100
+    },
+    "scenes": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 30,
+      "items": {
+        "type": "object",
+        "properties": {
+          "beat": {
+            "enum": [
+              "cold_open",
+              "context",
+              "escalation",
+              "investigation",
+              "reveal",
+              "consequences",
+              "implications",
+              "conclusion"
+            ]
+          },
+          "purpose": {
+            "type": "string",
+            "maxLength": 12000
+          },
+          "viewer_question": {
+            "type": "string",
+            "maxLength": 12000
+          },
+          "outline": {
+            "type": "string",
+            "maxLength": 12000
+          },
+          "claim_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1000
+            },
+            "maxItems": 100
+          },
+          "visuals": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 12000
+            },
+            "maxItems": 100
+          }
+        },
+        "required": [
+          "beat",
+          "purpose",
+          "viewer_question",
+          "outline",
+          "claim_ids",
+          "visuals"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "summary",
+    "sections",
+    "sources",
+    "claims",
+    "gaps",
+    "scenes"
+  ],
+  "additionalProperties": false,
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "treatment v1"
+}

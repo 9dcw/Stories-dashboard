@@ -13,4 +13,6 @@ header {
 # Content Security Policy — minimum for Google Identity Services
 header Content-Security-Policy "default-src 'self'; script-src 'self' https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://accounts.google.com/gsi/style; frame-src https://accounts.google.com; img-src 'self' data:; connect-src 'self' https://accounts.google.com;"
 
+@private_phase2 path /api/v1/internal/phase2/*
+respond @private_phase2 404
 reverse_proxy 127.0.0.1:8000

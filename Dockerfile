@@ -10,6 +10,7 @@ RUN pip install --no-cache-dir -r requirements.lock
 
 # Copy application code (excluding story-data/, which is a volume mount)
 COPY api/ /app/api/
+COPY phase2/ /app/phase2/
 COPY story_store.py /app/
 COPY export_stories.py /app/
 COPY collectors.py /app/
