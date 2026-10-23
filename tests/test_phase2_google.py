@@ -109,3 +109,35 @@ def test_explicit_append_never_deletes_old_text():
     docs.reads=iter([before,after])
     google.append_revision(artifact(before),'Approved text\n','new')
     assert all('deleteContentRange' not in r for r in docs.batches[0]['body']['requests'])
+
+
+def test_concurrent_workspaces_use_thread_owned_google_clients():
+    from concurrent.futures import ThreadPoolExecutor
+    import threading
+    barrier=threading.Barrier(2)
+    calls=[]
+    class OwnedDrive:
+        def __init__(self):
+            self.owner=threading.get_ident()
+        def files(self):
+            assert self.owner==threading.get_ident()
+            return self
+        def get(self,**kwargs):
+            assert self.owner==threading.get_ident()
+            return Result({'id':kwargs['fileId'],'parents':['parent']})
+    def clients():
+        pair=(OwnedDrive(),object())
+        calls.append(pair)
+        return pair
+    google=GoogleDocs(None,None,'parent',client_factory=clients)
+    def check(file_id):
+        first=(google.drive,google.docs)
+        barrier.wait(timeout=5)
+        assert google.metadata(file_id)=={'id':file_id,'parents':['parent']}
+        assert google.drive is first[0] and google.docs is first[1]
+        return first
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        results=list(pool.map(check,['doc-a','doc-b']))
+    assert len(calls)==2
+    assert results[0][0] is not results[1][0]
+    assert results[0][1] is not results[1][1]
