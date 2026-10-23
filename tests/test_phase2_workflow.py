@@ -342,3 +342,37 @@ def test_legacy_callbacks_cannot_replace_repository_artifacts(workflow,api_db,ru
     store.enqueue(story,'initial')
     with pytest.raises(ValueError,match='repository-owned'):
         legacy.callback(story,Phase2Callback(completion_token=legacy.token(run),state='waiting',step='topic'))
+
+
+@pytest.mark.parametrize('failure',['schema','evidence'])
+def test_treatment_repair_receives_contract_feedback(workflow,tmp_path,failure):
+    store,story=workflow
+    store.enqueue(story,'repair-contract')
+    w=worker(store,tmp_path)
+    calls=[]
+    class NeedsRepair(FakeResearch):
+        def run(self,job,inputs,heartbeat):
+            result=super().run(job,inputs,heartbeat)
+            if job['step_key']=='treatment':
+                calls.append(inputs)
+                if len(calls)==1:
+                    output=json.loads(result['text'])
+                    if failure=='schema':
+                        output['scenes'][0]['beat']='unregistered_beat'
+                    else:
+                        output['claims']=[dict(id='angle-only',text='An unsupported upstream assertion',label='Unverified',source_ids=[],disposition='',limitations='')]
+                    result['text']=json.dumps(output)
+            return result
+    w.research=NeedsRepair()
+    drain(w)
+    assert store.status(story)['state']=='completed'
+    assert len(calls)==2
+    feedback=calls[1]['validation_repair']
+    assert ('scenes.0.beat (enum)' if failure=='schema' else 'Treatment claims must match the evidence ledger') in feedback
+    assert 'unregistered_beat' not in feedback
+
+
+def test_validation_feedback_does_not_echo_invalid_json():
+    with pytest.raises(json.JSONDecodeError) as caught:
+        json.loads('untrusted source content')
+    assert Worker.validation_feedback(caught.value)=='Response must be valid JSON'
