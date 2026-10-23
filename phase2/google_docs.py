@@ -4,6 +4,7 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+import threading
 from pathlib import Path
 
 from phase2.registry import canonical
@@ -34,23 +35,46 @@ def render_output(output):
 
 
 class GoogleDocs:
-    def __init__(self,drive,docs,parent_id):
-        self.drive,self.docs,self.parent_id=drive,docs,parent_id
+    def __init__(self,drive,docs,parent_id,client_factory=None):
+        self.parent_id=parent_id
+        self._fixed_clients=(drive,docs)
+        self._client_factory=client_factory
+        self._thread_clients=threading.local()
+
+    def _clients(self):
+        if self._client_factory is None:
+            return self._fixed_clients
+        if not hasattr(self._thread_clients,'services'):
+            self._thread_clients.services=self._client_factory()
+        return self._thread_clients.services
+
+    @property
+    def drive(self):
+        return self._clients()[0]
+
+    @property
+    def docs(self):
+        return self._clients()[1]
 
     @classmethod
     def authenticated(cls,token_path,parent_id):
-        # Reuse authorized-user OAuth, but keep refresh writes out of agent processes.
-        from google.oauth2.credentials import Credentials
-        from google.auth.transport.requests import Request
-        from googleapiclient.discovery import build
-        from google_auth_httplib2 import AuthorizedHttp
-        import httplib2
-        creds=Credentials.from_authorized_user_file(str(token_path),scopes=['https://www.googleapis.com/auth/drive','https://www.googleapis.com/auth/documents'])
-        if creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        if not creds.valid:
-            raise Conflict('Google authentication is unavailable')
-        return cls(build('drive','v3',http=AuthorizedHttp(creds,http=httplib2.Http(timeout=30)),cache_discovery=False),build('docs','v1',http=AuthorizedHttp(creds,http=httplib2.Http(timeout=30)),cache_discovery=False),parent_id)
+        # httplib2 transports are not thread-safe. Credentials and both services
+        # belong to the calling thread; refresh never rewrites the shared token.
+        def clients():
+            from google.oauth2.credentials import Credentials
+            from google.auth.transport.requests import Request
+            from googleapiclient.discovery import build
+            from google_auth_httplib2 import AuthorizedHttp
+            import httplib2
+            creds=Credentials.from_authorized_user_file(str(token_path),scopes=['https://www.googleapis.com/auth/drive','https://www.googleapis.com/auth/documents'])
+            if creds.expired and creds.refresh_token:
+                creds.refresh(Request())
+            if not creds.valid:
+                raise Conflict('Google authentication is unavailable')
+            return (build('drive','v3',http=AuthorizedHttp(creds,http=httplib2.Http(timeout=30)),cache_discovery=False),build('docs','v1',http=AuthorizedHttp(creds,http=httplib2.Http(timeout=30)),cache_discovery=False))
+        instance=cls(None,None,parent_id,client_factory=clients)
+        instance._clients()  # Validate authentication before starting the worker.
+        return instance
 
     def metadata(self,file_id):
         return self.drive.files().get(fileId=file_id,fields='id,name,mimeType,parents,trashed,appProperties').execute()
