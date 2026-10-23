@@ -1,4 +1,4 @@
-const CACHE='stories-dashboard-categories-v1';
+const CACHE='stories-dashboard-one-click-dismiss-v1';
 const FILES=['./','./index.html','./styles.css','./app.js','./manifest.json'];
 const APP_SHELL_PATH=/\/(?:index\.html|styles\.css|app\.js|manifest\.json)$|\/$/;
 

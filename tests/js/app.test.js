@@ -29,11 +29,12 @@ function loadApp({ configResponse, pageHref = 'https://stories.example/', deploy
     if (!elements.has(key)) elements.set(key, new Element());
     return elements.get(key);
   };
+  const documentListeners = {};
   const document = {
     documentElement: { dataset: {} },
     querySelector: selector => getElement(selector),
     getElementById: id => getElement(`#${id}`),
-    addEventListener() {},
+    addEventListener(event,callback) { documentListeners[event]=callback; },
   };
   const storage = new Map();
   const fetchCalls = [];
@@ -75,36 +76,144 @@ function loadApp({ configResponse, pageHref = 'https://stories.example/', deploy
   });
   const source = fs.readFileSync(path.join(__dirname, '..', '..', 'app.js'), 'utf8');
   vm.runInContext(source, context, { filename: 'app.js' });
-  return { context, getElement, fetchCalls };
+  return { context, getElement, fetchCalls, documentListeners };
 }
 
-test('dismiss retains the candidate and reports an HTTP mutation failure', async () => {
-  const { context, getElement } = loadApp();
-  getElement('#dismissConfirm').dataset.reason = 'other';
-  getElement('#dismissNote').value = 'keep this card';
-  const result = await vm.runInContext(`(async () => {
-    state.mode = 'interactive';
-    dismissTarget = {item_id: 7, headline: 'Candidate'};
-    const messages = [];
-    const requestIds = [];
-    API.fetch = async (_path, init) => {
-      requestIds.push(JSON.parse(init.body).request_id);
-      throw new Error('Network down');
-    };
-    showSnackbar = message => messages.push(message);
-    refreshAfterMutation = async () => { throw new Error('must not refresh'); };
-    render = () => {};
-    await submitDismiss();
-    dismissTarget = {item_id: 7, headline: 'Candidate'};
-    document.querySelector('#dismissConfirm').dataset.reason = 'other';
-    await submitDismiss();
-    return {messages, requestIds, queueLength: state.dismissedQueue.length};
-  })()`, context);
+function deferred() {
+  let resolve, reject;
+  const promise = new Promise((yes, no) => { resolve = yes; reject = no; });
+  return { promise, resolve, reject };
+}
+function candidateSetup(context) {
+  vm.runInContext(`
+    state.candidates=[{item_id:7,headline:'First candidate',status:'NEW',summary_status:'COMPLETE'},
+      {item_id:8,headline:'Second candidate',status:'NEW',summary_status:'COMPLETE'}];
+    showSnackbar=message=>{document.querySelector('#snackbar').innerHTML=message;};
+    refreshAfterMutation=async()=>{throw new Error('Must not reload the dashboard');};
+    render();
+  `,context);
+}
+function dismissalResponse(item, feedback) {
+  return {ok:true,status:201,json:async()=>({item:{item_id:item,status:'DISMISSED'},feedback:{feedback_id:feedback},active_dismissal:{feedback_id:feedback}})};
+}
 
-  assert.equal(result.queueLength, 0);
-  assert.match(result.messages.at(-1), /Error: Network down/);
-  assert.equal(result.requestIds.length, 2);
-  assert.equal(result.requestIds[0], result.requestIds[1]);
+test('one click hides immediately, saves not_relevant, prevents duplicate clicks, and supports Undo', async () => {
+  const {context,getElement,documentListeners}=loadApp();
+  candidateSetup(context);
+  const request=deferred();
+  const calls=[];
+  context.saveDismissal=(_path,init)=>{calls.push(JSON.parse(init.body));return request.promise;};
+  vm.runInContext('API.fetch=saveDismissal;const actualDismiss=dismissItem;dismissItem=id=>(window.dismissal=actualDismiss(id));',context);
+  const button={dataset:{item:'7'}};
+  documentListeners.click({target:{closest:selector=>selector==='.btn-dismiss-interactive'?button:null}});
+  const pendingDismissal=context.window.dismissal;
+  assert.doesNotMatch(getElement('#candidateGrid').innerHTML,/First candidate/);
+  assert.match(getElement('#candidateGrid').innerHTML,/Second candidate/);
+  assert.match(getElement('#visibleCount').textContent,/1 shown/);
+  assert.doesNotMatch(getElement('#snackbar').innerHTML,/snackbarUndo/);
+  await vm.runInContext('dismissItem(7)',context);
+  assert.equal(calls.length,1);
+  assert.equal(calls[0].reason_code,'not_relevant');
+  assert.equal(calls[0].note,'');
+  request.resolve(dismissalResponse(7,31));
+  await pendingDismissal;
+  assert.match(getElement('#snackbar').innerHTML,/snackbarUndo.*data-feedback="31"/);
+  vm.runInContext("state.filters.dismissed='only';render()",context);
+  assert.match(getElement('#candidateGrid').innerHTML,/First candidate/);
+  assert.match(getElement('#candidateGrid').innerHTML,/data-feedback="31"/);
+  const restoreCalls=[];
+  context.restoreDismissal=async(_path,init)=>{restoreCalls.push(JSON.parse(init.body));return {ok:true,status:201,json:async()=>({item:{item_id:7,status:'NEW'},active_dismissal:null})};};
+  vm.runInContext("state.filters.dismissed='hide';API.fetch=restoreDismissal",context);
+  await vm.runInContext('undoLastDismiss(31)',context);
+  assert.equal(restoreCalls[0].dismissal_feedback_id,31);
+  assert.match(getElement('#candidateGrid').innerHTML,/First candidate/);
+  assert.equal(vm.runInContext('state.dismissedQueue.length',context),0);
+});
+
+test('failed dismissal restores the card and retains its idempotency key for ambiguous retries', async () => {
+  const {context,getElement}=loadApp();candidateSetup(context);
+  const bodies=[];
+  context.failDismissal=async(_path,init)=>{bodies.push(JSON.parse(init.body));throw new Error('Network down');};
+  vm.runInContext('API.fetch=failDismissal',context);
+  await vm.runInContext('dismissItem(7)',context);
+  await vm.runInContext('dismissItem(7)',context);
+  assert.match(getElement('#candidateGrid').innerHTML,/First candidate/);
+  assert.match(getElement('#snackbar').innerHTML,/item restored.*Network down/);
+  assert.equal(bodies.length,2);
+  assert.equal(bodies[0].request_id,bodies[1].request_id);
+  assert.equal(vm.runInContext('state.dismissedQueue.length',context),0);
+  assert.equal(vm.runInContext('!!state.pending[7]',context),false);
+});
+
+test('simultaneous dismissals roll back only the failed item without changing current filters', async () => {
+  const {context,getElement}=loadApp();candidateSetup(context);
+  const first=deferred(),second=deferred();
+  context.dismissRequests=url=>url.includes('/7/')?first.promise:second.promise;
+  vm.runInContext('API.fetch=dismissRequests;window.first=dismissItem(7);window.second=dismissItem(8);state.query="First";',context);
+  second.resolve(dismissalResponse(8,32));await context.window.second;
+  first.resolve({ok:false,status:503,json:async()=>({detail:'Database unavailable'})});await context.window.first;
+  assert.match(getElement('#candidateGrid').innerHTML,/First candidate/);
+  assert.doesNotMatch(getElement('#candidateGrid').innerHTML,/Second candidate/);
+  assert.equal(vm.runInContext('state.candidates[1].status',context),'DISMISSED');
+  assert.equal(vm.runInContext('state.query',context),'First');
+  assert.equal(vm.runInContext('state.dismissedQueue[0].item_id',context),8);
+  assert.equal(vm.runInContext("!!state.mutationRequestIds['dismiss:7']",context),true);
+});
+
+test('background dashboard responses cannot undo pending or confirmed local changes', async () => {
+  const {context,getElement}=loadApp();candidateSetup(context);
+  const save=deferred(),during=deferred(),beforeUndo=deferred();
+  context.save=()=>save.promise;
+  vm.runInContext('API.fetch=save;window.dismissal=dismissItem(7)',context);
+  context.during=()=>during.promise;
+  vm.runInContext('API.fetch=during;window.refresh=loadDashboard()',context);
+  during.resolve({ok:true,json:async()=>({recent_candidates:[{item_id:7,headline:'First candidate',status:'NEW',summary_status:'COMPLETE'}]})});
+  await context.window.refresh;
+  assert.doesNotMatch(getElement('#candidateGrid').innerHTML,/First candidate/);
+  save.resolve(dismissalResponse(7,31));await context.window.dismissal;
+  context.beforeUndo=()=>beforeUndo.promise;
+  vm.runInContext('API.fetch=beforeUndo;window.oldRefresh=loadDashboard()',context);
+  vm.runInContext("API.fetch=async()=>({ok:true,json:async()=>({item:{status:'NEW'}})})",context);
+  await vm.runInContext('undoLastDismiss(31)',context);
+  beforeUndo.resolve({ok:true,json:async()=>({recent_candidates:[{item_id:7,headline:'First candidate',status:'DISMISSED',summary_status:'COMPLETE'}]})});
+  await context.window.oldRefresh;
+  assert.match(getElement('#candidateGrid').innerHTML,/First candidate/);
+  assert.equal(vm.runInContext('state.candidates[0].status',context),'NEW');
+  assert.equal(vm.runInContext('state.candidates[0].can_promote_to_phase2',context),true);
+});
+
+test('an older dashboard request cannot resurrect a dismissal after a fresh request confirms it', async () => {
+  const {context,getElement}=loadApp();candidateSetup(context);
+  const stale=deferred();context.stale=()=>stale.promise;
+  vm.runInContext('API.fetch=stale;window.stale=loadDashboard()',context);
+  context.success=async()=>dismissalResponse(7,31);
+  vm.runInContext('API.fetch=success',context);await vm.runInContext('dismissItem(7)',context);
+  vm.runInContext("API.fetch=async()=>({ok:true,json:async()=>({recent_candidates:[{item_id:7,headline:'First candidate',status:'DISMISSED',summary_status:'COMPLETE'}]})})",context);
+  await vm.runInContext('loadDashboard()',context);
+  stale.resolve({ok:true,json:async()=>({recent_candidates:[{item_id:7,headline:'First candidate',status:'NEW',summary_status:'COMPLETE'}]})});
+  await context.window.stale;
+  assert.doesNotMatch(getElement('#candidateGrid').innerHTML,/First candidate/);
+  assert.equal(vm.runInContext('state.candidates[0].status',context),'DISMISSED');
+});
+
+test('Undo restores its displayed item even when another dismissal has completed', async () => {
+  const {context}=loadApp();candidateSetup(context);
+  context.dismissSuccess=async url=>dismissalResponse(url.includes('/7/')?7:8,url.includes('/7/')?31:32);
+  vm.runInContext('API.fetch=dismissSuccess',context);
+  await vm.runInContext('dismissItem(7)',context);
+  await vm.runInContext('dismissItem(8)',context);
+  const restore=deferred(),calls=[];
+  context.restoreTarget=(url,init)=>{calls.push({url,body:JSON.parse(init.body)});return restore.promise;};
+  vm.runInContext('API.fetch=restoreTarget;window.undo=undoLastDismiss(31)',context);
+  await vm.runInContext('undoLastDismiss(31)',context);
+  assert.equal(calls.length,1);
+  assert.equal(calls[0].url,'/api/v1/items/7/restore');
+  assert.equal(calls[0].body.dismissal_feedback_id,31);
+  restore.resolve({ok:true,json:async()=>({item:{status:'NEW'}})});
+  await context.window.undo;
+  assert.equal(vm.runInContext('state.candidates[0].status',context),'NEW');
+  assert.equal(vm.runInContext('state.candidates[1].status',context),'DISMISSED');
+  assert.equal(vm.runInContext('state.dismissedQueue[0].feedback_id',context),32);
 });
 
 test('restore reports an HTTP mutation failure without refreshing', async () => {
