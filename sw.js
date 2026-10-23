@@ -1,5 +1,6 @@
-const CACHE='stories-dashboard-one-click-dismiss-v1';
-const FILES=['./','./index.html','./styles.css','./app.js','./manifest.json'];
+const ASSET_VERSION='one-click-dismiss-v2';
+const CACHE=`stories-dashboard-${ASSET_VERSION}`;
+const FILES=['./','./index.html',`./styles.css?v=${ASSET_VERSION}`,`./app.js?v=${ASSET_VERSION}`,'./manifest.json'];
 const APP_SHELL_PATH=/\/(?:index\.html|styles\.css|app\.js|manifest\.json)$|\/$/;
 
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(FILES)).then(()=>self.skipWaiting())));
@@ -16,7 +17,7 @@ self.addEventListener('fetch',event=>{
   const isAppShell=url.origin===self.location.origin&&APP_SHELL_PATH.test(url.pathname);
   event.respondWith(
     isAppShell
-      ? fetch(event.request).then(response=>{const copy=response.clone();caches.open(CACHE).then(cache=>cache.put(event.request,copy));return response}).catch(()=>caches.match(event.request))
+      ? fetch(event.request,{cache:'no-cache'}).then(response=>{const copy=response.clone();caches.open(CACHE).then(cache=>cache.put(event.request,copy));return response}).catch(()=>caches.match(event.request))
       : caches.match(event.request).then(cached=>cached||fetch(event.request).then(response=>{const copy=response.clone();caches.open(CACHE).then(cache=>cache.put(event.request,copy));return response}).catch(()=>caches.match('./')))
   );
 });
