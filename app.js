@@ -19,6 +19,9 @@ const state={
   favorites:new Set(JSON.parse(localStorage.getItem('stories-favorites')||'[]')),
   recent:JSON.parse(localStorage.getItem('stories-recent')||'[]'),
   pending:{},               // item_id → true during API call
+  candidateUpdates:{},      // local projections protect against stale dashboard responses
+  candidateRevision:0,
+  dashboardLoad:0,
   mutationRequestIds:{},     // operation key → UUID retained across ambiguous retries
   snackbarTimer:0,
   dismissedQueue:[]          // recently dismissed for undo
@@ -146,12 +149,21 @@ function renderLogin(){
 
 // ── Dashboard loading ─────────────────────────────────────────────
 async function loadDashboard(){
+  const loadId=++state.dashboardLoad;
+  const candidateRevision=state.candidateRevision;
   try{
     const r=await API.fetch('/api/v1/dashboard');
     if(!r.ok)throw new Error('Dashboard unavailable');
     const d=await r.json();
+    if(loadId!==state.dashboardLoad)return;
     state.stories=d.stories||[];
-    state.candidates=(d.recent_candidates||[]).filter(c=>c.status!=='IGNORED');
+    state.candidates=(d.recent_candidates||[]).filter(c=>c.status!=='IGNORED').map(c=>{
+      const update=state.candidateUpdates[c.item_id];
+      if(!update)return c;
+      if(update.pending||update.revision>candidateRevision)return {...c,...update.patch};
+      delete state.candidateUpdates[c.item_id];
+      return c;
+    });
     state.sources=d.sources||[];
     state.courtPipeline=d.court_pipeline;
     state.proposals=d.source_proposals||[];
@@ -161,6 +173,7 @@ async function loadDashboard(){
     renderFilters();
     render();
   }catch(e){
+    if(loadId!==state.dashboardLoad)return;
     $('#storyCount').textContent='Could not load dashboard';
     $('#updatedAt').textContent=e.message||'Check connection';
   }
@@ -266,7 +279,7 @@ function candidateCard(c){
       actions+=`<button class="btn-restore" data-item="${esc(c.item_id)}" data-feedback="${esc(c.active_dismissal.feedback_id)}"${state.pending[c.item_id]?' disabled':''}>Restore</button>`;
     }
   }else{
-    actions=`<button class="btn-dismiss-interactive" data-item="${esc(c.item_id)}" data-headline="${esc(display)}"${state.pending[c.item_id]?' disabled':''}>Dismiss</button>`;
+    actions=`<button class="btn-dismiss-interactive" data-item="${esc(c.item_id)}"${state.pending[c.item_id]?' disabled':''}>Dismiss</button>`;
     actions+=`${action(c.source_link,'Source','primary')}`;
     if(c.can_promote_to_phase2!==false)actions+=`<button class="action telegram phase2-action btn-phase2" data-phase2-item="${esc(c.item_id)}"${state.pending[c.item_id]?' disabled':''}>${state.pending[c.item_id]?'Starting Phase 2…':'Promote to Phase 2'}</button>`;
   }
@@ -321,50 +334,47 @@ function renderCourtPipeline(p){
   el.innerHTML=`<strong>Court opinions · exclusion-only screening</strong><p>${s.enabled?'Daily at '+String(s.hour).padStart(2,'0')+':'+String(s.minute).padStart(2,'0')+' '+esc(s.timezone):'Daily schedule inactive'} · Next: ${esc(s.next_run_at||'Not scheduled')}</p><p>${r?'Last run: '+esc(r.status)+' · started '+esc(r.started_at)+' · finished '+esc(r.finished_at||'in progress'):'No run recorded'}</p>${r?`<p>${esc(n.sources_checked||0)} sources · ${esc(n.sources_failed||0)} failed · ${esc(n.sources_empty||0)} empty · ${esc(n.documents_found||0)} opinion links · ${esc(n.new_items||0)} new · ${esc(n.passed||0)} passed · ${esc(n.excluded||0)} excluded · ${esc(n.errors||0)} errors · ${esc(n.pending||0)} pending</p>`:''}<p>Exclude explicit nonprecedential notices, immigration rulings, and violent-crime prosecutions or convictions. Everything else passes; uncertainty stays in the queue.</p>`;
 }
 
-// ── Dismiss panel ─────────────────────────────────────────────────
-let dismissTarget=null;
-function openDismissPanel(itemId,headline){
-  dismissTarget={item_id:parseInt(itemId,10),headline};
-  $('#dismissItemLabel').textContent=`#${dismissTarget.item_id} — ${dismissTarget.headline.slice(0,120)}`;
-  const reasonsEl=$('#dismissReasons');
-  reasonsEl.innerHTML=['not_relevant','duplicate','too_old','weak_source','other'].map(r=>`<button class="reason-chip" data-reason="${r}">${r.replace(/_/g,' ')}</button>`).join('');
-  $('#dismissConfirm').disabled=true;
-  $('#dismissConfirm').dataset.reason='';
-  $('#dismissNote').value='';
-  $('#dismissPanel').hidden=false;
+// ── One-click dismissal ───────────────────────────────────────────
+function updateCandidate(itemId,patch,pending=false){
+  patch={...patch,can_promote_to_phase2:patch.status==='NEW'};
+  state.candidateUpdates[itemId]={patch,pending,revision:++state.candidateRevision};
+  state.candidates=state.candidates.map(c=>String(c.item_id)===String(itemId)?{...c,...patch}:c);
 }
-function closeDismissPanel(){
-  dismissTarget=null;
-  $('#dismissPanel').hidden=true;
-}
-async function submitDismiss(){
-  if(!dismissTarget)return;
-  const reason=$('#dismissConfirm').dataset.reason;
-  if(!reason)return;
-  const note=$('#dismissNote').value.slice(0,1000);
-  const itemId=dismissTarget.item_id;
+async function dismissItem(itemId){
+  itemId=Number(itemId);
+  const candidate=state.candidates.find(c=>Number(c.item_id)===itemId);
+  if(!candidate||state.pending[itemId]||(candidate.status||'NEW')!=='NEW')return;
+  const previous={status:candidate.status||'NEW',active_dismissal:candidate.active_dismissal||null};
   const mutationKey=`dismiss:${itemId}`;
   const requestId=API.mutationRequestId(mutationKey);
   state.pending[itemId]=true;
-  closeDismissPanel();
+  updateCandidate(itemId,{status:'DISMISSED',active_dismissal:null},true);
+  render();
+  showSnackbar('Dismissed. Saving…');
   try{
     const r=await API.fetch(`/api/v1/items/${itemId}/dismiss`,{
       method:'POST',headers:API.headers(),
-      body:JSON.stringify({reason_code:reason,note,request_id:requestId})
+      body:JSON.stringify({reason_code:'not_relevant',note:'',request_id:requestId})
     });
     const d=await API.json(r);
-    API.finishMutation(mutationKey);
     const fb=d.feedback||d;
+    if(!Number.isInteger(fb.feedback_id)||fb.feedback_id<=0)throw new Error('Invalid dismissal response');
+    updateCandidate(itemId,{status:d.item?.status||'DISMISSED',active_dismissal:d.active_dismissal||fb});
+    API.finishMutation(mutationKey);
     state.dismissedQueue.push({item_id:itemId,feedback_id:fb.feedback_id});
-    showSnackbar(`Dismissed. <button class="snackbar-undo" id="snackbarUndo">Undo</button>`,8000);
-    await refreshAfterMutation();
+    showSnackbar(`Dismissed. <button class="snackbar-undo" id="snackbarUndo" data-feedback="${fb.feedback_id}">Undo</button>`,8000);
   }catch(e){
-    if(e.status)API.finishMutation(mutationKey);
-    showSnackbar(`Error: ${e.message}`,4000);
+    if(e.status&&e.status<500)API.finishMutation(mutationKey);
+    updateCandidate(itemId,previous);
+    showSnackbar(`Could not save dismissal; item restored. ${esc(e.message)}`,5000);
   }finally{delete state.pending[itemId];render();}
 }
-async function undoLastDismiss(){
-  const entry=state.dismissedQueue.pop();
+async function undoLastDismiss(feedbackId){
+  const index=feedbackId?state.dismissedQueue.findIndex(e=>String(e.feedback_id)===String(feedbackId)):state.dismissedQueue.length-1;
+  const latest=state.dismissedQueue[index];
+  if(latest&&state.pending[latest.item_id])return;
+  const entry=latest;
+  if(entry)state.dismissedQueue.splice(index,1);
   if(!entry){showSnackbar('Nothing to undo',3000);return;}
   const mutationKey=`restore:${entry.item_id}:${entry.feedback_id}`;
   const requestId=API.mutationRequestId(mutationKey);
@@ -374,17 +384,18 @@ async function undoLastDismiss(){
       method:'POST',headers:API.headers(),
       body:JSON.stringify({dismissal_feedback_id:entry.feedback_id,request_id:requestId})
     });
-    await API.json(r);
+    const d=await API.json(r);
+    updateCandidate(entry.item_id,{status:d.item?.status||'NEW',active_dismissal:null});
     API.finishMutation(mutationKey);
     showSnackbar('Restored',3000);
-    await refreshAfterMutation();
   }catch(e){
-    if(e.status)API.finishMutation(mutationKey);
-    showSnackbar(`Restore failed: ${e.message}`,4000);
+    if(e.status&&e.status<500)API.finishMutation(mutationKey);
+    showSnackbar(`Restore failed: ${esc(e.message)}`,4000);
     state.dismissedQueue.push(entry);
   }finally{delete state.pending[entry.item_id];render();}
 }
 async function restoreItem(itemId,feedbackId){
+  if(state.pending[itemId])return;
   const parsedFeedbackId=parseInt(feedbackId,10);
   const mutationKey=`restore:${itemId}:${parsedFeedbackId}`;
   const requestId=API.mutationRequestId(mutationKey);
@@ -395,13 +406,13 @@ async function restoreItem(itemId,feedbackId){
       method:'POST',headers:API.headers(),
       body:JSON.stringify({dismissal_feedback_id:parsedFeedbackId,request_id:requestId})
     });
-    await API.json(r);
+    const d=await API.json(r);
+    updateCandidate(itemId,{status:d.item?.status||'NEW',active_dismissal:null});
     API.finishMutation(mutationKey);
     showSnackbar('Restored',3000);
-    await refreshAfterMutation();
   }catch(e){
-    if(e.status)API.finishMutation(mutationKey);
-    showSnackbar(`Restore failed: ${e.message}`,4000);
+    if(e.status&&e.status<500)API.finishMutation(mutationKey);
+    showSnackbar(`Restore failed: ${esc(e.message)}`,4000);
   }finally{delete state.pending[itemId];render();}
 }
 async function requestPhase2(itemId){
@@ -445,25 +456,13 @@ document.addEventListener('click',e=>{
   if(link){const c=link.closest('.story-card');const s=state.stories.find(x=>c&&c.querySelector('[data-favorite]')?.dataset.favorite===(x.id||String(x.story_id)));if(s){state.recent=[s.id||String(s.story_id),...state.recent.filter(x=>x!==(s.id||String(s.story_id)))];save()}}
   // interactive dismiss button
   const dimBtn=e.target.closest('.btn-dismiss-interactive');
-  if(dimBtn){openDismissPanel(dimBtn.dataset.item,dimBtn.dataset.headline);return}
+  if(dimBtn){dismissItem(dimBtn.dataset.item);return}
   // restore button
   const rstBtn=e.target.closest('.btn-restore');
   if(rstBtn){restoreItem(rstBtn.dataset.item,rstBtn.dataset.feedback);return}
-  // dismiss panel reason chips
-  const chip=e.target.closest('.reason-chip');
-  if(chip){
-    const panel=$('#dismissReasons');
-    panel.querySelectorAll('.reason-chip').forEach(b=>b.classList.remove('active'));
-    chip.classList.add('active');
-    $('#dismissConfirm').disabled=false;
-    $('#dismissConfirm').dataset.reason=chip.dataset.reason;
-    return;
-  }
-  // dismiss panel actions
-  if(e.target.id==='dismissCancel'){closeDismissPanel();return}
-  if(e.target.id==='dismissConfirm'){submitDismiss();return}
   // snackbar undo
-  if(e.target.closest('#snackbarUndo')){undoLastDismiss();return}
+  const undoBtn=e.target.closest('#snackbarUndo');
+  if(undoBtn){undoLastDismiss(undoBtn.dataset.feedback);return}
   // logout
   if(e.target.closest('#logoutBtn')){logout();return}
 });
@@ -530,7 +529,6 @@ window.appTests=function(){
   ok(state.mode==='interactive'||state.mode==='unavailable','only the interactive app is supported');
   ok(API.requestId().length>0,'requestId generates string');
   ok(esc('<scrpt>').indexOf('<')===-1,'esc escapes angle');
-  ok(typeof dismissTarget==='object'||dismissTarget===null,'dismissTarget is object or null');
   console.log(results.join('\n'));
   return results;
 };
