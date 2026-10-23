@@ -76,9 +76,9 @@ class Worker:
                     output=json.loads(result['text'])
                     validate_output(job['manifest'],job['step_key'],output)
                     self.check_evidence(job,inputs,output)
-                except (ValueError,ValidationError):
+                except (ValueError,ValidationError) as validation_error:
                     # One bounded repair using exactly the same snapshot and schema.
-                    repair=dict(inputs,validation_repair='The previous response failed the registered contract. Return a complete valid JSON object; do not invent evidence.',previous_invalid_output=str(result.get('text',''))[:32000])
+                    repair=dict(inputs,validation_repair='The previous response failed the registered contract: '+self.validation_feedback(validation_error)+'. Return a complete valid JSON object; do not invent evidence.',previous_invalid_output=str(result.get('text',''))[:32000])
                     repaired=self.research.run(job,repair,lambda:self.store.heartbeat(job))
                     if not self.store.record_usage(job,repaired['usage']):
                         return
@@ -129,6 +129,16 @@ class Worker:
             self.store.fail(job,message,retryable)
         except LostLease:
             log.info('Failure arrived after lease was superseded: %s',job['step_id'])
+
+    @staticmethod
+    def validation_feedback(error):
+        if isinstance(error,ValidationError):
+            # Do not echo instance values, which may contain untrusted source content.
+            path='.'.join(str(part) for part in error.absolute_path)[:200] or '<root>'
+            return 'Schema violation at '+path+' ('+str(error.validator)+')'
+        if isinstance(error,json.JSONDecodeError):
+            return 'Response must be valid JSON'
+        return str(error)[:300]
 
     @staticmethod
     def check_evidence(job,inputs,output):
