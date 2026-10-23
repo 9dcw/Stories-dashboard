@@ -43,6 +43,7 @@ _BODY_LIMITED_PATH = re.compile(
     r"^/api/v1/(?:auth/(?:google|logout)|items/[^/]+/(?:dismiss|restore|phase2)|stories/[^/]+/phase2/(?:callback|retry)|internal/phase2/dispatch)$"
 )
 STATIC_FILES = {
+    "index.html": ROOT / "index.html",
     "app.js": ROOT / "app.js",
     "styles.css": ROOT / "styles.css",
     "sw.js": ROOT / "sw.js",
@@ -402,14 +403,14 @@ def create_app(config: RuntimeConfig | None = None) -> FastAPI:
         }:
             raise HTTPException(status_code=404, detail="Not found")
         if requested_path in STATIC_FILES:
-            return FileResponse(STATIC_FILES[requested_path])
+            return FileResponse(STATIC_FILES[requested_path], headers={"Cache-Control": "no-cache"})
         # Safe SPA fallback: route-like paths only. Dotfiles, extensions, traversal,
         # and repository directories are never translated into filesystem paths.
         segments = requested_path.split("/") if requested_path else []
         if all(segment and segment not in {".", ".."} and "." not in segment for segment in segments):
-            return FileResponse(ROOT / "index.html")
+            return FileResponse(ROOT / "index.html", headers={"Cache-Control": "no-cache"})
         if requested_path == "":
-            return FileResponse(ROOT / "index.html")
+            return FileResponse(ROOT / "index.html", headers={"Cache-Control": "no-cache"})
         raise HTTPException(status_code=404, detail="Not found")
 
     return app

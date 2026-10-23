@@ -78,3 +78,41 @@ def test_static_server_serves_only_allowlisted_frontend_and_spa(client):
     assert client.get("/data/stories.json").status_code == 404
     assert "<!doctype html>" in client.get("/candidate/123").text.lower()
     assert client.get("/api/v1/not-real").status_code == 404
+
+
+@pytest.mark.parametrize('path',['/','/index.html','/candidate/123','/app.js?v=one-click-dismiss-v2','/styles.css?v=one-click-dismiss-v2','/sw.js','/manifest.json'])
+def test_frontend_assets_require_revalidation_across_deployments(client,path):
+    response=client.get(path)
+    assert response.status_code==200
+    assert response.headers['Cache-Control']=='no-cache'
+    if path.startswith('/app.js'):
+        assert 'async function dismissItem' in response.text
+
+
+def test_versioned_assets_exist_and_match_the_service_worker_precache(client):
+    import re
+    from urllib.parse import urlsplit,parse_qs
+    html=client.get('/').text
+    worker=client.get('/sw.js').text
+    urls=re.findall(r'(?:src|href)="(\./(?:app\.js|styles\.css)\?[^"]+)"',html)
+    assert len(urls)==2
+    versions={parse_qs(urlsplit(url).query)['v'][0] for url in urls}
+    assert len(versions)==1
+    version=versions.pop()
+    assert "ASSET_VERSION='"+version+"'" in worker
+    for url in urls:
+        assert client.get('/'+url.removeprefix('./')).status_code==200
+        assert './'+urlsplit(url).path.removeprefix('./')+'?v=${ASSET_VERSION}' in worker
+
+
+def test_every_service_worker_precache_url_is_served(client):
+    import re
+    worker=client.get('/sw.js').text
+    version=re.search(r"ASSET_VERSION='([^']+)'",worker).group(1)
+    files=re.search(r'const FILES=\[(.*?)\];',worker).group(1)
+    urls=re.findall(r"['`](\./[^'`]*)['`]",files)
+    assert len(urls)>=5
+    for url in urls:
+        path='/'+url.removeprefix('./').replace('${ASSET_VERSION}',version)
+        response=client.get(path)
+        assert response.status_code==200,(path,response.status_code)
