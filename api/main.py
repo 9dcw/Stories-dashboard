@@ -17,7 +17,7 @@ from api.auth import (
     verify_google_credential,
 )
 from api.config import RuntimeConfig
-from api.models import DismissRequest, GoogleCredential, Phase2Callback, RestoreRequest, EditorialEvent
+from api.models import PromotionRequest, DismissRequest, GoogleCredential, Phase2Callback, RestoreRequest, EditorialEvent
 from api.phase2 import ArtifactValidationError, Phase2Jobs
 from api.read_model import build_live_read_model, sanitize_feedback
 from story_store import StoryStore
@@ -279,12 +279,13 @@ def create_app(config: RuntimeConfig | None = None) -> FastAPI:
     @app.post("/api/v1/items/{item_id}/phase2", status_code=202)
     def request_phase2(
         item_id: int,
+        payload: PromotionRequest | None = None,
         session: dict[str, str] = Depends(mutation_session),
     ) -> dict:
         try:
             item = store.get_item(item_id)
             title = item["display_headline"] or item["headline"]
-            story_id = store.request_phase2(item_id, title)
+            story_id = store.request_phase2(item_id, title, research_brief=payload.research_brief if payload else "")
             jobs.enqueue(story_id)
             return {
                 "story": _public_story(store.get_story(story_id)),

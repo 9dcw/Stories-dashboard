@@ -88,6 +88,7 @@ def build_read_model(store: StoryStore, generated_at: str | None = None) -> dict
             "google_doc_url": row["google_doc_url"],
             "telegram_thread_url": row["telegram_thread_url"],
             "research_folder_url": row["research_folder_url"],
+            "research_brief": row.get("research_brief", ""),
             "created_at": row["created_at"], "updated_at": row["updated_at"],
         })
     export_time = generated_at or datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")

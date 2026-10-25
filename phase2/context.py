@@ -29,7 +29,7 @@ def build_context(store, job):
         all_decisions=[dict(d) for d in db.execute('SELECT decision_id,kind,text,author,supersedes FROM editorial_decisions WHERE workspace_id=? ORDER BY created_at,decision_id',(job['workspace_id'],))]
         superseded={d['supersedes'] for d in all_decisions if d['supersedes']}
         decisions=[d for d in all_decisions if d['decision_id'] not in superseded]
-        value=dict(story={k:story[k] for k in ['story_id','title','origin_url','origin_item_id','event_key']},root_key=workspace['root_key'],operation=job['operation'],target=job['target'],instruction=job['instruction'],upstream=upstream,dependency_versions=versions,target_version=current['current_version'],current_output=json.loads(current['output']) if current['output'] else None,decisions=decisions,decision_ids=[d['decision_id'] for d in all_decisions])
+        value=dict(research_brief=story.get('research_brief', ''),story={k:story[k] for k in ['story_id','title','origin_url','origin_item_id','event_key']},root_key=workspace['root_key'],operation=job['operation'],target=job['target'],instruction=job['instruction'],upstream=upstream,dependency_versions=versions,target_version=current['current_version'],current_output=json.loads(current['output']) if current['output'] else None,decisions=decisions,decision_ids=[d['decision_id'] for d in all_decisions])
         # Legacy excerpts are explicit, bounded, unverified input, never accepted evidence.
         resources=json.loads(workspace['resources'])
         if resources.get('legacy_excerpt'):

@@ -176,6 +176,8 @@ class StoryStore:
             if "validation_reason" not in item_columns:
                 connection.execute("ALTER TABLE items ADD COLUMN validation_reason TEXT NOT NULL DEFAULT ''")
             project_columns = {row[1] for row in connection.execute("PRAGMA table_info(story_projects)")}
+            if "research_brief" not in project_columns:
+                connection.execute("ALTER TABLE story_projects ADD COLUMN research_brief TEXT NOT NULL DEFAULT ''")
             if "phase2_completion_token_hash" not in project_columns:
                 connection.execute("ALTER TABLE story_projects ADD COLUMN phase2_completion_token_hash TEXT NOT NULL DEFAULT ''")
 
@@ -689,8 +691,11 @@ class StoryStore:
                   )""", item_ids).fetchall()
             return {int(row["item_id"]): dict(row) for row in rows}
 
-    def request_phase2(self, item_id: int | Item, title: str) -> int:
-        """Immediately reserve a promoted lane while Telegram builds Phase 2 artifacts."""
+    def request_phase2(self, item_id: int | Item, title: str, research_brief: str = "") -> int:
+        """Persist editorial intent with promotion before any research can be queued."""
+        research_brief = research_brief.strip()
+        if len(research_brief) > 4000:
+            raise ValueError("Research brief must be at most 4000 characters")
         item_id = self._item_id(item_id)
         now = utc_now()
         with self._connect() as connection:
@@ -703,10 +708,12 @@ class StoryStore:
             if item["status"] == "DISMISSED":
                 raise ValueError("DISMISSED items must be transitioned with restore_item before promotion")
             existing = connection.execute(
-                "SELECT story_id, status FROM story_projects WHERE origin_item_id = ?", (item_id,)
+                "SELECT story_id, status, research_brief FROM story_projects WHERE origin_item_id = ?", (item_id,)
             ).fetchone()
             if existing:
                 story_id = int(existing["story_id"])
+                if research_brief and research_brief != existing["research_brief"]:
+                    raise ValueError("This story is already promoted; its original research brief is preserved")
                 if existing["status"] not in {"Phase 2 pending", "Phase 2", "Phase 3"}:
                     connection.execute(
                         "UPDATE story_projects SET status = 'Phase 2 pending', updated_at = ? WHERE story_id = ?",
@@ -720,6 +727,7 @@ class StoryStore:
                     (item_id, title, now, now),
                 )
                 story_id = int(cursor.lastrowid or 0)
+                connection.execute("UPDATE story_projects SET research_brief=? WHERE story_id=?", (research_brief, story_id))
             connection.execute("UPDATE items SET status = 'PROMOTED' WHERE item_id = ?", (item_id,))
             return story_id
 

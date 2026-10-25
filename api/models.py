@@ -24,6 +24,11 @@ class RestoreRequest(BaseModel):
     request_id: UUID
 
 
+class PromotionRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    research_brief: str = Field(default="", max_length=4000)
+
+
 class Phase2CompletionRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
     story_id: int = Field(gt=0)

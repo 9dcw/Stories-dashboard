@@ -421,3 +421,30 @@ test('opinion screening retains uncertain and failed items and exposes exclusion
   })()`,context);
   assert.deepEqual(JSON.parse(JSON.stringify(result)),{pass:true,error:true,excluded:false,audit:true});
 });
+
+
+test('promotion dialog waits for guidance and retains text on failure', async () => {
+  const {context,getElement,documentListeners}=loadApp();
+  candidateSetup(context);
+  const dialog=getElement('#promotionDialog');
+  dialog.showModal=()=>{dialog.open=true;};
+  dialog.close=()=>{dialog.open=false;};
+  getElement('#researchBrief').focus=()=>{};
+  let calls=0;
+  context.promote=async(_url,init)=>{
+    calls++;
+    assert.equal(JSON.parse(init.body).research_brief,'Follow the refunds');
+    return {ok:false,status:503,json:async()=>({detail:'Try again'})};
+  };
+  vm.runInContext('API.fetch=promote',context);
+  const button={dataset:{phase2Item:'7'}};
+  documentListeners.click({target:{closest:s=>s==='[data-phase2-item]'?button:null}});
+  assert.equal(dialog.open,true);
+  assert.equal(calls,0);
+  getElement('#researchBrief').value='Follow the refunds';
+  await vm.runInContext("requestPhase2(7,document.querySelector('#researchBrief').value)",context);
+  assert.equal(calls,1);
+  assert.equal(dialog.open,true);
+  assert.equal(getElement('#researchBrief').value,'Follow the refunds');
+  assert.match(getElement('#promotionError').textContent,/Try again/);
+});

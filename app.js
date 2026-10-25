@@ -265,7 +265,7 @@ async function retryPhase2(storyId){
     await refreshAfterMutation();
   }catch(e){showSnackbar(`Retry failed: ${esc(e.message)}`,5000);}
 }
-function card(s){const id=s.id||String(s.story_id);const fav=state.favorites.has(id);const stage=s.stage||s.status||'Promoted';return `<article class="story-card"><div class="card-top"><span class="stage ${statusClass({...s,stage})}">${esc(stage)}${['Phase 2','Phase 2 pending'].includes(storyStage(s))?' · '+esc(setupStatus(s)):''}</span><button class="favorite ${fav?'active':''}" data-favorite="${esc(id)}" aria-label="${fav?'Remove from':'Add to'} favorites">${fav?'★':'☆'}</button></div><h3>${esc(s.title)}</h3><p class="hook">${esc(s.hook||s.whatHappened||`Origin: ${s.source||'Unknown source'}`)}</p><div class="card-meta"><span>${esc(s.source||'Unknown source')}</span>${s.origin_item_id?`<span>· item ${esc(s.origin_item_id)}</span>`:''}</div>${phase2Progress(s)}<div class="actions">${action(s.doc||s.google_doc_url,'Doc','primary')}${action(s.telegramTopicLink||s.telegram_thread_url,'Telegram','telegram')}${action(s.phase2Folder||s.research_folder_url,'Research')}${action(s.phase3Doc,'Visual script')}${action(s.source||s.origin_url,'Source')}</div></article>`}
+function card(s){const id=s.id||String(s.story_id);const fav=state.favorites.has(id);const stage=s.stage||s.status||'Promoted';return `<article class="story-card"><div class="card-top"><span class="stage ${statusClass({...s,stage})}">${esc(stage)}${['Phase 2','Phase 2 pending'].includes(storyStage(s))?' · '+esc(setupStatus(s)):''}</span><button class="favorite ${fav?'active':''}" data-favorite="${esc(id)}" aria-label="${fav?'Remove from':'Add to'} favorites">${fav?'★':'☆'}</button></div><h3>${esc(s.title)}</h3><p class="hook">${esc(s.hook||s.whatHappened||`Origin: ${s.source||'Unknown source'}`)}</p><div class="card-meta"><span>${esc(s.source||'Unknown source')}</span>${s.origin_item_id?`<span>· item ${esc(s.origin_item_id)}</span>`:''}</div>${s.research_brief?`<details><summary>Research brief</summary><p class="research-brief">${esc(s.research_brief)}</p></details>`:""}${phase2Progress(s)}<div class="actions">${action(s.doc||s.google_doc_url,'Doc','primary')}${action(s.telegramTopicLink||s.telegram_thread_url,'Telegram','telegram')}${action(s.phase2Folder||s.research_folder_url,'Research')}${action(s.phase3Doc,'Visual script')}${action(s.source||s.origin_url,'Source')}</div></article>`}
 
 function candidateCard(c){
   const gist=c.gist?`<p class="candidate-gist">${esc(c.gist)}</p>`:'';
@@ -415,21 +415,39 @@ async function restoreItem(itemId,feedbackId){
     showSnackbar(`Restore failed: ${esc(e.message)}`,4000);
   }finally{delete state.pending[itemId];render();}
 }
-async function requestPhase2(itemId){
+function openPromotion(itemId){
+  const dialog=$('#promotionDialog');
+  if(dialog.dataset.itemId!==String(itemId))$('#researchBrief').value='';
+  dialog.dataset.itemId=String(itemId);
+  const story=state.candidates.find(c=>String(c.item_id)===String(itemId))||state.stories.find(s=>String(s.origin_item_id)===String(itemId));
+  $('#promotionTitle').textContent=story?.title||story?.display_headline||story?.headline||'Selected story';
+  $('#promotionError').textContent='';
+  dialog.showModal();
+  $('#researchBrief').focus();
+}
+$('#promotionCancel').addEventListener('click',()=>$('#promotionDialog').close());
+$('#promotionForm').addEventListener('submit',e=>{
+  e.preventDefault();
+  $('#promotionSubmit').disabled=true;
+  requestPhase2($('#promotionDialog').dataset.itemId,$('#researchBrief').value.trim());
+});
+async function requestPhase2(itemId, researchBrief=""){
+  if(state.pending[itemId])return;
   const parsedItemId=parseInt(itemId,10);
   state.pending[parsedItemId]=true;
   render();
   try{
     const r=await API.fetch(`/api/v1/items/${parsedItemId}/phase2`,{
-      method:'POST',headers:API.headers()
+      method:'POST',headers:API.headers(),body:JSON.stringify({research_brief:researchBrief})
     });
     const d=await API.json(r);
+    $('#promotionDialog').close();
     await refreshAfterMutation();
     showSnackbar('Moved to Promoted as Phase 2 pending',3000);
 
   }catch(e){
-    showSnackbar(`Promotion failed: ${e.message}`,4000);
-  }finally{delete state.pending[parsedItemId];render();}
+    $('#promotionError').textContent=`Promotion failed: ${e.message}`;
+  }finally{delete state.pending[parsedItemId];$('#promotionSubmit').disabled=false;render();}
 }
 async function refreshAfterMutation(){
   try{await loadDashboard();}catch(_){}
@@ -451,7 +469,7 @@ document.addEventListener('click',e=>{
   const retryBtn=e.target.closest('[data-phase2-retry]');
   if(retryBtn){retryPhase2(retryBtn.dataset.phase2Retry);return}
   const phase2Btn=e.target.closest('[data-phase2-item]');
-  if(phase2Btn){requestPhase2(phase2Btn.dataset.phase2Item);return}
+  if(phase2Btn){openPromotion(phase2Btn.dataset.phase2Item);return}
   const link=e.target.closest('a.action');
   if(link){const c=link.closest('.story-card');const s=state.stories.find(x=>c&&c.querySelector('[data-favorite]')?.dataset.favorite===(x.id||String(x.story_id)));if(s){state.recent=[s.id||String(s.story_id),...state.recent.filter(x=>x!==(s.id||String(s.story_id)))];save()}}
   // interactive dismiss button

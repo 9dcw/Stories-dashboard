@@ -113,7 +113,7 @@ class Phase2Jobs:
         story = self.store.get_story(row['story_id'])
         item = self.store.get_item(story['origin_item_id'])
         identity = hashlib.sha256(item['canonical_url'].encode()).hexdigest()[:16]
-        payload = dict(story_id=row['story_id'], item_id=story['origin_item_id'], title=story['title'],
+        payload = dict(research_brief=story.get('research_brief', ''), story_id=row['story_id'], item_id=story['origin_item_id'], title=story['title'],
                        proposed_story_root_key='story-'+identity, proposed_event_key='event-'+identity,
                        source_url=story['origin_url'], idempotency_key=f"stories-phase2-{row['story_id']}",
                        callback_url=f"{self.config.public_origin}/api/v1/stories/{row['story_id']}/phase2/callback",
