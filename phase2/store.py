@@ -57,6 +57,8 @@ class WorkflowStore:
                             WHERE p.story_id=?''', (story_id,)).fetchone()
         if not row:
             raise ValueError('Unknown story_id')
+        if row['status']=='Deleted':
+            raise Conflict('Story was deleted from the dashboard; research files were retained')
         return dict(row)
 
     def workspace(self, workspace_id):
@@ -394,7 +396,7 @@ class WorkflowStore:
     def by_topic(self, chat_id, thread_id):
         with self.connect() as db:
             rows=db.execute('''SELECT p.story_id,w.workspace_id FROM story_workspaces w JOIN story_projects p USING(workspace_id)
-                               WHERE w.chat_id=? AND w.thread_id=? AND w.state='ready' ORDER BY p.story_id''',(str(chat_id),str(thread_id))).fetchall()
+                               WHERE w.chat_id=? AND w.thread_id=? AND w.state='ready' AND p.status<>'Deleted' ORDER BY p.story_id''',(str(chat_id),str(thread_id))).fetchall()
             if len(rows)!=1:
                 raise Conflict('Topic has no unique project; supply an explicitly mapped story ID')
             return dict(rows[0])

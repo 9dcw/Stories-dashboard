@@ -53,7 +53,7 @@ def build_read_model(store: StoryStore, generated_at: str | None = None) -> dict
     screenings, court_pipeline, court_sources = read_court_state(store)
     project_rows = store.list_stories()
     promoted_item_ids = {
-        row["origin_item_id"] for row in project_rows if row["status"] in PROMOTED_STORY_STATUSES
+        row["origin_item_id"] for row in project_rows if row["status"] in PROMOTED_STORY_STATUSES | {"Deleted"}
     }
     candidates = []
     for row in store.list_items():

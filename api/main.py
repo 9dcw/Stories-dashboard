@@ -296,10 +296,20 @@ def create_app(config: RuntimeConfig | None = None) -> FastAPI:
         except sqlite3.OperationalError as error:
             _database_unavailable(error)
 
+    @app.delete('/api/v1/stories/{story_id}')
+    def delete_phase2_story(story_id: int, session: dict = Depends(mutation_session)):
+        try:
+            return store.delete_phase2_story(story_id)
+        except ValueError as error:
+            raise HTTPException(404 if str(error).startswith('Unknown story_id') else 409, str(error)) from None
+        except sqlite3.OperationalError as error:
+            _database_unavailable(error)
+
     @app.post('/api/v1/stories/{story_id}/phase2/retry', status_code=202)
     def retry_phase2(story_id: int, session: dict = Depends(mutation_session)):
         try:
-            store.get_story(story_id)
+            if store.get_story(story_id)['status']=='Deleted':
+                raise ValueError('Deleted story cannot be retried')
             jobs.enqueue(story_id, retry=True)
             return {'phase2_job': jobs.public(story_id)}
         except ValueError as error:

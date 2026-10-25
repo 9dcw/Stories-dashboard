@@ -711,6 +711,8 @@ class StoryStore:
                 "SELECT story_id, status, research_brief FROM story_projects WHERE origin_item_id = ?", (item_id,)
             ).fetchone()
             if existing:
+                if existing["status"] == "Deleted":
+                    raise ValueError("Deleted story cannot be promoted again")
                 story_id = int(existing["story_id"])
                 if research_brief and research_brief != existing["research_brief"]:
                     raise ValueError("This story is already promoted; its original research brief is preserved")
@@ -815,6 +817,24 @@ class StoryStore:
             elif row["status"] not in {"Phase 2", "Phase 3"}:
                 raise ValueError("Story is not in a completable Phase 2 state")
         return self.get_story(story_id)
+
+    def delete_phase2_story(self, story_id: int) -> dict:
+        """Soft-delete a Phase 2 project and atomically fence its unfinished work."""
+        with self._connect() as connection:
+            connection.execute("BEGIN IMMEDIATE")
+            row=connection.execute('SELECT * FROM story_projects WHERE story_id=?',(story_id,)).fetchone()
+            if row is None:
+                raise ValueError(f"Unknown story_id: {story_id}")
+            if row['status'] not in {'Phase 2','Phase 2 pending','Deleted'}:
+                raise ValueError('Only Phase 2 stories can be deleted here')
+            connection.execute("UPDATE story_projects SET status='Deleted',updated_at=? WHERE story_id=?",(utc_now(),story_id))
+            tables={r[0] for r in connection.execute("SELECT name FROM sqlite_master WHERE type='table'")}
+            if 'workflow_runs' in tables:
+                connection.execute("UPDATE step_executions SET state='cancelled',fence='' WHERE run_id IN (SELECT run_id FROM workflow_runs WHERE workspace_id=?) AND state IN ('queued','running','blocked')",(row['workspace_id'],))
+                connection.execute("UPDATE workflow_runs SET state='cancelled' WHERE workspace_id=? AND state IN ('queued','running','blocked')",(row['workspace_id'],))
+            if 'phase2_jobs' in tables:
+                connection.execute("UPDATE phase2_jobs SET state='cancelled' WHERE story_id=?",(story_id,))
+        return {'story_id':story_id,'deleted':True,'research_files_preserved':True}
 
     def get_story(self, story_id: int) -> dict:
         with self._connect() as connection:

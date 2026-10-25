@@ -448,3 +448,40 @@ test('promotion dialog waits for guidance and retains text on failure', async ()
   assert.equal(getElement('#researchBrief').value,'Follow the refunds');
   assert.match(getElement('#promotionError').textContent,/Try again/);
 });
+
+test('Phase 2 deletion confirms scope, prevents duplicates, and survives stale dashboard responses', async () => {
+  const {context,getElement}=loadApp();
+  await new Promise(resolve=>setImmediate(resolve));
+  vm.runInContext(`
+    state.stories=[{story_id:7,title:'Remove me',status:'Phase 2'}];
+    window.confirm=message=>{window.deleteMessage=message;return true;};
+    window.requests=[];
+    API.fetch=async(path,init)=>{window.requests.push({path,init});return {ok:true,json:async()=>({deleted:true})};};
+    window.firstDelete=deletePhase2Story('7');
+    window.secondDelete=deletePhase2Story('7');
+  `,context);
+  await vm.runInContext('Promise.all([window.firstDelete,window.secondDelete])',context);
+  assert.equal(vm.runInContext('window.requests.length',context),1);
+  assert.equal(vm.runInContext('window.requests[0].init.method',context),'DELETE');
+  assert.match(vm.runInContext('window.deleteMessage',context),/Google Docs.*kept/);
+  assert.equal(vm.runInContext('state.stories.length',context),0);
+  await vm.runInContext(`API.fetch=async()=>({ok:true,json:async()=>({stories:[{story_id:7,status:'Phase 2'}]})});loadDashboard()`,context);
+  assert.equal(vm.runInContext('state.stories.length',context),0);
+});
+
+test('Phase 2 delete cancellation and server errors preserve the card', async () => {
+  const {context}=loadApp();
+  await new Promise(resolve=>setImmediate(resolve));
+  await vm.runInContext(`
+    state.stories=[{story_id:7,title:'Keep me',status:'Phase 2'}];
+    window.confirm=()=>false;
+    API.fetch=()=>{throw Error('should not send');};
+    deletePhase2Story('7');
+  `,context);
+  assert.equal(vm.runInContext('state.stories.length',context),1);
+  await vm.runInContext(`window.confirm=()=>true;API.fetch=async()=>({ok:false,status:500,json:async()=>({detail:'Server unavailable'})});deletePhase2Story('7')`,context);
+  assert.equal(vm.runInContext('state.stories.length',context),1);
+  assert.equal(vm.runInContext('state.deletingStories.size',context),0);
+  assert.match(vm.runInContext("card(state.stories[0])",context),/data-story-delete="7"/);
+  assert.doesNotMatch(vm.runInContext("card({story_id:8,status:'Phase 3'})",context),/data-story-delete/);
+});

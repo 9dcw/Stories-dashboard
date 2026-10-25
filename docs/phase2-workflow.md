@@ -89,3 +89,7 @@ Monitor blocked runs, expired leases, repeated integration failures, notificatio
 ## Document structure and review policy
 
 New artifacts and subsequent reviews apply [Google Docs content policy](doc-content-policy.md). Readers see native short/detail tables; complete structured evidence stays in version storage. Reviews inspect actual Doc revisions and flag legacy free-form content, excess length and exceptions.
+
+## Delete a Phase 2 story
+
+The Phase 2 card offers Delete for pending and ready stories. After confirmation, the authenticated DELETE `/api/v1/stories/{story_id}` marks the project Deleted and atomically cancels unfinished workflow runs, invalidating running step leases. The story stays out of both Phase 2 and new candidates. Docs, Drive assets, Telegram history, structured evidence and identifiers remain stored. Repeated deletion is safe; Phase 3 deletion and retrying/re-promoting a deleted story are rejected. An external request already in flight may finish, but its worker cannot commit a new project state after cancellation.

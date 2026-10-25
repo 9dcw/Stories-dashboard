@@ -18,6 +18,8 @@ const state={
   query:'', view:'candidates', filters:{source:'',lane:'',dismissed:'hide',screening:'retained',problem:'',setup:'',sourceStatus:''},
   favorites:new Set(JSON.parse(localStorage.getItem('stories-favorites')||'[]')),
   recent:JSON.parse(localStorage.getItem('stories-recent')||'[]'),
+  deletedStories:new Set(),
+  deletingStories:new Set(),
   pending:{},               // item_id → true during API call
   candidateUpdates:{},      // local projections protect against stale dashboard responses
   candidateRevision:0,
@@ -156,7 +158,7 @@ async function loadDashboard(){
     if(!r.ok)throw new Error('Dashboard unavailable');
     const d=await r.json();
     if(loadId!==state.dashboardLoad)return;
-    state.stories=d.stories||[];
+    state.stories=(d.stories||[]).filter(s=>!state.deletedStories.has(String(s.story_id)));
     state.candidates=(d.recent_candidates||[]).filter(c=>c.status!=='IGNORED').map(c=>{
       const update=state.candidateUpdates[c.item_id];
       if(!update)return c;
@@ -265,7 +267,23 @@ async function retryPhase2(storyId){
     await refreshAfterMutation();
   }catch(e){showSnackbar(`Retry failed: ${esc(e.message)}`,5000);}
 }
-function card(s){const id=s.id||String(s.story_id);const fav=state.favorites.has(id);const stage=s.stage||s.status||'Promoted';return `<article class="story-card"><div class="card-top"><span class="stage ${statusClass({...s,stage})}">${esc(stage)}${['Phase 2','Phase 2 pending'].includes(storyStage(s))?' · '+esc(setupStatus(s)):''}</span><button class="favorite ${fav?'active':''}" data-favorite="${esc(id)}" aria-label="${fav?'Remove from':'Add to'} favorites">${fav?'★':'☆'}</button></div><h3>${esc(s.title)}</h3><p class="hook">${esc(s.hook||s.whatHappened||`Origin: ${s.source||'Unknown source'}`)}</p><div class="card-meta"><span>${esc(s.source||'Unknown source')}</span>${s.origin_item_id?`<span>· item ${esc(s.origin_item_id)}</span>`:''}</div>${s.research_brief?`<details><summary>Research brief</summary><p class="research-brief">${esc(s.research_brief)}</p></details>`:""}${phase2Progress(s)}<div class="actions">${action(s.doc||s.google_doc_url,'Doc','primary')}${action(s.telegramTopicLink||s.telegram_thread_url,'Telegram','telegram')}${action(s.phase2Folder||s.research_folder_url,'Research')}${action(s.phase3Doc,'Visual script')}${action(s.source||s.origin_url,'Source')}</div></article>`}
+async function deletePhase2Story(storyId){
+  const id=String(storyId);
+  if(state.deletingStories.has(id)||state.deletedStories.has(id))return;
+  const story=state.stories.find(s=>String(s.story_id)===id);
+  if(!story||!['Phase 2','Phase 2 pending'].includes(storyStage(story)))return;
+  if(!window.confirm(`Delete "${story.title}" from Phase 2? Pending research will stop. Google Docs, research files, and Telegram history will be kept.`))return;
+  state.deletingStories.add(id);render();
+  try{
+    await API.json(await API.fetch(`/api/v1/stories/${encodeURIComponent(id)}`,{method:'DELETE',headers:API.headers()}));
+    state.deletedStories.add(id);
+    state.stories=state.stories.filter(s=>String(s.story_id)!==id);
+    state.favorites.delete(story.id||id);save();
+    showSnackbar('Deleted from Phase 2. Research files kept.',4000);
+  }catch(e){showSnackbar('Delete failed: '+e.message,5000);}
+  finally{state.deletingStories.delete(id);render();}
+}
+function card(s){const id=s.id||String(s.story_id);const fav=state.favorites.has(id);const stage=s.stage||s.status||'Promoted';return `<article class="story-card"><div class="card-top"><span class="stage ${statusClass({...s,stage})}">${esc(stage)}${['Phase 2','Phase 2 pending'].includes(storyStage(s))?' · '+esc(setupStatus(s)):''}</span><button class="favorite ${fav?'active':''}" data-favorite="${esc(id)}" aria-label="${fav?'Remove from':'Add to'} favorites">${fav?'★':'☆'}</button></div><h3>${esc(s.title)}</h3><p class="hook">${esc(s.hook||s.whatHappened||`Origin: ${s.source||'Unknown source'}`)}</p><div class="card-meta"><span>${esc(s.source||'Unknown source')}</span>${s.origin_item_id?`<span>· item ${esc(s.origin_item_id)}</span>`:''}</div>${s.research_brief?`<details><summary>Research brief</summary><p class="research-brief">${esc(s.research_brief)}</p></details>`:""}${phase2Progress(s)}<div class="actions">${action(s.doc||s.google_doc_url,'Doc','primary')}${action(s.telegramTopicLink||s.telegram_thread_url,'Telegram','telegram')}${action(s.phase2Folder||s.research_folder_url,'Research')}${action(s.phase3Doc,'Visual script')}${action(s.source||s.origin_url,'Source')}${s.story_id&&['Phase 2','Phase 2 pending'].includes(storyStage(s))?`<button class="action" data-story-delete="${esc(s.story_id)}"${state.deletingStories.has(String(s.story_id))?' disabled':''} title="Remove from dashboard; keep research files">${state.deletingStories.has(String(s.story_id))?'Deleting…':'Delete'}</button>`:''}</div></article>`}
 
 function candidateCard(c){
   const gist=c.gist?`<p class="candidate-gist">${esc(c.gist)}</p>`:'';
@@ -466,6 +484,8 @@ document.addEventListener('click',e=>{
   if(e.target.closest('[data-clear-filters]')){clearFilters();return}
   const fav=e.target.closest('[data-favorite]');
   if(fav){const id=fav.dataset.favorite;state.favorites.has(id)?state.favorites.delete(id):state.favorites.add(id);save();render();return}
+  const deleteBtn=e.target.closest('[data-story-delete]');
+  if(deleteBtn){deletePhase2Story(deleteBtn.dataset.storyDelete);return}
   const retryBtn=e.target.closest('[data-phase2-retry]');
   if(retryBtn){retryPhase2(retryBtn.dataset.phase2Retry);return}
   const phase2Btn=e.target.closest('[data-phase2-item]');
