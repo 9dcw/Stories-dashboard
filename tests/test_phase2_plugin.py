@@ -59,3 +59,42 @@ def test_untrusted_user_cannot_dispatch(monkeypatch):
     monkeypatch.setattr(module,'call_backend',lambda _:pytest.fail('Unauthorized dispatch'))
     event=SimpleNamespace(source=SimpleNamespace(platform='telegram',chat_id='-1003984316484',thread_id='3',user_id='99'),text='/story refresh evidence',message_id='5')
     assert module.dispatch_event(event,SimpleNamespace(_is_user_authorized=lambda _:True))['action']=='skip'
+
+
+@pytest.mark.parametrize('command,expected', [
+    ('/story help', 'Story commands'),
+    ('/story@StoriesBot help', 'Story commands'),
+    ('/story help research', 'Direct research after v1'),
+    ('/story help unknown', 'Use /story help'),
+])
+def test_help_is_readable_and_does_not_call_backend(monkeypatch, command, expected):
+    module=plugin()
+    monkeypatch.setenv('PHASE2_ALLOWED_USERS','42')
+    monkeypatch.setattr(module,'call_backend',lambda _:pytest.fail('Help must not call backend'))
+    source=SimpleNamespace(platform='telegram',chat_id='-1003984316484',thread_id='3',user_id='42')
+    adapter=SimpleNamespace(send=AsyncMock())
+    gateway=SimpleNamespace(adapters={'telegram':adapter},_is_user_authorized=lambda _:True)
+    async def invoke():
+        result=module.dispatch_event(SimpleNamespace(source=source,text=command,message_id='5'),gateway)
+        await asyncio.sleep(0)
+        return result
+    assert asyncio.run(invoke())['action']=='skip'
+    adapter.send.assert_awaited_once()
+    sent=adapter.send.call_args
+    assert expected in sent.args[1]
+    assert len(sent.args[1]) < 4000
+    assert sent.kwargs['metadata']=={'thread_id':'3'}
+
+
+@pytest.mark.parametrize('change', [dict(user_id='99'),dict(chat_id='other'),dict(thread_id=None)])
+def test_help_retains_authorization_checks(monkeypatch, change):
+    module=plugin()
+    monkeypatch.setenv('PHASE2_ALLOWED_USERS','42')
+    monkeypatch.setattr(module,'call_backend',lambda _:pytest.fail('Unauthorized help'))
+    values=dict(platform='telegram',chat_id='-1003984316484',thread_id='3',user_id='42')
+    values.update(change)
+    adapter=SimpleNamespace(send=AsyncMock())
+    gateway=SimpleNamespace(adapters={'telegram':adapter},_is_user_authorized=lambda _:True)
+    event=SimpleNamespace(source=SimpleNamespace(**values),text='/story help',message_id='5')
+    assert module.dispatch_event(event,gateway)['action']=='skip'
+    adapter.send.assert_not_called()
