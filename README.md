@@ -4,6 +4,8 @@ Authenticated, mobile-first live dashboard for the insurance story discovery wor
 
 Canonical live site: https://vmi3298003.contaboserver.net/
 
+For this server’s checkout locations, authenticated GitHub push commands, deployment approval, and local worker updates, see the [environment GitHub push and deployment guide](docs/environment-github-push.md).
+
 ## Stage 1 architecture
 
 - `story-data/stories.sqlite3` is the authoritative SQLite database used by the live Contabo service.
