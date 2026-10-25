@@ -9,6 +9,7 @@ import pytest
 from fastapi.testclient import TestClient
 from jsonschema import ValidationError
 
+from phase2.doc_policy import SPECS
 from phase2.context import build_context
 from phase2.orchestrator import Worker
 from phase2.registry import snapshot, validate_output
@@ -39,7 +40,9 @@ def sample(key,url='https://news.example.test/first'):
     elif key=='treatment':
         value['scenes']=[dict(beat='cold_open',purpose='Ask a question',viewer_question='What happened?',outline='Clearly identify missing evidence',claim_ids=[],visuals=[])]
     elif key=='review':
-        value.update(findings=[],readiness='needs_research')
+        value.update(findings=[],readiness='needs_research',policy_checks={})
+    topics=SPECS[key][3] or ['Assessment']
+    value.update(editorial_rows=[dict(topic=t,short='Evidence remains provisional.',detail='Primary records must be obtained before making a factual finding.') for t in topics],policy_exception='')
     return value
 
 
@@ -48,6 +51,12 @@ class FakeGoogle:
         self.writes=[]
         self.conflict=False
         self.proposals=[]
+
+    def read(self,doc_id):
+        return {'revisionId':'revision-'+doc_id.removeprefix('doc-')}
+
+    def review_snapshot(self, artifact, key):
+        return dict(doc_id=artifact['doc_id'],revision='revision-'+key,text='Current document',checks=dict(policy_version='tables.v1',total_words=100,managed_words=90,cap=SPECS[key][0],issues=[],outcome='pass'))
 
     def provision(self,store,job,telegram):
         store.checkpoint(job,resources={'folder':'folder','images':'images'},topic=('-1003984316484','12','13'))
@@ -81,7 +90,10 @@ class FakeResearch:
 
     def run(self,job,inputs,heartbeat):
         self.calls.append((job['step_key'],inputs))
-        return dict(text=json.dumps(sample(job['step_key'])),usage={'total_tokens':100},provenance={'model':'test'})
+        output=sample(job['step_key'])
+        if job['step_key']=='review':
+            output['editorial_rows'][0]['detail']='; '.join(key+' '+v['revision']+' tables.v1 total '+str(v['checks']['total_words'])+' managed '+str(v['checks']['managed_words'])+' pass' for key,v in inputs['current_docs'].items())
+        return dict(text=json.dumps(output),usage={'total_tokens':100},provenance={'model':'test'})
 
 
 class FakeTelegram:

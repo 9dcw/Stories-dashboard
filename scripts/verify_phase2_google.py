@@ -8,6 +8,7 @@ import uuid
 
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 from phase2.google_docs import GoogleDocs
+from phase2.doc_policy import render_document, SPECS
 from phase2.store import Conflict
 
 
@@ -54,6 +55,28 @@ def main():
         text=google.text(content)
         assert 'HUMAN-EDIT-' in text and 'Human note: KEEP THIS NOTE' in text and 'Approved appended revision' in text
         assert google.drive.comments().list(fileId=doc,fields='comments(id,content)').execute()['comments']
+        table_doc=google.drive.files().create(body={'name':'TEST ONLY — native editorial table','mimeType':'application/vnd.google-apps.document','parents':[folder],'appProperties':{'storiesPilot':marker}},fields='id').execute()['id']
+        created.append(table_doc)
+        rows=[dict(topic=t,short='Evidence remains provisional.',detail='Alleged, not established. Source: https://example.org/record 😀') for t in SPECS['evidence'][3]]
+        plan=render_document('Native table pilot\n','evidence',dict(editorial_rows=rows,policy_exception=''))
+        native=dict(doc_id=table_doc,baseline='')
+        native['baseline'],_=google.write(native,plan,'table-v1')
+        google.write(native,plan,'table-v1')  # A completed external write must recover without duplication.
+        rows[0]['detail']='Updated allegation qualification, still not a finding. https://example.org/update'
+        plan=render_document('Native table pilot v2\n','evidence',dict(editorial_rows=rows,policy_exception=''))
+        native['baseline'],_=google.write(native,plan,'table-v2')
+        assert google.review_snapshot(native,'evidence')['checks']['outcome']=='pass'
+        document=google.read(table_doc);_,content,tab=google.body(document)
+        table=next(p['table'] for p in content if 'table' in p)
+        index=table['tableRows'][1]['tableCells'][2]['content'][0]['startIndex']
+        google.docs.documents().batchUpdate(documentId=table_doc,body={'requests':[{'insertText':{'location':dict(index=index,**({'tabId':tab} if tab else {})),'text':'HUMAN TABLE EDIT '}}]}).execute()
+        try:
+            google.write(native,plan,'table-conflict')
+        except Conflict:
+            pass
+        else:
+            raise RuntimeError('Human table edit protection failed')
+        print('Native tables: create, readback, replacement, UTF-16 links, idempotent recovery, actual-Doc audit and human-cell edits verified.')
         print(json.dumps({'google_write_pilot':'passed','checks':['create_and_parent','revision_guard','named_ranges','utf16','human_notes_preserved','human_edit_conflict','explicit_append_preserves_annotations']}))
     finally:
         for resource in reversed(created):

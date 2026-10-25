@@ -7,6 +7,7 @@ import re
 import threading
 from pathlib import Path
 
+from phase2.doc_policy import TableDocument, render_document, audit
 from phase2.registry import canonical
 from phase2.store import Conflict
 
@@ -22,16 +23,6 @@ def doc_url(doc_id):
 def topic_url(workspace):
     return f"https://t.me/c/{str(workspace['chat_id'])[4:]}/{workspace['first_message_id']}?thread={workspace['thread_id']}&topic"
 
-
-def render_output(output):
-    """Render every schema field; structured claims and rights never disappear."""
-    def render(value,level=0):
-        if isinstance(value,dict):
-            return '\n'.join(k.replace('_',' ').title()+': '+render(v,level+1) for k,v in value.items())
-        if isinstance(value,list):
-            return '\n'+'\n\n'.join('• '+render(v,level+1) for v in value)
-        return str(value)
-    return render(output)+'\n'
 
 
 class GoogleDocs:
@@ -177,25 +168,23 @@ class GoogleDocs:
         return '\n'.join(lines)+'\n'
 
     def hub(self,store,job):
-        text=self.header(store,job,'hub')+'\nResearch and editorial status\n'
-        for key,a in store.artifacts(job['workspace_id']).items():
-            if key!='hub':
-                text+=key+': '+('potentially stale' if a['stale'] else a['render_state'])+'\n'
+        artifacts=store.artifacts(job['workspace_id'])
         with store.connect() as db:
-            decisions=[dict(d) for d in db.execute('SELECT kind,text,author FROM editorial_decisions WHERE workspace_id=? AND decision_id NOT IN (SELECT supersedes FROM editorial_decisions WHERE workspace_id=? AND supersedes IS NOT NULL) ORDER BY created_at',(job['workspace_id'],job['workspace_id']))]
+            story=store.story(db,job['story_id'])
+            decisions=[dict(d) for d in db.execute('SELECT kind,text FROM editorial_decisions WHERE workspace_id=? AND decision_id NOT IN (SELECT supersedes FROM editorial_decisions WHERE workspace_id=? AND supersedes IS NOT NULL) ORDER BY created_at',(job['workspace_id'],job['workspace_id']))]
             blocked=db.execute("SELECT count(*) FROM workflow_runs WHERE workspace_id=? AND state='blocked'",(job['workspace_id'],)).fetchone()[0]
-        text+='\nEditorial decisions and standing instructions\n'+render_output(decisions)
-        review=store.artifacts(job['workspace_id']).get('review',{})
-        if review.get('current_version'):
-            output=json.loads(store.version(review['current_version'])['output'])
-            text+='\nQuality review readiness: '+output.get('readiness','incomplete')+'\n'
-            text+='Open research gaps:\n'+'\n'.join(output.get('gaps',[])[:8])+'\n'
-            if review.get('stale'):
-                text+='The quality review is potentially stale.\n'
-        if blocked:
-            text+='\nBlocked operations: '+str(blocked)+'; use /story status.\n'
-        text+='\nResearch completion does not approve publication.\n'
-        return text
+        review=artifacts.get('review',{})
+        output=json.loads(store.version(review['current_version'])['output']) if review.get('current_version') else {}
+        status=output.get('readiness','Research in progress')
+        rows=[
+            dict(topic='Story',short='Current story and editorial direction.',detail=story['title']),
+            dict(topic='Current assessment',short=status,detail='Research completion does not approve publication.'),
+            dict(topic='Progress',short='See linked documents for current work.',detail='; '.join(k+': '+('potentially stale' if a['stale'] else a['render_state']) for k,a in artifacts.items() if k!='hub')),
+            dict(topic='Blockers',short=str(blocked)+' blocked operations.',detail='Use /story status for operational blockers; see Quality Review for unresolved research gaps.'),
+            dict(topic='Next decision',short='Review the package and resolve material gaps.',detail='; '.join(d['kind']+': '+d['text'] for d in decisions) or 'No standing editorial decisions recorded.'),
+        ]
+        # Human instructions are preserved in storage; necessary excess remains explicit.
+        return render_document(self.header(store,job,'hub'),'hub',dict(editorial_rows=rows,policy_exception='Standing human instructions retained in full; editorial condensation requires review.' if any(len(r['detail'].split())>60 for r in rows) else ''))
 
     def read(self,doc_id):
         return self.docs.documents().get(documentId=doc_id,includeTabsContent=True,suggestionsViewMode='SUGGESTIONS_INLINE').execute()
@@ -211,7 +200,13 @@ class GoogleDocs:
 
     @staticmethod
     def text(content):
-        return ''.join(e.get('textRun',{}).get('content','') for p in content for e in p.get('paragraph',{}).get('elements',[]))
+        result=''
+        for p in content:
+            result += ''.join(e.get('textRun',{}).get('content','') for e in p.get('paragraph',{}).get('elements',[]))
+            for row in p.get('table',{}).get('tableRows',[]):
+                for cell in row.get('tableCells',[]):
+                    result += GoogleDocs.text(cell.get('content',[]))
+        return result
 
     @staticmethod
     def fingerprint(content,start,end):
@@ -225,6 +220,8 @@ class GoogleDocs:
         return hashlib.sha256(canonical(clean(selected)).encode()).hexdigest()
 
     def write(self,artifact,text,marker):
+        if isinstance(text,TableDocument):
+            return self.write_table(artifact,text,marker)
         doc_id=artifact['doc_id']
         document=self.read(doc_id)
         tab,content,tab_id=self.body(document)
@@ -289,6 +286,8 @@ class GoogleDocs:
         return self.fingerprint(new_content,start,start+units(text)),verified['revisionId']
 
     def append_revision(self,artifact,text,marker):
+        if isinstance(text,TableDocument):
+            return self.write_table(artifact,text,marker,append=True)
         """Explicit conflict resolution: retain all old content and annotations."""
         document=self.read(artifact['doc_id'])
         tab,content,tab_id=self.body(document)
@@ -328,3 +327,98 @@ class GoogleDocs:
             store._owned(db,job)
             db.execute('UPDATE artifact_versions SET proposal_doc_id=? WHERE version_id=?',(proposal_id,version))
         return proposal_id
+
+    @staticmethod
+    def table_rows(content):
+        return [[[GoogleDocs.text(cell.get('content',[])).removesuffix('\n') for cell in row['tableCells']]
+                 for row in p['table']['tableRows']] for p in content if 'table' in p]
+
+    def review_snapshot(self, artifact, key):
+        document=self.read(artifact['doc_id'])
+        tab,content,_=self.body(document)
+        names=[n for g in tab.get('namedRanges',document.get('namedRanges',{})).values() for n in g.get('namedRanges',[]) if n.get('name','').startswith('stories-managed-')]
+        spans=[r for n in names for r in n.get('ranges',[])]
+        managed=[p for p in content if any(r['startIndex']<=p.get('startIndex',0)<r['endIndex'] for r in spans)]
+        tables=self.table_rows(managed)
+        text=self.text(content)
+        checks=audit(key,text,self.text(managed),tables[0] if len(tables)==1 else None)
+        if len(self.table_rows(content))>1:
+            checks['issues'].append('Historical or extra tables remain outside the current editorial table')
+            checks['outcome']='revise'
+        return dict(doc_id=artifact['doc_id'],revision=document['revisionId'],text=text,checks=checks)
+
+    def write_table(self, artifact, plan, marker, append=False):
+        document=self.read(artifact['doc_id'])
+        tab,content,tab_id=self.body(document)
+        names=[n for g in tab.get('namedRanges',document.get('namedRanges',{})).values() for n in g.get('namedRanges',[])]
+        managed=[n for n in names if n.get('name','').startswith('stories-managed-')]
+        final=next((n for n in managed if n['name']=='stories-managed-'+marker),None)
+        if final:
+            span=final['ranges'][0]
+            selected=[p for p in content if span['startIndex']<=p.get('startIndex',0)<span['endIndex']]
+            if self.text(selected)!=plan.text or self.table_rows(selected)!=[plan.grid]:
+                raise Conflict('Document changed after prior table write; retain human changes')
+            return self.fingerprint(content,span['startIndex'],span['endIndex']),document['revisionId']
+        if not append:
+            comments=self.drive.comments().list(fileId=artifact['doc_id'],fields='nextPageToken,comments(id,resolved,deleted)',includeDeleted=False,pageSize=100).execute()
+            if comments.get('nextPageToken') or any(not c.get('resolved') and not c.get('deleted') for c in comments.get('comments',[])):
+                raise Conflict('Document has comments; preserve annotations')
+            if 'suggested' in canonical(content).lower(): raise Conflict('Document has suggestions requiring review')
+            if artifact['baseline']:
+                if len(managed)!=1 or len(managed[0].get('ranges',[]))!=1:
+                    raise Conflict('Managed section boundaries missing or ambiguous')
+                old=managed[0]['ranges'][0]; start,end=old['startIndex'],old['endIndex']
+                if self.fingerprint(content,start,end)!=artifact['baseline']:
+                    raise Conflict('Human edits changed the managed section')
+            else:
+                if self.text(content).strip(): raise Conflict('Unregistered document content cannot be overwritten')
+                start=end=1
+        else:
+            start=end=max(p.get('endIndex',1) for p in content)-1
+        retained=self.text([p for p in content if not (start<=p.get('startIndex',0)<end)])
+        from phase2.doc_policy import SPECS, words
+        if words(retained+plan.text)>SPECS[plan.key][0] and not plan.exception:
+            raise Conflict('Whole document exceeds soft cap including retained content; prepare a shorter revision or explicit exception')
+        def location(index):
+            return dict(index=index,**({'tabId':tab_id} if tab_id else {}))
+        def span(a,b):
+            return dict(startIndex=a,endIndex=b,**({'tabId':tab_id} if tab_id else {}))
+        requests=[]
+        for n in managed:
+            request={'namedRangeId':n['namedRangeId']}
+            if tab_id: request['tabsCriteria']={'tabIds':[tab_id]}
+            requests.append({'deleteNamedRange':request})
+        if end>start: requests.append({'deleteContentRange':{'range':span(start,end)}})
+        prefix=plan.prefix
+        requests.append({'insertText':{'location':location(start),'text':prefix}})
+        if not artifact['baseline'] or append:
+            requests.append({'insertText':{'location':location(start+units(prefix)),'text':'\nHuman editorial notes (preserved)\n'}})
+        at=start+units(prefix)
+        requests.append({'insertTable':{'rows':len(plan.grid),'columns':3,'location':location(at)}})
+        # insertTable adds a newline before the table. Empty cells contain a newline.
+        table_start=at+1
+        entries=[]
+        for r,row in enumerate(plan.grid):
+            for c,value in enumerate(row):
+                entries.append((table_start+3+r*7+c*2,value))
+        for index,value in reversed(entries):
+            requests.append({'insertText':{'location':location(index),'text':value}})
+        final_end=table_start+2+len(plan.grid)*7+sum(units(v) for row in plan.grid for v in row)
+        requests.append({'createNamedRange':{'name':'stories-managed-'+marker,'range':span(start,final_end)}})
+        for match in re.finditer(r'https?://[^\s]+',prefix):
+            requests.append({'updateTextStyle':{'range':span(start+units(prefix[:match.start()]),start+units(prefix[:match.end()])), 'textStyle':{'link':{'url':match.group()}},'fields':'link'}})
+        # Link and format using final cell offsets, including non-BMP characters.
+        offset=0
+        for n,(index,value) in enumerate(entries):
+            actual=index+offset
+            for match in re.finditer(r'https?://[^\s]+',value):
+                requests.append({'updateTextStyle':{'range':span(actual+units(value[:match.start()]),actual+units(value[:match.end()])), 'textStyle':{'link':{'url':match.group()}},'fields':'link'}})
+            if n<3:
+                requests.append({'updateTextStyle':{'range':span(actual,actual+units(value)), 'textStyle':{'bold':True},'fields':'bold'}})
+            offset+=units(value)
+        self.docs.documents().batchUpdate(documentId=artifact['doc_id'],body={'writeControl':{'requiredRevisionId':document['revisionId']},'requests':requests}).execute()
+        verified=self.read(artifact['doc_id']); _,new_content,_=self.body(verified)
+        selected=[p for p in new_content if start<=p.get('startIndex',0)<final_end]
+        if self.text(selected)!=plan.text or self.table_rows(selected)!=[plan.grid]:
+            raise Conflict('Table readback mismatch; reconcile before retry')
+        return self.fingerprint(new_content,start,final_end),verified['revisionId']

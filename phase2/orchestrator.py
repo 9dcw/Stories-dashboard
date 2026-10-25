@@ -12,7 +12,9 @@ from pathlib import Path
 from jsonschema import ValidationError
 
 from phase2.context import build_context
-from phase2.google_docs import doc_url, render_output
+from phase2.google_docs import doc_url
+from phase2.doc_policy import render_document
+from phase2.registry import digest, apply_content_policy
 from phase2.hermes_adapter import ResearchFailure
 from phase2.registry import validate_output
 from phase2.store import Conflict, LostLease
@@ -36,6 +38,7 @@ class Worker:
             yield
 
     def execute(self,job):
+        job=dict(job,manifest=apply_content_policy(job['manifest']))
         stop=threading.Event()
         lost=threading.Event()
         def keepalive():
@@ -62,20 +65,40 @@ class Worker:
                     self.update_hub(job)
                 self.store.finish(job)
                 return
-            inputs=self.store.save_inputs(job,build_context(self.store,job))
+            context=build_context(self.store,job)
+            context['content_policy_version']=job['manifest']['content_policy_version']
+            context.pop('hash',None)
+            context['hash']=digest(context)
+            if job['step_key']=='review':
+                artifacts=self.store.artifacts(job['workspace_id'])
+                keys=list(context['upstream'])
+                if job['operation']!='review_artifact': keys=['hub']+keys
+                context['current_docs']={key:self.google.review_snapshot(artifacts[key],key) for key in keys}
+                from phase2.registry import canonical
+                if len(canonical(context))>180000:
+                    raise Conflict('Actual Docs exceed review context budget; narrow the review target, no text was silently truncated')
+                context.pop('hash',None)
+                context['hash']=digest(context)
+            inputs=self.store.save_inputs(job,context)
+            if inputs.get('content_policy_version')!=job['manifest']['content_policy_version']:
+                raise Conflict('Pre-policy input snapshot; retry without a candidate or request a fresh revision/review')
             with self.store.connect() as db:
                 checkpoint=db.execute('SELECT output_version FROM step_executions WHERE step_id=?',(job['step_id'],)).fetchone()[0]
             if checkpoint:
                 version=checkpoint
                 output=json.loads(self.store.version(version)['output'])
+                if 'editorial_rows' not in output:
+                    raise Conflict('Legacy checkpoint needs a new revision under tables.v1; retained output was not overwritten')
             else:
                 result=self.research.run(job,inputs,lambda:self.store.heartbeat(job))
                 if not self.store.record_usage(job,result['usage']):
                     return
                 try:
                     output=json.loads(result['text'])
+                    self.add_review_checks(job,inputs,output)
                     validate_output(job['manifest'],job['step_key'],output)
                     self.check_evidence(job,inputs,output)
+                    render_document(self.google.header(self.store,job,job['step_key'])+'\nVersion: pending-version-identifier\n',job['step_key'],output)
                 except (ValueError,ValidationError) as validation_error:
                     # One bounded repair using exactly the same snapshot and schema.
                     repair=dict(inputs,validation_repair='The previous response failed the registered contract: '+self.validation_feedback(validation_error)+'. Return a complete valid JSON object; do not invent evidence.',previous_invalid_output=str(result.get('text',''))[:32000])
@@ -86,8 +109,10 @@ class Worker:
                         repaired['usage'][field]=(repaired['usage'].get(field) or 0)+(result['usage'].get(field) or 0)
                     result=repaired
                     output=json.loads(result['text'])
+                    self.add_review_checks(job,inputs,output)
                     validate_output(job['manifest'],job['step_key'],output)
                     self.check_evidence(job,inputs,output)
+                    render_document(self.google.header(self.store,job,job['step_key'])+'\nVersion: pending-version-identifier\n',job['step_key'],output)
                 if (result['usage'].get('total_tokens') or 0)>job['manifest']['budgets']['step_tokens']:
                     raise Conflict('Step token budget exhausted, including schema repair')
                 provenance=dict(result['provenance'],workflow_hash=job['manifest']['hash'],input_hash=inputs['hash'])
@@ -97,13 +122,17 @@ class Worker:
                 # Recover a crash after publication but before finishing the step/Hub.
                 if artifact['current_version']!=version:
                     self.store.assert_current(job,inputs)
+                    if job['step_key']=='review':
+                        for snapshot in inputs.get('current_docs',{}).values():
+                            if self.google.read(snapshot['doc_id'])['revisionId']!=snapshot['revision']:
+                                raise Conflict('A reviewed Google Doc changed during review; request a fresh review')
                     scope='\nReview scope: '+job['target']+' only\n' if job['operation']=='review_artifact' else ''
-                    text=self.google.header(self.store,job,job['step_key'])+'\nVersion: '+version+scope+'\n'+render_output(output)
+                    text=render_document(self.google.header(self.store,job,job['step_key'])+'\nVersion: '+version+scope+'\n',job['step_key'],output)
                     try:
                         baseline,revision=self.google.write(artifact,text,version)
-                    except Conflict:
+                    except Conflict as conflict:
                         self.google.proposal(self.store,job,version,text)
-                        raise Conflict('Human edits or annotations require review. Proposed version '+version+'; use /story status or explicitly /story append '+version)
+                        raise Conflict(str(conflict)+'. Proposed version '+version+'; use /story status or explicitly /story append '+version)
                     self.store.publish(job,version,baseline,revision)
                 self.update_hub(job)
             self.store.finish(job)
@@ -131,6 +160,29 @@ class Worker:
             log.info('Failure arrived after lease was superseded: %s',job['step_id'])
 
     @staticmethod
+    def add_review_checks(job, inputs, output):
+        if job['step_key']!='review': return
+        snapshots=inputs.get('current_docs',{})
+        if not isinstance(output,dict) or not isinstance(output.get('findings'),list) or not isinstance(output.get('editorial_rows'),list):
+            return  # Let the schema validator provide bounded repair feedback.
+        output['policy_checks']={key:dict(value['checks'],revision=value['revision'],doc_id=value['doc_id']) for key,value in snapshots.items()}
+        checks=[]
+        for key,value in snapshots.items():
+            c=value['checks']
+            checks.append(f"{key} {value['revision']}: {c['total_words']}/{c['managed_words']} total/managed words, {c['outcome']}")
+            if c['issues']:
+                issue=key+': content policy requires revision'
+                recommendation='; '.join(c['issues'])+'. Preserve evidence and human annotations when revising.'
+                output['findings'].append(dict(severity='major',artifact=key,issue=issue,recommendation=recommendation))
+                output['editorial_rows'].append(dict(topic=key+' policy',short=issue,detail=recommendation))
+        if checks:
+            output['editorial_rows'].append(dict(topic='Content checks',short='tables.v1 checks of actual Google Doc revisions.',detail='; '.join(checks)))
+        if len(output['editorial_rows'])>6 and not output.get('policy_exception','').strip():
+            output['policy_exception']='Includes mandatory live-document checks and all material review findings.'
+        if any(v['checks']['issues'] for v in snapshots.values()):
+            output['readiness']='needs_research'
+
+    @staticmethod
     def validation_feedback(error):
         if isinstance(error,ValidationError):
             # Do not echo instance values, which may contain untrusted source content.
@@ -142,6 +194,16 @@ class Worker:
 
     @staticmethod
     def check_evidence(job,inputs,output):
+        if job['step_key']=='review':
+            snapshots=inputs.get('current_docs',{})
+            for key,snapshot in snapshots.items():
+                text=' '.join(r['detail']+' '+r['short'] for r in output.get('editorial_rows',[]))
+                if any(str(v) not in text for v in [snapshot['revision'],key,snapshot['checks']['policy_version'],snapshot['checks']['total_words'],snapshot['checks']['managed_words']]):
+                    raise ValueError('Review table must identify every actual Doc revision checked: '+key)
+                if snapshot['checks']['issues'] and not any(f['artifact']==key for f in output.get('findings',[])):
+                    raise ValueError('Review must report content-policy findings for '+key)
+            if any(v['checks']['issues'] for v in snapshots.values()) and output.get('readiness')=='ready_for_human_review':
+                raise ValueError('Unresolved content-policy findings prevent a clean readiness result')
         if job.get('operation')=='investigate' and inputs.get('current_output'):
             for field in ['sources','claims']:
                 current={v['id']:v for v in output[field]}

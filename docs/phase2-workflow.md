@@ -85,3 +85,7 @@ The inventory and reviewed manifest are operational artifacts. Store them with a
 Stop new worker claims, cancel or drain active work and disable the Stories plugin before reverting `PHASE2_ENGINE` to `legacy`. Retain all new tables and external Docs. Never restore an old database over newer execution state as a code rollback. Ensure legacy pending discovery cannot redispatch migrated pending projects before enabling it.
 
 Monitor blocked runs, expired leases, repeated integration failures, notification attempts, token totals and Google render conflicts. Service logs use bounded diagnostics and IDs; do not log arbitrary provider payloads, Telegram token URLs or OAuth credentials. `/story status` and dashboard cards expose operation state and links. Run `python3 -m pytest -q` and `npm test` before rollout.
+
+## Document structure and review policy
+
+New artifacts and subsequent reviews apply [Google Docs content policy](doc-content-policy.md). Readers see native short/detail tables; complete structured evidence stays in version storage. Reviews inspect actual Doc revisions and flag legacy free-form content, excess length and exceptions.

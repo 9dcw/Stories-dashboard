@@ -451,8 +451,8 @@ class WorkflowStore:
         effective=dict(job,step_key=target)
         if artifact['current_version']!=version['version_id']:
             self.assert_current(effective,inputs)
-            from phase2.google_docs import render_output
-            text=google.header(self,job,target)+'\nApproved appended revision: '+version['version_id']+'\n'+render_output(json.loads(version['output']))
+            from phase2.doc_policy import render_document
+            text=render_document(google.header(self,job,target)+'\nApproved appended revision: '+version['version_id']+'\n',target,json.loads(version['output']))
             baseline,revision=google.append_revision(artifact,text,version['version_id'])
             self.publish(effective,version['version_id'],baseline,revision)
         # Explicit append resolves the original blocked step and resumes its authorized DAG.
