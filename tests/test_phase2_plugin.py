@@ -36,10 +36,12 @@ def test_discussion_tools_cannot_bypass_operations(monkeypatch):
     assert module.guard_discussion_tools('terminal') is None
 
 
-def test_backend_failure_consumes_command_without_llm_fallback(monkeypatch):
+@pytest.mark.parametrize('rejected',[False,True])
+def test_backend_failure_consumes_command_without_llm_fallback(monkeypatch,rejected):
     module=plugin()
     monkeypatch.setenv('PHASE2_ALLOWED_USERS','42')
-    monkeypatch.setattr(module,'call_backend',lambda _:(_ for _ in []).throw(ConnectionError()))
+    error=module.StoriesRejection('Finish or cancel: /story cancel run-1') if rejected else ConnectionError()
+    monkeypatch.setattr(module,'call_backend',lambda _:(_ for _ in []).throw(error))
     source=SimpleNamespace(platform='telegram',chat_id='-1003984316484',thread_id='3',user_id='42')
     event=SimpleNamespace(source=source,text='/story revise angles A narrower question',message_id='5')
     adapter=SimpleNamespace(send=AsyncMock())
@@ -51,6 +53,7 @@ def test_backend_failure_consumes_command_without_llm_fallback(monkeypatch):
     assert asyncio.run(invoke())['action']=='skip'
     adapter.send.assert_awaited_once()
     assert 'not accepted' in adapter.send.call_args.args[1]
+    assert ('/story cancel run-1' in adapter.send.call_args.args[1]) is rejected
 
 
 def test_untrusted_user_cannot_dispatch(monkeypatch):

@@ -9,7 +9,22 @@ from jsonschema import Draft202012Validator
 from phase2.doc_policy import instructions, validate_rows, VERSION
 
 ROOT = Path(__file__).resolve().parent
-OPERATIONS = {"create_artifact", "revise_artifact", "investigate", "refresh_artifact", "review_artifact"}
+OPERATIONS = {"create_artifact", "revise_artifact", "investigate", "refresh_artifact", "review_artifact", "reconcile_package"}
+
+
+def package_manifest(manifest):
+    """Pin selective revision contracts alongside the usual publication schemas."""
+    for key in manifest['steps']:
+        if key=='review':
+            manifest['prompts'][key]+='\nReview the resulting complete package against the reconcile instruction and standing decisions. Report remaining gaps; completion does not grant publication approval.'
+            continue
+        manifest['schemas'][key]={'anyOf':[manifest['schemas'][key],{
+            'type':'object','properties':{'action':{'const':'keep'},'reason':{'type':'string','minLength':1,'maxLength':2000}},
+            'required':['action','reason'],'additionalProperties':False}]}
+        manifest['prompts'][key]+='''\nThis is a package reconciliation. Assess the current structured output AND actual Google Doc snapshots against the instruction, active decisions and updated dependencies. If the existing document remains accurate, complete and aligned, return only {"action":"keep","reason":"specific assessment"}. Keep requires an existing structured version, unchanged managed text and no content-policy findings. Otherwise return the complete revised artifact using the normal schema, or create it if missing. Substantial rewrites are authorized where necessary. Preserve supported evidence, qualifications and human annotations; never invent missing facts. Do not rewrite solely to change wording. Explain material changes in the artifact's editorial rows. All later documents will be assessed against the resulting upstream versions.'''
+    manifest.pop('hash',None)
+    manifest['hash']=digest(manifest)
+    return manifest
 
 
 def canonical(value):
@@ -65,6 +80,8 @@ def apply_content_policy(original):
 def validate_output(manifest, key, output):
     schema = manifest["schemas"][key]
     Draft202012Validator(schema).validate(output)
+    if output.get('action')=='keep':
+        return output
     sources = {s["id"] for s in output["sources"]}
     if len(sources) != len(output["sources"]):
         raise ValueError("Source identifiers must be unique")

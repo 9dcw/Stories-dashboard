@@ -46,6 +46,7 @@ In the registered topic:
 /story start
 /story read evidence
 /story revise angles Focus on policyholder consequences
+/story reconcile Apply the standing direction across all documents; preserve evidence and revise where necessary
 /story investigate evidence Find the underlying regulatory order
 /story refresh plan
 /story review treatment

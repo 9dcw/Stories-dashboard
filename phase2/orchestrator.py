@@ -69,10 +69,12 @@ class Worker:
             context['content_policy_version']=job['manifest']['content_policy_version']
             context.pop('hash',None)
             context['hash']=digest(context)
-            if job['step_key']=='review':
+            if job['step_key']=='review' or job['operation']=='reconcile_package':
                 artifacts=self.store.artifacts(job['workspace_id'])
                 keys=list(context['upstream'])
-                if job['operation']!='review_artifact': keys=['hub']+keys
+                if job['step_key']=='review' and job['operation']!='review_artifact': keys=['hub']+keys
+                elif job['operation']=='reconcile_package': keys+=[job['step_key']]
+                keys=[key for key in keys if artifacts[key]['doc_id']]
                 context['current_docs']={key:self.google.review_snapshot(artifacts[key],key) for key in keys}
                 from phase2.registry import canonical
                 if len(canonical(context))>180000:
@@ -95,10 +97,7 @@ class Worker:
                     return
                 try:
                     output=json.loads(result['text'])
-                    self.add_review_checks(job,inputs,output)
-                    validate_output(job['manifest'],job['step_key'],output)
-                    self.check_evidence(job,inputs,output)
-                    render_document(self.google.header(self.store,job,job['step_key'])+'\nVersion: pending-version-identifier\n',job['step_key'],output)
+                    self.validate_result(job,inputs,output)
                 except (ValueError,ValidationError) as validation_error:
                     # One bounded repair using exactly the same snapshot and schema.
                     repair=dict(inputs,validation_repair='The previous response failed the registered contract: '+self.validation_feedback(validation_error)+'. Return a complete valid JSON object; do not invent evidence.',previous_invalid_output=str(result.get('text',''))[:32000])
@@ -109,12 +108,14 @@ class Worker:
                         repaired['usage'][field]=(repaired['usage'].get(field) or 0)+(result['usage'].get(field) or 0)
                     result=repaired
                     output=json.loads(result['text'])
-                    self.add_review_checks(job,inputs,output)
-                    validate_output(job['manifest'],job['step_key'],output)
-                    self.check_evidence(job,inputs,output)
-                    render_document(self.google.header(self.store,job,job['step_key'])+'\nVersion: pending-version-identifier\n',job['step_key'],output)
+                    self.validate_result(job,inputs,output)
                 if (result['usage'].get('total_tokens') or 0)>job['manifest']['budgets']['step_tokens']:
                     raise Conflict('Step token budget exhausted, including schema repair')
+                if output.get('action')=='keep':
+                    with self.render_lock(job):
+                        self.verify_snapshots(inputs)
+                        self.store.finish(job,retained=dict(output,provenance=result['provenance']),inputs=inputs)
+                    return
                 provenance=dict(result['provenance'],workflow_hash=job['manifest']['hash'],input_hash=inputs['hash'])
                 version=self.store.candidate(job,output,inputs,provenance,result['usage'])
             with self.render_lock(job):
@@ -122,6 +123,8 @@ class Worker:
                 # Recover a crash after publication but before finishing the step/Hub.
                 if artifact['current_version']!=version:
                     self.store.assert_current(job,inputs)
+                    if job['operation']=='reconcile_package':
+                        self.verify_snapshots(inputs,exclude=job['step_key'])
                     if job['step_key']=='review':
                         for snapshot in inputs.get('current_docs',{}).values():
                             if self.google.read(snapshot['doc_id'])['revisionId']!=snapshot['revision']:
@@ -158,6 +161,25 @@ class Worker:
             self.store.fail(job,message,retryable)
         except LostLease:
             log.info('Failure arrived after lease was superseded: %s',job['step_id'])
+
+    def verify_snapshots(self, inputs, exclude=None):
+        for key,snapshot in inputs.get('current_docs',{}).items():
+            if key!=exclude and self.google.read(snapshot['doc_id'])['revisionId']!=snapshot['revision']:
+                raise Conflict('A package Google Doc changed during assessment; retry with a fresh snapshot')
+
+    def validate_result(self,job,inputs,output):
+        self.add_review_checks(job,inputs,output)
+        validate_output(job['manifest'],job['step_key'],output)
+        if output.get('action')=='keep':
+            snapshot=inputs.get('current_docs',{}).get(job['step_key'])
+            if job['operation']!='reconcile_package' or not inputs.get('current_output') or not snapshot:
+                raise ValueError('Keeping a document requires a current structured version and actual Doc assessment')
+            if snapshot['checks']['issues'] or not snapshot.get('managed_matches'):
+                raise ValueError('This Doc requires revision or explicit human resolution; it cannot be kept as verified structured evidence')
+            validate_output(job['manifest'],job['step_key'],inputs['current_output'])
+            return
+        self.check_evidence(job,inputs,output)
+        render_document(self.google.header(self.store,job,job['step_key'])+'\nVersion: pending-version-identifier\n',job['step_key'],output)
 
     @staticmethod
     def add_review_checks(job, inputs, output):

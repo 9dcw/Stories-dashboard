@@ -42,4 +42,8 @@ CREATE TABLE IF NOT EXISTS editorial_decisions (
  supersedes TEXT REFERENCES editorial_decisions
 );
 CREATE INDEX IF NOT EXISTS idx_steps_due ON step_executions(state,due);
+CREATE TABLE IF NOT EXISTS package_assessments (
+ step_id TEXT PRIMARY KEY REFERENCES step_executions,
+ assessment TEXT NOT NULL
+);
 CREATE INDEX IF NOT EXISTS idx_runs_workspace ON workflow_runs(workspace_id,created_at);

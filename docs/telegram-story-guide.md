@@ -87,7 +87,19 @@ For a visual follow-up:
 
 ## Refresh the documents affected by your changes
 
-**Each post-v1 operation queues one research step. Refresh does not rebuild the whole dependency chain.** Updating an upstream artifact marks its descendants potentially stale. Wait for each upstream operation to finish before sending dependent work, then inspect `/story status`.
+**Scoped post-v1 operations queue one research step. Refresh does not rebuild the whole dependency chain.** Updating an upstream artifact marks its descendants potentially stale. Wait for each upstream operation to finish before sending dependent work, then inspect `/story status`.
+
+For comprehensive editorial direction, use a package reconciliation instead:
+
+```text
+/story reconcile Reassess the whole package against the standing direction. Lead with policyholder consequences, distinguish refunds ordered from payments made, and update documents where necessary. Preserve verified evidence and identify unresolved reporting needs.
+```
+
+This single run assesses angles, plan, evidence and visuals, treatment, then produces a fresh Quality Review. It reads actual Google Docs as well as structured evidence. Each document may be kept unchanged, substantially revised, or created if its structured version is missing. Dependencies are reassessed before descendants can run, even when older versions appear fresh. The final review checks actual Doc revisions, word counts and policy findings. Completion means the operation finished; remaining evidence gaps and publication decisions remain for human review.
+
+`/story decision instruction <text>` saves lasting direction and marks existing artifacts potentially stale; it still does not launch work. `/story reconcile <direction>` explicitly launches package work using that direction and all active decisions. Its instruction is scoped to this run; save a standing decision separately when the direction should persist.
+
+Finish or cancel any active/blocked research run before reconciling. Suitable documents are kept only after assessment against the latest direction and upstream versions, with unchanged managed content and passing content checks. Status records the reason for each keep. Human edits and comments remain protected; a blocked replacement retains a proposal. Review it before `/story append <version-id>` to resume the package. If direction or evidence changed, cancel the old run and reconcile again instead of adopting an obsolete candidate. A changed Doc during assessment blocks completion rather than clearing its stale flag.
 
 The dependencies are:
 

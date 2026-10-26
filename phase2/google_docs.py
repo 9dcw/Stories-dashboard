@@ -345,7 +345,8 @@ class GoogleDocs:
         if len(self.table_rows(content))>1:
             checks['issues'].append('Historical or extra tables remain outside the current editorial table')
             checks['outcome']='revise'
-        return dict(doc_id=artifact['doc_id'],revision=document['revisionId'],text=text,checks=checks)
+        matches=len(spans)==1 and bool(artifact['baseline']) and self.fingerprint(content,spans[0]['startIndex'],spans[0]['endIndex'])==artifact['baseline']
+        return dict(doc_id=artifact['doc_id'],revision=document['revisionId'],text=text,checks=checks,managed_matches=matches)
 
     def write_table(self, artifact, plan, marker, append=False):
         document=self.read(artifact['doc_id'])

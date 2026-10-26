@@ -485,3 +485,13 @@ test('Phase 2 delete cancellation and server errors preserve the card', async ()
   assert.match(vm.runInContext("card(state.stories[0])",context),/data-story-delete="7"/);
   assert.doesNotMatch(vm.runInContext("card({story_id:8,status:'Phase 3'})",context),/data-story-delete/);
 });
+test('saved Phase 2 drafts show recovery commands instead of blind retry',()=>{
+  const {context}=loadApp();
+  const html=vm.runInContext(`phase2Progress({story_id:7,status:'Phase 2',phase2_job:{state:'blocked',requires_resolution:true,recovery:[{artifact:'angles',error:'Human <edit>',proposal_doc_id:'proposal',append_command:'/story append version-1',cancel_command:'/story cancel run-1'}]}})`,context);
+  assert.match(html,/How to resolve/);
+  assert.match(html,/Human &lt;edit&gt;/);
+  assert.match(html,/document\/d\/proposal\/edit/);
+  assert.match(html,/\/story append version-1/);
+  assert.match(html,/\/story cancel run-1/);
+  assert.doesNotMatch(html,/data-phase2-retry/);
+});

@@ -24,6 +24,8 @@ def parse(text):
         raise ValueError('Use an explicit /story command')
     if len(words)==2 and words[1] in {'status','retry','start'}:
         return dict(action=words[1])
+    if len(words)>=3 and words[1]=='reconcile':
+        return dict(action='operate',operation='reconcile_package',target='package',instruction=text.strip().split(maxsplit=2)[2])
     if len(words)>=3 and words[1] in COMMANDS:
         instruction=words[3] if len(words)>3 else ''
         if words[1] in {'revise','investigate'} and not instruction.strip():
@@ -35,7 +37,7 @@ def parse(text):
         return dict(action='supersede',identifier=words[2],text=words[3])
     if len(words)==3 and words[1] in {'cancel','append','import','read'}:
         return dict(action=words[1],identifier=words[2])
-    raise ValueError('Use /story status, revise|investigate|refresh|review|create <artifact> [instruction], decision approve|reject|instruction|question|note <text>, retry, cancel <run>, append <proposal>, or import <artifact>')
+    raise ValueError('Use /story status, reconcile <direction> for the whole package, revise|investigate|refresh|review|create <artifact> [instruction], decision approve|reject|instruction|question|note <text>, retry, cancel <run>, append <proposal>, or import <artifact>')
 
 
 def dispatch(store,event,allowed_users,chat_id):
@@ -61,7 +63,7 @@ def dispatch(store,event,allowed_users,chat_id):
         return {'run_id':store.retry(mapping['story_id'])}
     if action=='decision':
         decision=store.decide(mapping['workspace_id'],request_id,command['kind'],command['text'],requester,str(event['message_id']))
-        return {'decision_id':decision,'message':'Decision recorded; affected artifacts are potentially stale.'}
+        return {'decision_id':decision,'message':'Decision recorded; existing artifacts are potentially stale. This does not launch rewrites. Use /story reconcile <direction> to assess the whole package, keep suitable documents, revise the others and finish with a Quality Review. For one document use /story revise <artifact> <direction>. Use /story help research for examples.'}
     if action=='supersede':
         with store.connect() as db:
             original=db.execute('SELECT kind FROM editorial_decisions WHERE workspace_id=? AND decision_id=?',(mapping['workspace_id'],command['identifier'])).fetchone()

@@ -76,7 +76,13 @@ class WorkflowStore:
         if operation not in OPERATIONS | {'initial', 'migrate'}:
             raise ValueError('Unknown registered operation')
         manifest = snapshot()
-        if operation in OPERATIONS and target not in manifest['steps']:
+        if operation == 'reconcile_package':
+            if not instruction.strip():
+                raise ValueError('Package reconciliation requires editorial direction')
+            from phase2.registry import package_manifest
+            manifest=package_manifest(manifest)
+            target='package'
+        if operation in OPERATIONS-{'reconcile_package'} and target not in manifest['steps']:
             raise ValueError('Unknown research artifact')
         if operation == 'investigate' and target not in {'evidence', 'visuals'}:
             raise ValueError('Investigations target evidence or visuals')
@@ -89,6 +95,8 @@ class WorkflowStore:
                 return old['run_id']
             story = self.story(db, story_id)
             wid = story['workspace_id']
+            if operation=='reconcile_package' and not wid:
+                raise Conflict('Start the story workspace with /story start before reconciling its documents')
             if not wid:
                 # Existing packages must be reconciled by migration, never guessed from titles.
                 legacy = story['status'] != 'Phase 2 pending' or any(story[k] for k in ['google_doc_url', 'telegram_thread_url', 'research_folder_url'])
@@ -107,6 +115,9 @@ class WorkflowStore:
                 previous = db.execute("SELECT run_id FROM workflow_runs WHERE workspace_id=? AND operation='initial' AND state<>'cancelled' ORDER BY created_at DESC LIMIT 1", (wid,)).fetchone()
                 if previous:
                     return previous['run_id']
+            active=db.execute("SELECT run_id,operation FROM workflow_runs WHERE workspace_id=? AND state IN ('queued','running','blocked') AND operation<>'projection' ORDER BY created_at LIMIT 1",(wid,)).fetchone()
+            if active and (operation=='reconcile_package' or active['operation']=='reconcile_package'):
+                raise Conflict('Finish or cancel the active run before package work: /story cancel '+active['run_id'])
             if operation == 'create_artifact':
                 existing = db.execute('SELECT current_version FROM artifacts WHERE workspace_id=? AND artifact_key=?', (wid, target)).fetchone()
                 if existing and existing[0]:
@@ -114,7 +125,7 @@ class WorkflowStore:
             run_id = uuid.uuid4().hex
             db.execute('''INSERT INTO workflow_runs(run_id,workspace_id,story_id,request_id,operation,target,instruction,requester,manifest,created_at,updated_at)
                           VALUES (?,?,?,?,?,?,?,?,?,?,?)''', (run_id,wid,story_id,request_id,operation,target,instruction,requester,canonical(manifest),now,now))
-            keys = ['provision'] + manifest['steps'] if operation == 'initial' else ['provision'] if operation == 'migrate' else ['review' if operation == 'review_artifact' else target]
+            keys = ['provision'] + manifest['steps'] if operation == 'initial' else manifest['steps'] if operation=='reconcile_package' else ['provision'] if operation == 'migrate' else ['review' if operation == 'review_artifact' else target]
             for key in keys:
                 self._insert_step(db, run_id, key, 1, now)
             self._notify(db, run_id, 'queued', f'Queued {operation} {target}. Run {run_id}')
@@ -144,8 +155,24 @@ class WorkflowStore:
             result['artifacts'] = [dict(a) for a in db.execute('SELECT artifact_key,doc_id,current_version,stale,render_state FROM artifacts WHERE workspace_id=? ORDER BY artifact_key', (story['workspace_id'],))]
             result['proposals']=[dict(v) for v in db.execute("SELECT v.version_id,v.proposal_doc_id,a.artifact_key FROM artifact_versions v JOIN artifacts a USING(artifact_id) WHERE a.workspace_id=? AND v.state='candidate'",(story['workspace_id'],))]
             if row:
-                steps = [dict(s) for s in db.execute('SELECT step_key,state,attempt,error FROM step_executions WHERE run_id=? ORDER BY rowid', (row['run_id'],))]
+                steps = [dict(s) for s in db.execute('SELECT step_key,state,attempt,error,output_version FROM step_executions WHERE run_id=? ORDER BY rowid', (row['run_id'],))]
                 result['steps'] = steps
+                for step in steps:
+                    assessment=db.execute('SELECT assessment FROM package_assessments WHERE step_id=(SELECT step_id FROM step_executions WHERE run_id=? AND step_key=? AND attempt=?)',(row['run_id'],step['step_key'],step['attempt'])).fetchone()
+                    if assessment:
+                        saved=json.loads(assessment[0])
+                        step['assessment']={key:saved[key] for key in ['action','reason']}
+                conflicts = [s for s in steps if s['state']=='blocked' and s['output_version']]
+                result['requires_resolution'] = bool(conflicts)
+                result['recovery'] = []
+                for step in conflicts:
+                    proposal = next((p for p in result['proposals'] if p['version_id']==step['output_version']), {})
+                    result['recovery'].append(dict(
+                        artifact=step['step_key'], version_id=step['output_version'],
+                        proposal_doc_id=proposal.get('proposal_doc_id'), error=step['error'],
+                        append_command='/story append '+step['output_version'],
+                        cancel_command='/story cancel '+row['run_id'],
+                        restart_command='/story start' if row['operation']=='initial' else '/story reconcile '+db.execute('SELECT instruction FROM workflow_runs WHERE run_id=?',(row['run_id'],)).fetchone()[0] if row['operation']=='reconcile_package' else '/story revise '+step['step_key']+' <direction>'))
                 active = next((s for s in reversed(steps) if s['state'] in {'running','blocked','failed','queued'}), {})
                 result.update(step=active.get('step_key', 'complete'),attempts=active.get('attempt',1))
             return result
@@ -180,6 +207,10 @@ class WorkflowStore:
                     if prior and prior[0] != 'complete':
                         continue
                     dependencies = manifest['artifacts'][key]['depends_on']
+                    if job['operation']=='reconcile_package':
+                        # Existing fresh versions must not let descendants outrun this run's assessments.
+                        if any(not db.execute("SELECT 1 FROM step_executions WHERE run_id=? AND step_key=? AND state='complete'",(job['run_id'],dep)).fetchone() for dep in dependencies):
+                            continue
                     if job['operation'] == 'review_artifact':
                         dependencies = list(dict.fromkeys(manifest['artifacts'][job['target']]['depends_on']+[job['target']]))
                     required = [db.execute('SELECT current_version,stale FROM artifacts WHERE workspace_id=? AND artifact_key=?', (job['workspace_id'],d)).fetchone() for d in dependencies]
@@ -316,9 +347,14 @@ class WorkflowStore:
             self._owned(db,job)
             db.execute("UPDATE artifacts SET baseline=?,revision_id=?,render_state='verified' WHERE workspace_id=? AND artifact_key=?", (baseline,revision,job['workspace_id'],key))
 
-    def finish(self, job):
+    def finish(self, job, retained=None, inputs=None):
         with self.connect(write=True) as db:
             self._owned(db,job)
+            if retained is not None:
+                artifact=db.execute('SELECT * FROM artifacts WHERE workspace_id=? AND artifact_key=?',(job['workspace_id'],job['step_key'])).fetchone()
+                self._check_inputs(db,job,inputs,artifact)
+                db.execute('UPDATE artifacts SET stale=0 WHERE artifact_id=?',(artifact['artifact_id'],))
+                db.execute('INSERT INTO package_assessments(step_id,assessment) VALUES (?,?)',(job['step_id'],canonical(retained)))
             now=time.time()
             if job['step_key']=='provision':
                 w=db.execute('SELECT * FROM story_workspaces WHERE workspace_id=?', (job['workspace_id'],)).fetchone()
@@ -330,7 +366,7 @@ class WorkflowStore:
                 topic=f"https://t.me/c/{str(w['chat_id'])[4:]}/{w['first_message_id']}?thread={w['thread_id']}&topic"
                 db.execute("UPDATE story_projects SET status=CASE WHEN status='Phase 2 pending' THEN 'Phase 2' ELSE status END,google_doc_url=?,research_folder_url=?,telegram_thread_url=? WHERE workspace_id=?", ('https://docs.google.com/document/d/'+hub+'/edit','https://drive.google.com/drive/folders/'+resources['folder'],topic,job['workspace_id']))
             db.execute("UPDATE step_executions SET state='complete',finished_at=? WHERE step_id=?", (now,job['step_id']))
-            self._notify(db,job['run_id'],'step-'+job['step_key'],f"Completed {job['step_key']}. Run {job['run_id']}")
+            self._notify(db,job['run_id'],'step-'+job['step_key'],f"Completed {job['step_key']}"+(' — kept unchanged: '+retained['reason'] if retained else '')+f". Run {job['run_id']}")
             pending=db.execute("SELECT 1 FROM step_executions WHERE run_id=? AND state IN ('queued','running','blocked')", (job['run_id'],)).fetchone()
             if not pending:
                 db.execute("UPDATE workflow_runs SET state='completed',updated_at=? WHERE run_id=?", (now,job['run_id']))
@@ -362,7 +398,7 @@ class WorkflowStore:
             blocked=db.execute("SELECT * FROM step_executions WHERE run_id=? AND state='blocked'", (r['run_id'],)).fetchall()
             for s in blocked:
                 if s['output_version']:
-                    raise Conflict('Candidate requires explicit conflict resolution, not blind retry')
+                    raise Conflict('A saved draft requires review. Open the story recovery details, review the proposal, then use /story append '+s['output_version']+' in its Telegram topic to append it and resume. If inputs or direction changed, cancel run '+r['run_id']+' and request fresh work instead.')
                 db.execute("UPDATE step_executions SET state='failed' WHERE step_id=?", (s['step_id'],))
                 self._insert_step(db,r['run_id'],s['step_key'],s['attempt']+1,time.time())
             db.execute("UPDATE workflow_runs SET state='queued',error='' WHERE run_id=?", (r['run_id'],))

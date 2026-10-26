@@ -56,7 +56,7 @@ class FakeGoogle:
         return {'revisionId':'revision-'+doc_id.removeprefix('doc-')}
 
     def review_snapshot(self, artifact, key):
-        return dict(doc_id=artifact['doc_id'],revision='revision-'+key,text='Current document',checks=dict(policy_version='tables.v1',total_words=100,managed_words=90,cap=SPECS[key][0],issues=[],outcome='pass'))
+        return dict(doc_id=artifact['doc_id'],revision='revision-'+key,text='Current document',managed_matches=True,checks=dict(policy_version='tables.v1',total_words=100,managed_words=90,cap=SPECS[key][0],issues=[],outcome='pass'))
 
     def provision(self,store,job,telegram):
         store.checkpoint(job,resources={'folder':'folder','images':'images'},topic=('-1003984316484','12','13'))
@@ -190,12 +190,20 @@ def test_human_conflict_retains_candidate_and_explicit_append(workflow,tmp_path)
     w.tick()
     assert store.status(story)['state']=='blocked'
     candidate=w.google.proposals[0]
+    status=store.status(story)
+    assert status['requires_resolution'] is True
+    recovery=status['recovery'][0]
+    assert recovery['version_id']==candidate
+    assert recovery['artifact']=='angles'
+    assert recovery['append_command']=='/story append '+candidate
+    assert recovery['cancel_command']=='/story cancel '+status['run_id']
     with pytest.raises(Conflict):
         store.retry(story)
     store.enqueue_resolution(story,'append-request','append',candidate,'editor')
     w.tick()
     assert store.version(candidate)['state']=='published'
     assert any(k=='append' for k,_,_ in w.google.writes)
+    assert not store.status(story)['requires_resolution']
 
 
 def test_changed_editorial_direction_rejects_old_candidate(workflow,tmp_path):

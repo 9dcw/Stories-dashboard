@@ -9,6 +9,7 @@ import os
 import time
 import uuid
 import urllib.request
+import urllib.error
 from urllib.parse import urlsplit
 
 
@@ -17,6 +18,7 @@ HELP = """Story commands — use in the story's Telegram topic.
 
 /story status — progress, current versions, stale flags and proposals
 /story read evidence — read a published artifact and get its Doc link
+/story reconcile <direction> — assess the whole package and update documents as needed
 /story decision instruction <text> — save lasting editorial direction
 /story decision approve|reject|question|note <text> — save a decision or context
 /story revise <artifact> <instruction> — revise one document
@@ -49,6 +51,11 @@ RESEARCH_HELP = """Direct research after v1
 /story decision instruction Distinguish refunds ordered from refunds actually paid.
 
 Decisions update the Hub and mark all existing research artifacts potentially stale. They do not launch research. A decision question records a gap; investigate commissions work on it.
+
+For comprehensive editorial direction, use one package command:
+/story reconcile Reassess every document against the standing direction. Focus on policyholder consequences and distinguish ordered refunds from payments. Update only what needs changing and identify missing evidence.
+
+Reconcile reads actual Docs and structured evidence, works through dependencies, keeps suitable documents unchanged, revises or creates others, and ends with a full Quality Review. It can make substantial rewrites. It pauses for human-edit conflicts with retained proposals; it does not overwrite annotations or grant publication approval. Finish or cancel any active/blocked research run first. The instruction applies to this run; save a decision instruction separately for lasting direction.
 
 3. Commission a specific follow-up:
 /story investigate evidence Find the compliance filings. Establish whether ordered refunds were paid, cite the supporting passages, and leave missing figures unresolved.
@@ -108,6 +115,10 @@ def guard_discussion_tools(tool_name,**kwargs):
         return {'action':'block','message':'Stories discussion is read-only. Propose an explicit /story command for artifact changes; do not execute alternative shell, browser, file, messaging or delegation operations.'}
 
 
+class StoriesRejection(RuntimeError):
+    """A bounded, user-facing validation response from the local Stories API."""
+
+
 def call_backend(payload):
     endpoint=os.environ.get('PHASE2_API_URL','http://127.0.0.1:8000/api/v1/internal/phase2/dispatch')
     parsed=urlsplit(endpoint)
@@ -120,8 +131,18 @@ def call_backend(payload):
     timestamp=str(int(time.time()))
     signature=hmac.new(secret.encode(),timestamp.encode()+b'\n'+body,hashlib.sha256).hexdigest()
     request=urllib.request.Request(endpoint,data=body,headers={'Content-Type':'application/json','X-Stories-Timestamp':timestamp,'X-Stories-Signature':signature})
-    with urllib.request.urlopen(request,timeout=2) as response:
-        return json.load(response)['result']
+    try:
+        with urllib.request.urlopen(request,timeout=2) as response:
+            return json.load(response)['result']
+    except urllib.error.HTTPError as exc:
+        if exc.code in {400,409}:
+            try:
+                detail=json.loads(exc.read(8000)).get('detail')
+            except (ValueError,TypeError):
+                detail=None
+            if isinstance(detail,str):
+                raise StoriesRejection(detail[:3000]) from None
+        raise
 
 
 def read_artifact(args,**kwargs):
@@ -159,6 +180,8 @@ def dispatch_event(event,gateway,**kwargs):
         payload=dict(chat_id=str(source.chat_id),thread_id=str(source.thread_id),user_id=str(source.user_id),message_id=str(event.message_id),text=event.text)
         result=call_backend(payload)
         reply(json.dumps(result,ensure_ascii=False))
+    except StoriesRejection as exc:
+        reply('Stories operation was not accepted: '+str(exc))
     except Exception:
         # Consume the explicit command even when the service is unavailable: no LLM fallback.
         reply('Stories operation was not accepted. Check /story status after the backend is available; do not repeat writes through shell tools.')
