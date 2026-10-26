@@ -287,6 +287,8 @@ function card(s){const id=s.id||String(s.story_id);const fav=state.favorites.has
 
 function candidateCard(c){
   const gist=c.gist?`<p class="candidate-gist">${esc(c.gist)}</p>`:'';
+  const documents=(c.appeal_documents||[]).filter(d=>d.url);
+  const appealDocs=documents.length>1?`<details class="candidate-original"><summary>${documents.length} appeal documents</summary><ul>${documents.map(d=>`<li><a href="${esc(d.url)}" target="_blank" rel="noopener noreferrer">${esc(d.date||'Document')} · item ${esc(d.item_id)}</a></li>`).join('')}</ul></details>`:'';
   const display=c.display_headline||c.headline;
   const summaryStatus=c.summary_status||'PENDING';
   const itemStatus=c.status||'NEW';
@@ -301,7 +303,7 @@ function candidateCard(c){
     actions+=`${action(c.source_link,'Source','primary')}`;
     if(c.can_promote_to_phase2!==false)actions+=`<button class="action telegram phase2-action btn-phase2" data-phase2-item="${esc(c.item_id)}"${state.pending[c.item_id]?' disabled':''}>${state.pending[c.item_id]?'Starting Phase 2…':'Promote to Phase 2'}</button>`;
   }
-  return `<article class="candidate-card"><div class="candidate-top"><span class="candidate-summary-status ${summaryStatus.toLowerCase()}">${esc(summaryStatus)}</span><span class="candidate-lane">${esc(laneLabels[c.lane]||'Other content')}</span></div><h3 class="candidate-display-headline">${esc(display)}</h3><details class="candidate-original"><summary>Original headline</summary><p>${esc(c.headline)}</p></details><p class="candidate-meta"><strong>${esc(c.source)}</strong> · ${esc(c.date||'Undated')} · item ${esc(c.item_id)}</p>${c.screening?.needs_review||c.screening?.decision==='ERROR'?'<p class="review-badge">Needs review</p>':''}${gist}${screeningDetail(c.screening)}<div class="actions">${actions}</div></article>`;
+  return `<article class="candidate-card"><div class="candidate-top"><span class="candidate-summary-status ${summaryStatus.toLowerCase()}">${esc(summaryStatus)}</span><span class="candidate-lane">${esc(laneLabels[c.lane]||'Other content')}</span></div><h3 class="candidate-display-headline">${esc(display)}</h3><details class="candidate-original"><summary>Original headline</summary><p>${esc(c.headline)}</p></details><p class="candidate-meta"><strong>${esc(c.source)}</strong> · ${esc(c.date||'Undated')} · item ${esc(c.item_id)}</p>${c.screening?.needs_review||c.screening?.decision==='ERROR'?'<p class="review-badge">Needs review</p>':''}${gist}${appealDocs}${screeningDetail(c.screening)}<div class="actions">${actions}</div></article>`;
 }
 
 function render(){

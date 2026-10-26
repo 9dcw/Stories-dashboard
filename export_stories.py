@@ -55,8 +55,12 @@ def build_read_model(store: StoryStore, generated_at: str | None = None) -> dict
     promoted_item_ids = {
         row["origin_item_id"] for row in project_rows if row["status"] in PROMOTED_STORY_STATUSES | {"Deleted"}
     }
+    from appeal_identity import group_items, load_identities
     candidates = []
-    for row in store.list_items():
+    rows = store.list_items()
+    for row in rows:
+        row['screening_decision'] = (screenings.get(row['item_id']) or {}).get('decision')
+    for row in group_items(rows, load_identities(store), promoted_item_ids):
         if row["status"] == "IGNORED" or row["item_id"] in promoted_item_ids:
             continue
         source_link = public_source_url(row["raw_url"])
@@ -68,6 +72,8 @@ def build_read_model(store: StoryStore, generated_at: str | None = None) -> dict
             "status": row["status"], "gist": row["gist"],
             "summary_status": row["summary_status"],
             "screening": screenings.get(row["item_id"]),
+            "appeal_identity": row.get("appeal_identity"),
+            "appeal_documents": row.get("appeal_documents", []),
             "dismissal_action_url": f"https://t.me/{TELEGRAM_BOT_USERNAME}?" + urlencode({
                 "text": f"Dismiss story item {row['item_id']} from the Stories Dashboard: {row['headline']}. "
                         "Set its status to DISMISSED, preserve the record, and refresh the dashboard export. "

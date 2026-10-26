@@ -36,6 +36,11 @@ CREATE TABLE IF NOT EXISTS items (
     validation_reason TEXT NOT NULL DEFAULT ''
 );
 
+CREATE TABLE IF NOT EXISTS court_appeal_identity (
+    item_id INTEGER PRIMARY KEY REFERENCES items(item_id),
+    identity_json TEXT NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS story_projects (
     story_id INTEGER PRIMARY KEY,
     origin_item_id INTEGER NOT NULL UNIQUE REFERENCES items(item_id),
