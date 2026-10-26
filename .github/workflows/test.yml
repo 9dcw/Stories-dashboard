@@ -44,6 +44,8 @@ jobs:
             test ! -f /app/story-data/stories.sqlite3 || { echo "FAIL: SQLite in image"; exit 1; }
             echo "Secrets check passed"
           '
+      - name: Check dashboard imports in image
+        run: docker run --rm --entrypoint python3 stories-dashboard:test -c 'import appeal_identity; import export_stories; from api.read_model import build_live_read_model'
       - name: Smoke test with temp DB
         run: |
           # Create a minimal temp DB
