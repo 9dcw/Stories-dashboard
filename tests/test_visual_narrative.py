@@ -131,6 +131,7 @@ def test_asset_collection_uploads_once_and_preserves_receipt(setup,tmp_path,monk
         def create(self,**kwargs):self.uploads.append(kwargs);return Result({'id':'asset'})
         def get(self,**kwargs):return Result({'id':'asset','parents':['images'],'trashed':False})
     drive=Files();google=GoogleDocs(drive,None,'parent')
+    monkeypatch.setattr(google,'asset_media',lambda body,mime:dict(body=body,mime=mime))
     requests=[]
     monkeypatch.setattr(source_reader,'fetch_asset',lambda url:(requests.append(url) or b'bytes','image/png',url))
     value=narrative();value['asset_requests']=[dict(row_index=0,url='https://example.org/photo.png',title='Scene',owner='Photographer')]

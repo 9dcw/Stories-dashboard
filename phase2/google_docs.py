@@ -147,9 +147,13 @@ class GoogleDocs:
                 baseline,revision=self.write(a,text,'seed-'+a['artifact_id'])
                 store.rendered(job,key,baseline,revision)
 
-    def collect_assets(self,store,job,output):
+    @staticmethod
+    def asset_media(body,mime):
         from io import BytesIO
         from googleapiclient.http import MediaIoBaseUpload
+        return MediaIoBaseUpload(BytesIO(body),mimetype=mime,resumable=False)
+
+    def collect_assets(self,store,job,output):
         from phase2.source_reader import fetch_asset
         folder=json.loads(store.workspace(job['workspace_id'])['resources'])['images']
         for asset in output.get('asset_requests',[]):
@@ -164,7 +168,7 @@ class GoogleDocs:
                 else:
                     body,mime,source=fetch_asset(asset['url'])
                     store.heartbeat(job)
-                    file_id=self.drive.files().create(body=dict(name=asset['title'],parents=[folder],appProperties={'storiesAsset':marker},description='Original source: '+source+'\nOwner: '+asset['owner']+'\nRights: uncleared; public access does not grant reuse permission.'),media_body=MediaIoBaseUpload(BytesIO(body),mimetype=mime,resumable=False),fields='id').execute()['id']
+                    file_id=self.drive.files().create(body=dict(name=asset['title'],parents=[folder],appProperties={'storiesAsset':marker},description='Original source: '+source+'\nOwner: '+asset['owner']+'\nRights: uncleared; public access does not grant reuse permission.'),media_body=self.asset_media(body,mime),fields='id').execute()['id']
                     metadata=self.metadata(file_id)
                     if folder not in metadata.get('parents',[]) or metadata.get('trashed'): raise Conflict('Asset upload verification failed')
                 note='In Drive: https://drive.google.com/file/d/'+file_id+'/view — original source: '+asset['url']+'; owner: '+asset['owner']+'; rights uncleared.'
