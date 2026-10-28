@@ -1,3 +1,9 @@
+# Visual narrative documents
+
+New narrative documents use the legacy Phase 3 four-column native table: Visual | Talk track (bullet points) | Production / evidence notes | Collateral in Drive / how to obtain it and original owner. Aim for 6–10 beats, at most 20; cells target <=150 words and whole documents <=2,500 words. Keep producer guidance verbatim above the table. Never truncate guidance, evidence, qualifications or asset receipts to meet a cap; necessary excess requires a visible human-review exception. No separate model review stage is required: publication verifies native structure/readback and records deterministic policy checks with Doc ID, revision and counts. Human annotations remain protected.
+
+The following three-column policy continues to apply to legacy pinned package jobs.
+
 # Google Docs editorial tables (tables.v1)
 
 Every research Doc uses a native Google Docs table: Topic | At a glance | Detail / evidence. Short cells target one sentence, at most 25 words. Details add evidence or actions rather than repeating the short version. No nested tables, logs, raw JSON, search diaries, superseded drafts or routine proof-of-work belong in the published table.

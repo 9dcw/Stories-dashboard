@@ -135,7 +135,7 @@ class GoogleDocs:
             store.checkpoint(job,topic=(telegram.chat_id,str(thread),None))
             workspace=store.workspace(job['workspace_id'])
         if not workspace['first_message_id']:
-            first=telegram.send(workspace['thread_id'],f"Story {workspace['root_key']}\n{story['title']}\n{story['origin_url']}\n"+doc_url(store.artifacts(job['workspace_id'])['hub']['doc_id']))
+            first=telegram.send(workspace['thread_id'],f"Story {workspace['root_key']}\n{story['title']}\n{story['origin_url']}\n"+doc_url(store.artifacts(job['workspace_id'])['narrative' if 'narrative' in job['manifest']['artifacts'] else 'hub']['doc_id']))
             store.checkpoint(job,topic=(workspace['chat_id'],workspace['thread_id'],str(first)))
         workspace=store.workspace(job['workspace_id'])
         telegram.verify_topic(workspace['thread_id'])
@@ -147,6 +147,37 @@ class GoogleDocs:
                 baseline,revision=self.write(a,text,'seed-'+a['artifact_id'])
                 store.rendered(job,key,baseline,revision)
 
+    def collect_assets(self,store,job,output):
+        from io import BytesIO
+        from googleapiclient.http import MediaIoBaseUpload
+        from phase2.source_reader import fetch_asset
+        folder=json.loads(store.workspace(job['workspace_id'])['resources'])['images']
+        for asset in output.get('asset_requests',[]):
+            store.heartbeat(job)
+            marker=job['workspace_id']+':asset:'+hashlib.sha256(asset['url'].encode()).hexdigest()
+            try:
+                existing=self.drive.files().list(q="trashed=false and appProperties has { key='storiesAsset' and value='"+marker+"' }",fields='files(id,parents)',pageSize=100).execute().get('files',[])
+                if len(existing)>1: raise Conflict('Duplicate visual assets require reconciliation')
+                if existing:
+                    file_id=existing[0]['id']
+                    if folder not in existing[0].get('parents',[]): raise Conflict('Asset folder mismatch')
+                else:
+                    body,mime,source=fetch_asset(asset['url'])
+                    store.heartbeat(job)
+                    file_id=self.drive.files().create(body=dict(name=asset['title'],parents=[folder],appProperties={'storiesAsset':marker},description='Original source: '+source+'\nOwner: '+asset['owner']+'\nRights: uncleared; public access does not grant reuse permission.'),media_body=MediaIoBaseUpload(BytesIO(body),mimetype=mime,resumable=False),fields='id').execute()['id']
+                    metadata=self.metadata(file_id)
+                    if folder not in metadata.get('parents',[]) or metadata.get('trashed'): raise Conflict('Asset upload verification failed')
+                note='In Drive: https://drive.google.com/file/d/'+file_id+'/view — original source: '+asset['url']+'; owner: '+asset['owner']+'; rights uncleared.'
+            except Conflict:
+                raise
+            except Exception:
+                note='Retrieval blocked or unsupported: '+asset['url']+'; owner: '+asset['owner']+'; not verified in Drive; rights uncleared. Retain as a retrieval lead.'
+            row=output['narrative_rows'][asset['row_index']]
+            row['collateral']+='\n'+note
+        if output.get('asset_requests'):
+            # System-added verified receipts must never be dropped to fit a word cap.
+            output['policy_exception']=output.get('policy_exception') or 'Retains original asset provenance and verified retrieval results; review rights before production.'
+
     def header(self,store,job,key):
         workspace=store.workspace(job['workspace_id'])
         artifacts=store.artifacts(job['workspace_id'])
@@ -154,17 +185,18 @@ class GoogleDocs:
             story=store.story(db,job['story_id'])
         spec=job['manifest']['artifacts'][key]
         lines=[spec['number']+' — '+spec['title'],story['title'],'Story root: '+workspace['root_key'],'Original article: '+story['origin_url'],'Discussion: '+topic_url(workspace),'Navigation:']
-        siblings=['hub']+spec['depends_on'] if key!='hub' else list(artifacts)
+        siblings=[] if key=='narrative' else ['hub']+spec['depends_on'] if key!='hub' else list(job['manifest']['artifacts'])
         for other in dict.fromkeys(siblings):
             if artifacts[other]['doc_id']:
                 lines.append(job['manifest']['artifacts'][other]['title']+': '+doc_url(artifacts[other]['doc_id']))
-        if key in {'hub','visuals'}:
+        if key in {'hub','visuals','narrative'}:
             resources=json.loads(workspace['resources'])
             lines.append('Images: https://drive.google.com/drive/folders/'+resources['images'])
         if key=='hub':
             resources=json.loads(workspace['resources'])
             if resources.get('legacy_doc'):
                 lines.append('Historical Research & Treatment (preserved; content not reverified): '+doc_url(resources['legacy_doc']))
+        if key=='narrative': lines.append('Initial narrative prompt version: '+str(job['manifest'].get('prompt_version',0)))
         return '\n'.join(lines)+'\n'
 
     def hub(self,store,job):
@@ -395,16 +427,18 @@ class GoogleDocs:
         if not artifact['baseline'] or append:
             requests.append({'insertText':{'location':location(start+units(prefix)),'text':'\nHuman editorial notes (preserved)\n'}})
         at=start+units(prefix)
-        requests.append({'insertTable':{'rows':len(plan.grid),'columns':3,'location':location(at)}})
+        columns=len(plan.grid[0])
+        row_span=1+2*columns
+        requests.append({'insertTable':{'rows':len(plan.grid),'columns':columns,'location':location(at)}})
         # insertTable adds a newline before the table. Empty cells contain a newline.
         table_start=at+1
         entries=[]
         for r,row in enumerate(plan.grid):
             for c,value in enumerate(row):
-                entries.append((table_start+3+r*7+c*2,value))
+                entries.append((table_start+3+r*row_span+c*2,value))
         for index,value in reversed(entries):
             requests.append({'insertText':{'location':location(index),'text':value}})
-        final_end=table_start+2+len(plan.grid)*7+sum(units(v) for row in plan.grid for v in row)
+        final_end=table_start+2+len(plan.grid)*row_span+sum(units(v) for row in plan.grid for v in row)
         requests.append({'createNamedRange':{'name':'stories-managed-'+marker,'range':span(start,final_end)}})
         for match in re.finditer(r'https?://[^\s]+',prefix):
             requests.append({'updateTextStyle':{'range':span(start+units(prefix[:match.start()]),start+units(prefix[:match.end()])), 'textStyle':{'link':{'url':match.group()}},'fields':'link'}})
@@ -414,7 +448,7 @@ class GoogleDocs:
             actual=index+offset
             for match in re.finditer(r'https?://[^\s]+',value):
                 requests.append({'updateTextStyle':{'range':span(actual+units(value[:match.start()]),actual+units(value[:match.end()])), 'textStyle':{'link':{'url':match.group()}},'fields':'link'}})
-            if n<3:
+            if n<columns:
                 requests.append({'updateTextStyle':{'range':span(actual,actual+units(value)), 'textStyle':{'bold':True},'fields':'bold'}})
             offset+=units(value)
         self.docs.documents().batchUpdate(documentId=artifact['doc_id'],body={'writeControl':{'requiredRevisionId':document['revisionId']},'requests':requests}).execute()

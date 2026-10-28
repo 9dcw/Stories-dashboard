@@ -35,9 +35,9 @@ def digest(value):
     return hashlib.sha256(canonical(value).encode()).hexdigest()
 
 
-def snapshot():
-    manifest = json.loads((ROOT / "workflows/initial.v1.json").read_text())
-    registry = json.loads((ROOT / "prompts/registry.json").read_text())
+def snapshot(legacy=False):
+    manifest = json.loads((ROOT / ("workflows/initial.v1.json" if legacy else "workflows/narrative.v1.json")).read_text())
+    registry = json.loads((ROOT / "prompts/registry.json").read_text()) if legacy else {"narrative":{"prompt":"narrative.md","schema":"narrative.json"}}
     manifest["prompts"] = {
         key: (ROOT / "prompts" / entry["prompt"]).read_text()
         for key, entry in registry.items()
@@ -65,12 +65,16 @@ def apply_content_policy(original):
     manifest['base_workflow_hash']=original.get('hash','')
     manifest["content_policy_version"] = VERSION
     for key, schema in manifest["schemas"].items():
+        if key == "narrative":
+            manifest["prompts"][key] += "\n" + instructions(key)
+            continue
         schema["properties"]["editorial_rows"] = {"type":"array","minItems":1,"maxItems":100,"items":{"type":"object","properties":{field:{"type":"string","minLength":1,"maxLength":12000} for field in ["topic","short","detail"]},"required":["topic","short","detail"],"additionalProperties":False}}
         schema["properties"]["policy_exception"] = {"type":"string","maxLength":2000}
         schema["required"] += ["editorial_rows","policy_exception"]
         manifest["prompts"][key] += "\n" + instructions(key)
-    manifest["schemas"]["review"]["properties"]["policy_checks"] = {"type":"object"}
-    manifest["schemas"]["review"]["required"].append("policy_checks")
+    if "review" in manifest["schemas"]:
+        manifest["schemas"]["review"]["properties"]["policy_checks"] = {"type":"object"}
+        manifest["schemas"]["review"]["required"].append("policy_checks")
     manifest["code_hash"] = digest({str(p.relative_to(ROOT)): p.read_text() for p in sorted(ROOT.rglob('*.py'))})
     manifest.pop('hash',None)
     manifest['hash']=digest(manifest)
@@ -106,6 +110,9 @@ def validate_output(manifest, key, output):
             raise ValueError("Visual candidates require a registered source")
     if key=='review' and output['readiness']=='ready_for_human_review' and any(f['severity']=='critical' for f in output['findings']):
         raise ValueError('Critical findings prevent readiness')
+    if key=='narrative':
+        if any(a['row_index']>=len(output['narrative_rows']) for a in output.get('asset_requests',[])):
+            raise ValueError('Asset request refers to an unknown narrative row')
     if manifest.get("content_policy_version"):
         validate_rows(key, output)
     return output

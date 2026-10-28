@@ -19,25 +19,19 @@ def signature(secret,timestamp,body):
 
 
 def parse(text):
-    words=text.strip().split(maxsplit=3)
-    if not words or words[0].split('@')[0].lower()!='/story':
+    parts=text.strip().split(maxsplit=2)
+    if not parts or parts[0].split('@')[0].lower()!='/story':
         raise ValueError('Use an explicit /story command')
-    if len(words)==2 and words[1] in {'status','retry','start'}:
-        return dict(action=words[1])
-    if len(words)>=3 and words[1]=='reconcile':
-        return dict(action='operate',operation='reconcile_package',target='package',instruction=text.strip().split(maxsplit=2)[2])
-    if len(words)>=3 and words[1] in COMMANDS:
-        instruction=words[3] if len(words)>3 else ''
-        if words[1] in {'revise','investigate'} and not instruction.strip():
-            raise ValueError('A scoped revision or investigation instruction is required')
-        return dict(action='operate',operation=COMMANDS[words[1]],target=words[2],instruction=instruction)
-    if len(words)==4 and words[1]=='decision' and words[2] in DECISIONS:
-        return dict(action='decision',kind=DECISIONS[words[2]],text=words[3])
-    if len(words)==4 and words[1]=='supersede':
-        return dict(action='supersede',identifier=words[2],text=words[3])
-    if len(words)==3 and words[1] in {'cancel','append','import','read'}:
-        return dict(action=words[1],identifier=words[2])
-    raise ValueError('Use /story status, reconcile <direction> for the whole package, revise|investigate|refresh|review|create <artifact> [instruction], decision approve|reject|instruction|question|note <text>, retry, cancel <run>, append <proposal>, or import <artifact>')
+    if len(parts)==3 and parts[1]=='revise' and parts[2].strip():
+        return dict(action='operate',operation='revise_artifact',target='narrative',instruction=parts[2])
+    if len(parts)==3 and parts[1]=='prompt':
+        tail=parts[2].split(maxsplit=1)
+        if tail==['show']: return dict(action='prompt_show')
+        if len(tail)==2 and tail[0]=='update' and tail[1].strip():
+            return dict(action='prompt_update',text=tail[1])
+    if len(parts)==3 and parts[1]=='read' and parts[2]=='narrative':
+        return dict(action='read',identifier='narrative')
+    raise ValueError('Use /story revise <guidance>, /story prompt update <feedback>, or /story prompt show')
 
 
 def dispatch(store,event,allowed_users,chat_id):
@@ -48,6 +42,11 @@ def dispatch(store,event,allowed_users,chat_id):
     request_id='telegram:'+str(event['chat_id'])+':'+str(event['message_id'])
     requester='telegram:'+str(event['user_id'])
     action=command.pop('action')
+    if action=='prompt_show':
+        return store.narrative_prompt()
+    if action=='prompt_update':
+        result=store.update_narrative_prompt(request_id,command['text'],requester)
+        return dict(version=result['version'],message='Initial narrative prompt updated for future first drafts.')
     if action=='status':
         return store.status(mapping['story_id'])
     if action=='start':
@@ -131,8 +130,9 @@ def notify_one(store,telegram):
         run=db.execute('SELECT workspace_id FROM workflow_runs WHERE run_id=?',(row['run_id'],)).fetchone()
     artifacts=store.artifacts(run['workspace_id'])
     text=note['text']
-    if artifacts.get('hub',{}).get('doc_id'):
-        text+='\nHub: https://docs.google.com/document/d/'+artifacts['hub']['doc_id']+'/edit'
+    primary='narrative' if 'narrative' in artifacts else 'hub'
+    if artifacts.get(primary,{}).get('doc_id'):
+        text+='\nVisual narrative: https://docs.google.com/document/d/'+artifacts[primary]['doc_id']+'/edit'
     key=note['key'].removeprefix('step-')
     if key in artifacts and artifacts[key]['doc_id']:
         text+='\nArtifact: https://docs.google.com/document/d/'+artifacts[key]['doc_id']+'/edit'

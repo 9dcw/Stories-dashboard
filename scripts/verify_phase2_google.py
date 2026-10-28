@@ -76,6 +76,24 @@ def main():
             pass
         else:
             raise RuntimeError('Human table edit protection failed')
+        narrative_doc=google.drive.files().create(body={'name':'TEST ONLY — four-column visual narrative','mimeType':'application/vnd.google-apps.document','parents':[folder],'appProperties':{'storiesPilot':marker}},fields='id').execute()['id']
+        created.append(narrative_doc)
+        narrative=dict(doc_id=narrative_doc,baseline='')
+        guidance='Open on the image. Keep “my exact wording”. | Find the original photo.'
+        output=dict(narrative_rows=[dict(visual='Original image 😀',talk_track='• What does it establish?',production_notes='Alleged; verify against https://example.org/record',collateral='Not in Drive. Request from original owner; rights uncleared.')],producer_guidance=guidance,policy_exception='')
+        plan=render_document('Visual narrative pilot\n','narrative',output)
+        narrative['baseline'],_=google.write(narrative,plan,'narrative-v1')
+        google.write(narrative,plan,'narrative-v1')
+        output['narrative_rows'][0]['talk_track']='• Revised visual question.'
+        plan=render_document('Visual narrative pilot\n','narrative',output)
+        narrative['baseline'],revision=google.write(narrative,plan,'narrative-v2')
+        readback=google.review_snapshot(narrative,'narrative')
+        assert readback['revision']==revision and readback['checks']['outcome']=='pass'
+        assert guidance in readback['text']
+        from phase2.doc_policy import NARRATIVE_HEADERS
+        _,content,_=google.body(google.read(narrative_doc))
+        assert google.table_rows(content)==[plan.grid] and plan.grid[0]==NARRATIVE_HEADERS
+        print(json.dumps(dict(narrative_pilot='passed',doc_id=narrative_doc,revision=revision,checks=readback['checks'])))
         print('Native tables: create, readback, replacement, UTF-16 links, idempotent recovery, actual-Doc audit and human-cell edits verified.')
         print(json.dumps({'google_write_pilot':'passed','checks':['create_and_parent','revision_guard','named_ranges','utf16','human_notes_preserved','human_edit_conflict','explicit_append_preserves_annotations']}))
     finally:

@@ -70,7 +70,7 @@ def test_native_table_text_is_visible_to_reviews_and_human_edit_detection():
 
 
 def test_snapshot_pins_policy_for_every_artifact():
-    manifest=snapshot()
+    manifest=snapshot(legacy=True)
     assert manifest['content_policy_version']=='tables.v1'
     for key in manifest['steps']:
         assert 'editorial_rows' in manifest['schemas'][key]['required']
@@ -90,7 +90,7 @@ def test_review_refuses_to_publish_after_a_reviewed_doc_changes(workflow,tmp_pat
 
 def test_worker_upgrades_legacy_producer_contract_without_changing_research_budget():
     from phase2.registry import apply_content_policy
-    manifest=snapshot()
+    manifest=snapshot(legacy=True)
     import copy
     legacy=copy.deepcopy(manifest)
     legacy.pop('content_policy_version')

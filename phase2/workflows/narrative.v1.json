@@ -1,0 +1,27 @@
+{
+  "version": "visual-narrative.v1",
+  "engine": {
+    "model": "gpt-6-luna",
+    "provider": "openai-codex",
+    "hermes_commit": "e2b2d486102"
+  },
+  "budgets": {
+    "concurrency": 1,
+    "step_seconds": 900,
+    "iterations": 12,
+    "output_tokens": 6000,
+    "run_tokens": 140000,
+    "step_tokens": 120000,
+    "max_attempts": 3
+  },
+  "artifacts": {
+    "narrative": {
+      "number": "01",
+      "title": "Visual Narrative",
+      "depends_on": []
+    }
+  },
+  "steps": [
+    "narrative"
+  ]
+}

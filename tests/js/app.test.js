@@ -276,15 +276,15 @@ test('category switching clears incompatible filters and includes every Phase 2 
   assert.match(getElement('#storyGrid').innerHTML,/Ready story/);
   assert.match(getElement('#storyGrid').innerHTML,/Pending story/);
   assert.match(getElement('#storyGrid').innerHTML,/Failed story/);
-  assert.doesNotMatch(getElement('#storyGrid').innerHTML,/Final story/);
+  assert.match(getElement('#storyGrid').innerHTML,/Final story/);
   assert.equal(vm.runInContext('state.query',context),'');
   assert.equal(vm.runInContext('state.filters.source',context),'');
   vm.runInContext("state.filters.setup='failed';render()",context);
   assert.match(getElement('#storyGrid').innerHTML,/Failed story/);
   assert.doesNotMatch(getElement('#storyGrid').innerHTML,/Ready story|Pending story/);
-  vm.runInContext("selectView('phase3')",context);
+  assert.doesNotMatch(getElement('#categories').innerHTML,/data-view="phase3"/);
+  vm.runInContext("clearFilters()",context);
   assert.match(getElement('#storyGrid').innerHTML,/Final story/);
-  assert.doesNotMatch(getElement('#storyGrid').innerHTML,/Failed story/);
 });
 
 test('new candidates include all content areas and pending summaries, with opt-in dismissal and exclusions', () => {
@@ -348,7 +348,7 @@ test('empty categories remain visible and clearing filters keeps the selected ca
   vm.runInContext("selectView('phase2');state.filters.setup='failed';state.query='absent';render()",context);
   assert.equal(getElement('#emptyState').hidden,false);
   assert.equal(getElement('#promotedSection').hidden,false);
-  assert.equal(getElement('#viewHeading').textContent,'Phase 2');
+  assert.equal(getElement('#viewHeading').textContent,'Visual Narratives');
   vm.runInContext('clearFilters()',context);
   assert.equal(vm.runInContext('state.view',context),'phase2');
   assert.equal(vm.runInContext('state.query',context),'');

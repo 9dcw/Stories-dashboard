@@ -20,7 +20,7 @@ def test_brief_survives_recovery_and_is_in_first_research_context(api_db):
     workflow.recover_pending()
     provision = workflow.claim()
     assert provision["step_key"] == "provision"
-    inputs = build_context(workflow, dict(provision, step_key="angles"))
+    inputs = build_context(workflow, dict(provision, step_key="narrative"))
     assert inputs["research_brief"] == brief
     assert build_live_read_model(store)["stories"][0]["research_brief"] == brief
     assert store.request_phase2(item, "Refunds") == story

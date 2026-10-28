@@ -12,13 +12,18 @@ from jsonschema import ValidationError
 from phase2.doc_policy import SPECS
 from phase2.context import build_context
 from phase2.orchestrator import Worker
-from phase2.registry import snapshot, validate_output
+from phase2.registry import snapshot as current_snapshot, validate_output
+
+def snapshot(legacy=True):
+    return current_snapshot(legacy=legacy)
+
 from phase2.store import Conflict, LostLease, WorkflowStore
 from phase2.telegram import dispatch, parse, signature
 
 
 @pytest.fixture
-def workflow(api_db):
+def workflow(api_db, monkeypatch):
+    monkeypatch.setattr("phase2.store.snapshot",snapshot)
     path,old,item,_=api_db
     story=old.request_phase2(item,'Research story')
     store=WorkflowStore(path)
@@ -248,7 +253,7 @@ def test_schema_claim_support_and_treatment_traceability():
 def test_ordinary_chat_does_not_parse_as_an_operation():
     with pytest.raises(ValueError):
         parse('Please revise the treatment')
-    assert parse('/story@mehyanbot revise angles Follow consequences')['target']=='angles'
+    assert parse('/story@mehyanbot revise Follow consequences')['target']=='narrative'
 
 
 def test_topic_and_user_authorization(workflow,tmp_path):
@@ -256,7 +261,7 @@ def test_topic_and_user_authorization(workflow,tmp_path):
     store.enqueue(story,'initial')
     w=worker(store,tmp_path)
     w.tick()
-    event=dict(user_id='42',chat_id='-1003984316484',thread_id='12',message_id='9',text='/story decision approve Focus on consequences')
+    event=dict(user_id='42',chat_id='-1003984316484',thread_id='12',message_id='9',text='/story prompt update Focus on consequences')
     result=dispatch(store,event,{'42'},event['chat_id'])
     assert dispatch(store,event,{'42'},event['chat_id'])==result
     with pytest.raises(PermissionError):

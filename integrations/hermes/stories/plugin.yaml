@@ -1,6 +1,6 @@
 name: stories
-version: "1.0.0"
-description: Explicit Stories artifact operations through the repository backend
+version: "2.0.0"
+description: Visual narrative development and versioned first-draft guidance
 provides_hooks:
   - pre_gateway_dispatch
   - pre_tool_call

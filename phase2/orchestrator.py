@@ -89,7 +89,7 @@ class Worker:
             if checkpoint:
                 version=checkpoint
                 output=json.loads(self.store.version(version)['output'])
-                if 'editorial_rows' not in output:
+                if ('narrative_rows' if job['step_key']=='narrative' else 'editorial_rows') not in output:
                     raise Conflict('Legacy checkpoint needs a new revision under tables.v1; retained output was not overwritten')
             else:
                 result=self.research.run(job,inputs,lambda:self.store.heartbeat(job))
@@ -116,8 +116,12 @@ class Worker:
                         self.verify_snapshots(inputs)
                         self.store.finish(job,retained=dict(output,provenance=result['provenance']),inputs=inputs)
                     return
+                if job['step_key']=='narrative' and output.get('asset_requests'):
+                    self.google.collect_assets(self.store,job,output)
                 provenance=dict(result['provenance'],workflow_hash=job['manifest']['hash'],input_hash=inputs['hash'])
                 version=self.store.candidate(job,output,inputs,provenance,result['usage'])
+            if job['step_key']=='narrative':
+                output=dict(output,producer_guidance=inputs.get('producer_guidance',''))
             with self.render_lock(job):
                 artifact=self.store.artifacts(job['workspace_id'])[job['step_key']]
                 # Recover a crash after publication but before finishing the step/Hub.
@@ -130,12 +134,20 @@ class Worker:
                             if self.google.read(snapshot['doc_id'])['revisionId']!=snapshot['revision']:
                                 raise Conflict('A reviewed Google Doc changed during review; request a fresh review')
                     scope='\nReview scope: '+job['target']+' only\n' if job['operation']=='review_artifact' else ''
-                    text=render_document(self.google.header(self.store,job,job['step_key'])+'\nVersion: '+version+scope+'\n',job['step_key'],output)
+                    text=render_document(self.google.header(self.store,job,job['step_key'])+'\nVersion: '+version+scope+'\n',job['step_key'],dict(output,producer_guidance=inputs.get('producer_guidance','')) if job['step_key']=='narrative' else output)
                     try:
                         baseline,revision=self.google.write(artifact,text,version)
                     except Conflict as conflict:
                         self.google.proposal(self.store,job,version,text)
                         raise Conflict(str(conflict)+'. Proposed version '+version+'; use /story status or explicitly /story append '+version)
+                    if job['step_key']=='narrative':
+                        live=self.google.review_snapshot(artifact,'narrative')
+                        if live['revision']!=revision: raise Conflict('Narrative changed during readback')
+                        with self.store.connect(write=True) as db:
+                            self.store._owned(db,job)
+                            saved=json.loads(db.execute('SELECT provenance FROM artifact_versions WHERE version_id=?',(version,)).fetchone()[0])
+                            saved['document_checks']=dict(live['checks'],doc_id=live['doc_id'],revision=live['revision'])
+                            db.execute('UPDATE artifact_versions SET provenance=? WHERE version_id=?',(json.dumps(saved),version))
                     self.store.publish(job,version,baseline,revision)
                 self.update_hub(job)
             self.store.finish(job)
@@ -179,10 +191,13 @@ class Worker:
             validate_output(job['manifest'],job['step_key'],inputs['current_output'])
             return
         self.check_evidence(job,inputs,output)
-        render_document(self.google.header(self.store,job,job['step_key'])+'\nVersion: pending-version-identifier\n',job['step_key'],output)
+        render_document(self.google.header(self.store,job,job['step_key'])+'\nVersion: pending-version-identifier\n',job['step_key'],dict(output,producer_guidance=inputs.get('producer_guidance','')) if job['step_key']=='narrative' else output)
 
     @staticmethod
     def add_review_checks(job, inputs, output):
+        if job['step_key']=='narrative':
+            # Guidance is application-owned, never generated or paraphrased.
+            return
         if job['step_key']!='review': return
         snapshots=inputs.get('current_docs',{})
         if not isinstance(output,dict) or not isinstance(output.get('findings'),list) or not isinstance(output.get('editorial_rows'),list):
@@ -231,7 +246,7 @@ class Worker:
                 current={v['id']:v for v in output[field]}
                 if any(current.get(v['id'])!=v for v in inputs['current_output'][field]):
                     raise ValueError('Investigations must preserve prior findings; use a revision to replace them')
-        if job['step_key']=='angles' and not any(s['url'].rstrip('/')==inputs['story']['origin_url'].rstrip('/') for s in output['sources']):
+        if (job['step_key']=='angles' or (job['step_key']=='narrative' and not inputs.get('current_output'))) and not any(s['url'].rstrip('/')==inputs['story']['origin_url'].rstrip('/') for s in output['sources']):
             raise ValueError('Angles must begin with and cite the original article')
         if job['step_key']=='treatment':
             evidence=inputs['upstream']['evidence']
@@ -245,6 +260,7 @@ class Worker:
                     raise ValueError('Treatment sources must come from the evidence ledger')
 
     def update_hub(self,job):
+        if 'hub' not in job['manifest']['artifacts']: return
         hub=self.store.artifacts(job['workspace_id'])['hub']
         try:
             baseline,revision=self.google.write(hub,self.google.hub(self.store,job),'hub-'+job['step_id'])

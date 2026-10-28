@@ -9,6 +9,7 @@ from contextlib import contextmanager
 from pathlib import Path
 
 from phase2.registry import OPERATIONS, canonical, dependents, digest, snapshot
+from phase2.doc_policy import instructions
 
 
 class Conflict(ValueError):
@@ -72,10 +73,36 @@ class WorkflowStore:
         with self.connect() as db:
             return {r['artifact_key']: dict(r) for r in db.execute('SELECT * FROM artifacts WHERE workspace_id=?', (workspace_id,))}
 
+    def narrative_prompt(self):
+        with self.connect() as db:
+            row=db.execute('SELECT version,prompt FROM narrative_prompt_versions ORDER BY version DESC LIMIT 1').fetchone()
+        return dict(row) if row else dict(version=0,prompt=Path(__file__).with_name('prompts').joinpath('narrative.md').read_text())
+
+    def update_narrative_prompt(self,request_id,feedback,author):
+        if not feedback.strip() or len(feedback)>8000:
+            raise ValueError('Prompt feedback must contain 1–8000 characters')
+        with self.connect(write=True) as db:
+            old=db.execute('SELECT * FROM narrative_prompt_versions WHERE request_id=?',(request_id,)).fetchone()
+            if old:
+                if old['feedback']!=feedback or old['author']!=author: raise Conflict('Prompt feedback identity collision')
+                return dict(version=old['version'],prompt=old['prompt'])
+            previous=db.execute('SELECT prompt FROM narrative_prompt_versions ORDER BY version DESC LIMIT 1').fetchone()
+            base=previous[0] if previous else Path(__file__).with_name('prompts').joinpath('narrative.md').read_text()
+            prompt=base+'\nProducer feedback (later feedback takes precedence):\n'+feedback
+            if len(prompt)>24000: raise ValueError('Standing prompt is too long; consolidate feedback before adding more')
+            cursor=db.execute('INSERT INTO narrative_prompt_versions(request_id,feedback,prompt,author,created_at) VALUES (?,?,?,?,?)',(request_id,feedback,prompt,author,time.time()))
+            return dict(version=cursor.lastrowid,prompt=prompt)
+
     def enqueue(self, story_id, request_id, operation='initial', target='', instruction='', requester='dashboard'):
         if operation not in OPERATIONS | {'initial', 'migrate'}:
             raise ValueError('Unknown registered operation')
         manifest = snapshot()
+        if 'narrative' in manifest['steps']:
+            prompt=self.narrative_prompt()
+            manifest['prompts']['narrative']=prompt['prompt']+'\n'+instructions('narrative')
+            manifest['prompt_version']=prompt['version']
+        manifest.pop('hash',None)
+        manifest['hash']=digest(manifest)
         if operation == 'reconcile_package':
             if not instruction.strip():
                 raise ValueError('Package reconciliation requires editorial direction')
@@ -108,6 +135,8 @@ class WorkflowStore:
                 db.execute('UPDATE story_projects SET workspace_id=?,event_key=? WHERE story_id=?', (wid, 'event-'+digest(story['canonical_url'])[:16], story_id))
                 for key in manifest['artifacts']:
                     db.execute('INSERT INTO artifacts(artifact_id,workspace_id,artifact_key) VALUES (?,?,?)', (uuid.uuid4().hex, wid, key))
+            for key in manifest['artifacts']:
+                db.execute('INSERT OR IGNORE INTO artifacts(artifact_id,workspace_id,artifact_key) VALUES (?,?,?)',(uuid.uuid4().hex,wid,key))
             workspace = db.execute('SELECT * FROM story_workspaces WHERE workspace_id=?', (wid,)).fetchone()
             if workspace['state'] == 'blocked':
                 raise Conflict(workspace['error'] or 'Workspace identity is blocked')
@@ -116,16 +145,30 @@ class WorkflowStore:
                 if previous:
                     return previous['run_id']
             active=db.execute("SELECT run_id,operation FROM workflow_runs WHERE workspace_id=? AND state IN ('queued','running','blocked') AND operation<>'projection' ORDER BY created_at LIMIT 1",(wid,)).fetchone()
-            if active and (operation=='reconcile_package' or active['operation']=='reconcile_package'):
+            if active and target!='narrative' and (operation=='reconcile_package' or active['operation']=='reconcile_package'):
                 raise Conflict('Finish or cancel the active run before package work: /story cancel '+active['run_id'])
             if operation == 'create_artifact':
                 existing = db.execute('SELECT current_version FROM artifacts WHERE workspace_id=? AND artifact_key=?', (wid, target)).fetchone()
                 if existing and existing[0]:
                     return None
+            if target=='narrative':
+                original=db.execute("SELECT r.manifest FROM artifact_versions v JOIN artifacts a USING(artifact_id) JOIN step_executions s USING(step_id) JOIN workflow_runs r USING(run_id) WHERE a.workspace_id=? AND a.artifact_key='narrative' ORDER BY v.version_number LIMIT 1",(wid,)).fetchone()
+                if original:
+                    pinned=json.loads(original[0])
+                    manifest['prompts']['narrative']=pinned['prompts']['narrative']
+                    manifest['prompt_version']=pinned.get('prompt_version',0)
+                    manifest.pop('hash',None)
+                    manifest['hash']=digest(manifest)
+                active=db.execute("SELECT 1 FROM workflow_runs WHERE workspace_id=? AND state IN ('running','queued')",(wid,)).fetchone()
+                if active: raise Conflict('Wait for the active story operation to finish')
+                # Explicit revise supersedes blocked legacy pipelines without deleting outputs.
+                db.execute("UPDATE step_executions SET state='cancelled',fence='' WHERE run_id IN (SELECT run_id FROM workflow_runs WHERE workspace_id=? AND state='blocked') AND state IN ('blocked','queued')",(wid,))
+                db.execute("UPDATE workflow_runs SET state='cancelled' WHERE workspace_id=? AND state='blocked'",(wid,))
             run_id = uuid.uuid4().hex
             db.execute('''INSERT INTO workflow_runs(run_id,workspace_id,story_id,request_id,operation,target,instruction,requester,manifest,created_at,updated_at)
                           VALUES (?,?,?,?,?,?,?,?,?,?,?)''', (run_id,wid,story_id,request_id,operation,target,instruction,requester,canonical(manifest),now,now))
             keys = ['provision'] + manifest['steps'] if operation == 'initial' else manifest['steps'] if operation=='reconcile_package' else ['provision'] if operation == 'migrate' else ['review' if operation == 'review_artifact' else target]
+            if target=='narrative': keys=['provision','narrative']
             for key in keys:
                 self._insert_step(db, run_id, key, 1, now)
             self._notify(db, run_id, 'queued', f'Queued {operation} {target}. Run {run_id}')
@@ -359,7 +402,8 @@ class WorkflowStore:
             if job['step_key']=='provision':
                 w=db.execute('SELECT * FROM story_workspaces WHERE workspace_id=?', (job['workspace_id'],)).fetchone()
                 resources=json.loads(w['resources'])
-                hub=db.execute("SELECT doc_id FROM artifacts WHERE workspace_id=? AND artifact_key='hub'", (job['workspace_id'],)).fetchone()[0]
+                primary='narrative' if 'narrative' in job['manifest']['artifacts'] else 'hub'
+                hub=db.execute("SELECT doc_id FROM artifacts WHERE workspace_id=? AND artifact_key=?", (job['workspace_id'],primary)).fetchone()[0]
                 if not hub or not resources.get('folder') or not resources.get('images') or not w['thread_id']:
                     raise Conflict('Workspace provisioning has not verified all resources')
                 db.execute("UPDATE story_workspaces SET state='ready' WHERE workspace_id=?", (job['workspace_id'],))
@@ -425,7 +469,7 @@ class WorkflowStore:
                 run=uuid.uuid4().hex
                 now=time.time()
                 db.execute('''INSERT INTO workflow_runs(run_id,workspace_id,story_id,request_id,operation,target,instruction,requester,manifest,created_at,updated_at)
-                              VALUES (?,?,?,?,?,?,?,?,?,?,?)''',(run,workspace_id,project[0],'projection:'+did,'projection','hub','',author,canonical(snapshot()),now,now))
+                              VALUES (?,?,?,?,?,?,?,?,?,?,?)''',(run,workspace_id,project[0],'projection:'+did,'projection','hub','',author,canonical(snapshot(legacy=True)),now,now))
                 self._insert_step(db,run,'hub',1,now)
             return did
 
@@ -463,6 +507,8 @@ class WorkflowStore:
                 if not version or version['workspace_id']!=story['workspace_id'] or version['state']!='candidate':
                     raise Conflict('Proposal is not a candidate in this story')
                 target=version['artifact_key']
+                original=db.execute('SELECT r.manifest FROM workflow_runs r JOIN step_executions s USING(run_id) WHERE s.step_id=?',(version['step_id'],)).fetchone()
+                manifest=json.loads(original[0])
             else:
                 if identifier not in manifest['steps']:
                     raise ValueError('Unknown artifact to import')
@@ -490,7 +536,7 @@ class WorkflowStore:
         if artifact['current_version']!=version['version_id']:
             self.assert_current(effective,inputs)
             from phase2.doc_policy import render_document
-            text=render_document(google.header(self,job,target)+'\nApproved appended revision: '+version['version_id']+'\n',target,json.loads(version['output']))
+            text=render_document(google.header(self,job,target)+'\nApproved appended revision: '+version['version_id']+'\n',target,dict(json.loads(version['output']),producer_guidance=inputs.get('producer_guidance','')) if target=='narrative' else json.loads(version['output']))
             baseline,revision=google.append_revision(artifact,text,version['version_id'])
             self.publish(effective,version['version_id'],baseline,revision)
         # Explicit append resolves the original blocked step and resumes its authorized DAG.

@@ -110,3 +110,34 @@ def register(snapshots):
         except Exception as exc:
             return json.dumps({'success':False,'error':'Source retrieval failed ('+type(exc).__name__+'); record the access gap without inventing evidence.'})
     registry.register(name='stories_fetch_source',toolset='stories_research',schema={'name':'stories_fetch_source','description':'Read one public article or primary record by HTTP GET. Returns bounded text, links, content hash and truncation status. No authentication, private addresses, external writes or shell execution.','parameters':{'type':'object','properties':{'url':{'type':'string'}},'required':['url'],'additionalProperties':False}},handler=handler)
+
+
+def fetch_asset(url):
+    """Retrieve a small original image/PDF; never store login pages as assets."""
+    current=url
+    for _ in range(6):
+        public_url(current)
+        with requests.get(current,headers={'User-Agent':'StoriesDashboard/VisualAssets'},timeout=(5,20),stream=True,allow_redirects=False,auth=NoAmbientAuth()) as response:
+            if response.status_code in {301,302,303,307,308}:
+                current=urljoin(current,response.headers.get('Location',''))
+                continue
+            response.raise_for_status()
+            mime=response.headers.get('Content-Type','').split(';')[0].lower()
+            if mime not in {'image/png','image/jpeg','image/webp','application/pdf'}:
+                raise ValueError('Asset is not a supported original image or PDF')
+            chunks=[];size=0
+            for chunk in response.iter_content(65536):
+                size+=len(chunk)
+                if size>10_000_000: raise ValueError('Asset exceeds 10 MB')
+                chunks.append(chunk)
+            body=b''.join(chunks)
+            if mime=='application/pdf':
+                import fitz
+                with fitz.open(stream=body,filetype='pdf') as pdf:
+                    if not len(pdf): raise ValueError('Empty PDF')
+            else:
+                from PIL import Image
+                from io import BytesIO
+                with Image.open(BytesIO(body)) as image: image.verify()
+            return body,mime,current
+    raise ValueError('Asset exceeded the redirect limit')

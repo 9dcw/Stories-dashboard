@@ -1,0 +1,207 @@
+{
+  "type": "object",
+  "properties": {
+    "summary": {
+      "type": "string",
+      "maxLength": 12000
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          },
+          "url": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          },
+          "publisher": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          },
+          "published_at": {
+            "type": "string",
+            "maxLength": 12000
+          },
+          "accessed_at": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          },
+          "locator": {
+            "type": "string",
+            "maxLength": 12000
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "url",
+          "publisher",
+          "published_at",
+          "accessed_at",
+          "locator"
+        ],
+        "additionalProperties": false
+      },
+      "maxItems": 100
+    },
+    "claims": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          },
+          "text": {
+            "type": "string",
+            "maxLength": 12000
+          },
+          "label": {
+            "enum": [
+              "Verified",
+              "Reported",
+              "Alleged",
+              "Inference",
+              "Unverified"
+            ]
+          },
+          "source_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1000
+            },
+            "maxItems": 100
+          },
+          "disposition": {
+            "type": "string",
+            "maxLength": 12000
+          },
+          "limitations": {
+            "type": "string",
+            "maxLength": 12000
+          }
+        },
+        "required": [
+          "id",
+          "text",
+          "label",
+          "source_ids",
+          "disposition",
+          "limitations"
+        ],
+        "additionalProperties": false
+      },
+      "maxItems": 100
+    },
+    "gaps": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "maxLength": 12000
+      },
+      "maxItems": 100
+    },
+    "narrative_rows": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 20,
+      "items": {
+        "type": "object",
+        "properties": {
+          "visual": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 5000
+          },
+          "talk_track": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 5000
+          },
+          "production_notes": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 5000
+          },
+          "collateral": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 5000
+          }
+        },
+        "required": [
+          "visual",
+          "talk_track",
+          "production_notes",
+          "collateral"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "policy_exception": {
+      "type": "string",
+      "maxLength": 2000
+    },
+    "asset_requests": {
+      "type": "array",
+      "maxItems": 4,
+      "items": {
+        "type": "object",
+        "properties": {
+          "row_index": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 19
+          },
+          "url": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "title": {
+            "type": "string",
+            "maxLength": 150
+          },
+          "owner": {
+            "type": "string",
+            "maxLength": 300
+          }
+        },
+        "required": [
+          "row_index",
+          "url",
+          "title",
+          "owner"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "summary",
+    "sources",
+    "claims",
+    "gaps",
+    "narrative_rows",
+    "policy_exception"
+  ],
+  "additionalProperties": false,
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Visual narrative v1"
+}

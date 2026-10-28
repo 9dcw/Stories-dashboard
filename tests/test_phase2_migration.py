@@ -28,7 +28,7 @@ def test_adoption_is_idempotent_and_preserves_original_links(api_db):
     wid=adopt(store,entry,proof)
     assert adopt(store,entry,proof)==wid
     assert old.get_story(sid)['google_doc_url'].endswith('/legacy/edit')
-    assert len(store.artifacts(wid))==7
+    assert list(store.artifacts(wid))==['narrative']
     assert all(a['current_version'] is None for a in store.artifacts(wid).values())
 
 

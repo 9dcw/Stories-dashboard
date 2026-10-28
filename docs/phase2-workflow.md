@@ -1,3 +1,26 @@
+# Visual narrative development
+
+Promotion creates one Visual Narrative Google Doc and reuses the story's canonical folder, Images folder and Telegram topic. There is one model stage after deterministic provisioning. Phase 2 and Phase 3 are one development workspace.
+
+Commands in the story topic:
+- `/story revise <guidance>` researches/develops the current narrative and gathers requested assets.
+- `/story prompt update <feedback>` appends versioned global feedback to the initial-development prompt. Later feedback takes precedence. This affects future first drafts only.
+- `/story prompt show` displays the entire current editable initial-development prompt, split into Telegram messages when necessary. Fixed output/evidence contracts are enforced separately.
+
+The Doc starts with a paragraph containing the promotion guidance and all accepted revision instructions verbatim, in order, separated by ` | `. The application renders this paragraph; the model cannot rewrite it. Prompt feedback is not story guidance.
+
+The native table preserves the legacy Phase 3 columns: Visual; Talk track (bullet points); Production / evidence notes; Collateral in Drive / how to obtain it and original owner. Source links, claim qualifications and rights status stay beside their beat. Supported requested image/PDF assets are downloaded to Images; unsupported/inaccessible files remain explicitly marked leads. Existing asset links are retained in revisions.
+
+The current narrative and guidance are the revision context; no automatic angle/plan/evidence/treatment/review cascade runs. Defaults: 12 model iterations, 900 seconds, 6,000 output tokens per response, 120,000 tokens per step including repair, 140,000 per run, one concurrent step. These are safeguards, not usage targets. Usage includes repeated input across model calls. Context has a 100,000-character ceiling and is never silently truncated. One schema repair is allowed.
+
+Standing prompt versions are append-only in SQLite and pinned in run manifests. Each story keeps its original prompt for revisions. Existing packages are preserved; their first explicit `/story revise` creates the narrative Doc and synthesizes stored research once. It cancels blocked runs while retaining measured usage, documents, versions and candidates. Active operations must finish first. Legacy queued jobs retain their pinned contracts; do not relaunch them to convert a story.
+
+Human Doc changes/comments remain protected by revision checks. Conflicting candidates are retained for operator resolution. The dashboard still provides operational progress/retry; Telegram exposes the three editorial commands. Token-exhausted retries do not reset usage; request a focused revision instead. There is no automatic publication approval.
+
+Deployment must update API, research worker and installed Hermes plugin together. Run tests before deployment, initialize the additive SQLite schema, and verify the actual created Google Doc's table, guidance, revision and policy audit. Local tests do not establish production readback.
+
+## Historical package operations (legacy pinned runs only)
+
 # Repository-controlled Phase 2
 
 Phase 2 produces a research and editorial treatment package. It never approves publication or advances a story to Phase 3. New execution is disabled until `PHASE2_ENGINE=repository`; the default remains the existing setup workflow.

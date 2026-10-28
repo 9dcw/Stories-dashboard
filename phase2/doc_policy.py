@@ -3,7 +3,10 @@ from dataclasses import dataclass
 import re
 
 VERSION = "tables.v1"
+NARRATIVE_HEADERS = ['Visual', 'Talk track (bullet points)', 'Production / evidence notes', 'Collateral in Drive / how to obtain it and original owner']
+NARRATIVE_FIELDS = ['visual','talk_track','production_notes','collateral']
 SPECS = {
+    'narrative': (2500, 150, 20, []),
     'hub': (500, 60, 5, ['Story', 'Current assessment', 'Progress', 'Blockers', 'Next decision']),
     'angles': (1500, 120, 7, ['Central finding', 'People and stakes', 'What happened', 'Mechanism', 'Outcome', 'Contradictions', 'Research gaps']),
     'plan': (1500, 120, 7, ['Central question', 'Primary records', 'Fact validation', 'Visual research', 'Context', 'Contradictions', 'Next actions']),
@@ -19,6 +22,11 @@ def words(text):
 
 
 def instructions(key):
+    if key == 'narrative':
+        return ('Publish one native four-column table: ' + ' | '.join(NARRATIVE_HEADERS) +
+                '. Aim for 6–10 beats, <=150 words per cell, whole Doc <=2500 words including guidance. '
+                'No logs or raw JSON. Preserve evidence, qualifications, asset provenance and rights restrictions. '
+                'Use policy_exception for necessary excess; never silently truncate producer guidance.')
     cap, detail, rows, topics = SPECS[key]
     return (f"Google Docs content policy {VERSION}. Publish only editorial_rows: "
             "topic, short (one sentence, <=25 words), detail (adds evidence/action, not repetition). "
@@ -42,6 +50,8 @@ class TableDocument:
 
     @property
     def grid(self):
+        if self.key == 'narrative':
+            return [NARRATIVE_HEADERS] + [[r[f] for f in NARRATIVE_FIELDS] for r in self.rows]
         return [['Topic', 'At a glance', 'Detail / evidence']] + [[r['topic'], r['short'], r['detail']] for r in self.rows]
 
     @property
@@ -50,6 +60,14 @@ class TableDocument:
 
 
 def validate_rows(key, output):
+    if key == 'narrative':
+        rows=output.get('narrative_rows',[])
+        if not rows: raise ValueError('Narrative table needs at least one beat')
+        if (len(rows)>20 or any(words(r[f])>150 for r in rows for f in NARRATIVE_FIELDS)) and not output.get('policy_exception','').strip():
+            raise ValueError('Narrative exceeds row/cell budget; synthesize or explain necessary excess')
+        if any(re.search(r'```|<table|(?:^|\n)\s*(?:Tool output|Execution trace|Search diary):',r[f],re.I) for r in rows for f in NARRATIVE_FIELDS):
+            raise ValueError('Operational output is not narrative content')
+        return
     if 'editorial_rows' not in output:
         raise ValueError('Editorial table missing; regenerate this legacy output under '+VERSION)
     rows=output['editorial_rows']
@@ -81,7 +99,9 @@ def render_document(prefix, key, output):
     prefix += f'\nContent policy: {VERSION}\n'
     if exception:
         prefix += 'Exception requires human review: '+exception+'\n'
-    result=TableDocument(prefix,output['editorial_rows'],key,exception)
+    if key == 'narrative':
+        prefix += '\nYour guidance\n'+output.get('producer_guidance','')+'\n'
+    result=TableDocument(prefix,output['narrative_rows' if key=='narrative' else 'editorial_rows'],key,exception)
     if words(result.text)>SPECS[key][0] and not exception:
         raise ValueError('Rendered document exceeds soft cap; synthesize or provide a specific policy_exception')
     return result
@@ -93,14 +113,16 @@ def audit(key, document, managed_text='', table_rows=None):
     if 'Exception requires human review:' in managed_text: issues.append('Editorial exception requires human review')
     if re.search(r'```|(?:^|\n)\s*(?:Tool output|Execution trace|Search diary|Proof of work):',managed_text,re.I): issues.append('Excluded operational content')
     if words(document)>cap: issues.append('Whole document exceeds soft cap')
-    if not table_rows or table_rows[0]!=['Topic','At a glance','Detail / evidence']:
+    headers=NARRATIVE_HEADERS if key=='narrative' else ['Topic','At a glance','Detail / evidence']
+    if not table_rows or table_rows[0]!=headers:
         issues.append('Required three-column table missing')
     else:
         rows=table_rows[1:]
         if len(rows)>maximum: issues.append('Row target exceeded')
         if topics and [r[0] for r in rows]!=topics: issues.append('Required topics missing or out of order')
         for row in rows:
-            if len(row)!=3 or any(words(v)>limit for v,limit in zip(row,(8,25,detail))):
+            limits=(150,150,150,150) if key=='narrative' else (8,25,detail)
+            if len(row)!=len(headers) or any(words(v)>limit for v,limit in zip(row,limits)):
                 issues.append('Cell budget exceeded')
             if len(row)==3 and row[1].strip()==row[2].strip(): issues.append('Repeated short/detail content')
     return dict(policy_version=VERSION,total_words=words(document),managed_words=words(managed_text),cap=cap,issues=sorted(set(issues)),outcome='revise' if issues else 'pass')

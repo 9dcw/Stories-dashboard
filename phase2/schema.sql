@@ -47,3 +47,8 @@ CREATE TABLE IF NOT EXISTS package_assessments (
  assessment TEXT NOT NULL
 );
 CREATE INDEX IF NOT EXISTS idx_runs_workspace ON workflow_runs(workspace_id,created_at);
+
+CREATE TABLE IF NOT EXISTS narrative_prompt_versions (
+ version INTEGER PRIMARY KEY AUTOINCREMENT, request_id TEXT NOT NULL UNIQUE,
+ feedback TEXT NOT NULL, prompt TEXT NOT NULL, author TEXT NOT NULL, created_at REAL NOT NULL
+);

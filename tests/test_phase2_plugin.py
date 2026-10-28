@@ -43,7 +43,7 @@ def test_backend_failure_consumes_command_without_llm_fallback(monkeypatch,rejec
     error=module.StoriesRejection('Finish or cancel: /story cancel run-1') if rejected else ConnectionError()
     monkeypatch.setattr(module,'call_backend',lambda _:(_ for _ in []).throw(error))
     source=SimpleNamespace(platform='telegram',chat_id='-1003984316484',thread_id='3',user_id='42')
-    event=SimpleNamespace(source=source,text='/story revise angles A narrower question',message_id='5')
+    event=SimpleNamespace(source=source,text='/story revise A narrower question',message_id='5')
     adapter=SimpleNamespace(send=AsyncMock())
     gateway=SimpleNamespace(adapters={'telegram':adapter},_is_user_authorized=lambda _:True)
     async def invoke():
@@ -65,9 +65,9 @@ def test_untrusted_user_cannot_dispatch(monkeypatch):
 
 
 @pytest.mark.parametrize('command,expected', [
-    ('/story help', 'Story commands'),
-    ('/story@StoriesBot help', 'Story commands'),
-    ('/story help research', 'Direct research after v1'),
+    ('/story help', 'Visual narrative'),
+    ('/story@StoriesBot help', 'Visual narrative'),
+    ('/story help research', 'Visual narrative'),
     ('/story help unknown', 'Use /story help'),
 ])
 def test_help_is_readable_and_does_not_call_backend(monkeypatch, command, expected):

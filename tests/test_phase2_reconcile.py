@@ -151,11 +151,7 @@ def test_package_rewrite_preserves_proposal_and_resumes_after_append(workflow, t
     assert store.version(version)['state'] == 'published'
 
 
-def test_reconcile_command_routes_whole_instruction(workflow, tmp_path):
-    store, story, w = completed(workflow, tmp_path)
-    text = '/story reconcile Reconsider all docs\nKeep verified evidence and update the framing.'
-    assert parse(text)['instruction'] == 'Reconsider all docs\nKeep verified evidence and update the framing.'
-    result = dispatch(store, dict(chat_id='-1003984316484', thread_id='12', user_id='42', message_id='100', text=text), {'42'}, '-1003984316484')
-    assert result['run_id'] == store.status(story)['run_id']
+def test_legacy_reconcile_command_is_replaced_by_narrative_revision():
     with pytest.raises(ValueError):
-        parse('/story reconcile')
+        parse('/story reconcile Reconsider all docs')
+    assert parse('/story revise Reconsider the narrative\nKeep verified evidence.')['instruction']=='Reconsider the narrative\nKeep verified evidence.'
