@@ -35,9 +35,22 @@ rejection, or requirement to prove precedent. All other subjects pass.
    and Tenth Circuit publication/precedent footnotes. Citation mentions do not
    establish the current opinion's status.
 2. Immigration proceedings as the central subject.
-3. Violent-crime prosecution, conviction, sentencing, or collateral challenge as
-   the central subject. Civil liability, coverage, tort, and civil-rights cases
-   involving violence pass. Incidental mentions and uncertainty pass.
+3. Criminal proceedings as the central subject, including nonviolent crime,
+   drug/firearm convictions, sentencing, supervised-release/probation revocation,
+   habeas, ineffective-assistance and criminal evidentiary/trial disputes.
+   Retain cases with a substantive insurance or financial-fraud story: a concrete
+   scheme, victim losses, claim/payment dispute or meaningful financial misconduct.
+   Incidental fines, restitution or forfeiture alone do not establish the exception.
+4. Employment discrimination, workplace retaliation, and civil-rights/constitutional
+   litigation as the central subject, including Section 1983, qualified immunity
+   within civil-rights litigation, prison conditions, and Title VII/ADA/FLSA
+   discrimination or retaliation claims. Merely mentioning these issues is insufficient.
+
+Ordinary coverage, contract, tort, personal-injury and liability cases still pass
+unless an exclusion is independently central. No procedural/no-outcome filter was
+added. Uncertainty passes for review. The version is `court_exclusions_v2`; prior
+NEW court candidates are eligible for re-screening from cached full documents on
+intake. Dismissed, promoted and ignored items are not re-screened or restored.
 
 The configured cheap Hermes gist model handles subject screening and factual
 gisting together, with no tools enabled. Full PDFs are extracted with page

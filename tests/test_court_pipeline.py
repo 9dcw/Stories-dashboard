@@ -39,9 +39,12 @@ def test_nonprecedential_does_not_spend_agent_call():
     assert result['decision']=='EXCLUDED' and result['reason_code']=='NONPRECEDENTIAL'
 
 
-@pytest.mark.parametrize('subject',['IMMIGRATION','VIOLENT_CRIME'])
-def test_subject_exclusion_requires_matching_page_evidence(subject):
-    passage='This appeal challenges the petitioner’s removal order and denial of asylum.'
+@pytest.mark.parametrize('subject,passage',[
+    ('IMMIGRATION','This appeal challenges the petitioner’s removal order and denial of asylum.'),
+    ('CRIMINAL_PROCEEDING','This appeal challenges a drug-conspiracy sentence and supervised-release revocation.'),
+    ('CIVIL_RIGHTS_EMPLOYMENT','The employee alleges that his employer fired him in retaliation for protected discrimination complaints.'),
+])
+def test_subject_exclusion_requires_matching_page_evidence(subject,passage):
     doc={'pages':[passage]}
     assert screen_document({'headline':'Case'},doc,lambda _:answer(subject,quote=passage))['decision']=='EXCLUDED'
     bad=screen_document({'headline':'Case'},doc,lambda _:answer(subject,quote='A quotation that is absent from the document.'))
@@ -135,3 +138,44 @@ def test_schedule_dst_and_disabled_status(tmp_path):
     with store._connect() as c:c.execute("INSERT INTO court_schedule(singleton,enabled) VALUES(1,1)")
     _,state,_=read_court_state(store,datetime(2026,10,24,12,tzinfo=timezone.utc))
     assert state['schedule']['next_run_at']=='2026-10-25T07:00:00+01:00'
+
+
+@pytest.mark.parametrize('subject,passage',[
+    ('CRIMINAL_PROCEEDING','The defendant challenges the calculation of his sentence for nonviolent drug possession.'),
+    ('CIVIL_RIGHTS_EMPLOYMENT','The prisoner seeks damages under Section 1983 for unconstitutional confinement conditions.'),
+])
+def test_new_exclusions_remain_visible_on_uncertainty(subject,passage):
+    result=screen_document({'headline':'Case'},{'pages':[passage]},lambda _:answer(subject,quote=passage,review=True))
+    assert result['decision']=='PASS' and result['needs_review']
+
+
+def test_financial_story_exception_in_later_chunk_prevents_criminal_exclusion():
+    ordinary='This criminal appeal concerns the defendant’s challenge to his sentence. '
+    financial='The charged scheme involved staged insurance claims and payments obtained from insurers. '
+    pages=[ordinary*500,financial*500];calls=[]
+    def agent(prompt):
+        calls.append(prompt)
+        if prompt.startswith('Combine these partial'):return json.dumps(dict(display_headline='Insurance fraud appeal',gist='The appeal concerns staged insurance claims and the criminal sentence.'))
+        return answer('CRIMINAL_PROCEEDING',quote=ordinary) if len(calls)==1 else answer('NONE')
+    result=screen_document({'headline':'Case'},{'pages':pages},agent)
+    assert result['decision']=='PASS' and result['needs_review']
+    assert '[PAGE 2]' in ''.join(calls)
+
+
+def test_rule_change_rescreens_cached_new_items_but_preserves_dismissals(tmp_path):
+    from court_pipeline import save_screen
+    store=StoryStore(tmp_path/'db.sqlite3');sid=make_source(store)
+    passage='The defendant challenges only the prison sentence and revocation of supervised release.'
+    for n in range(2):
+        item=store.add_item(sid,'Criminal sentencing appeal',f'https://www.ca1.uscourts.gov/opnfiles/{n}.pdf')
+        doc=dict(pages=[passage],resolved_url=item.raw_url if hasattr(item,'raw_url') else f'https://www.ca1.uscourts.gov/opnfiles/{n}.pdf',content_hash='hash',method='pdf_full_text')
+        save_screen(store,item.item_id,dict(decision='PASS',gist='Previously passed'),doc['content_hash'])
+        with store._connect() as c:
+            c.execute('UPDATE court_screenings SET rule_version=? WHERE item_id=?',('court_exclusions_v1',item.item_id))
+            c.execute('INSERT INTO court_documents(item_id,document_json) VALUES (?,?)',(item.item_id,json.dumps(doc)))
+        if n==1:store.dismiss_item(item.item_id,'not_relevant','Criminal',actor_sub='reviewer',actor_email='r@example.test',request_id='dismiss')
+    result=run_pipeline(store,lambda _:answer('CRIMINAL_PROCEEDING',quote=passage),poll=False,fetcher=lambda *a,**kw:pytest.fail('Cached text must be reused'))
+    assert result['processed']==1 and result['excluded']==1
+    with store._connect() as c:
+        assert c.execute("SELECT count(*) FROM items WHERE status='DISMISSED'").fetchone()[0]==1
+        assert c.execute('SELECT count(*) FROM court_screenings WHERE rule_version=?',(RULE_VERSION,)).fetchone()[0]==1
