@@ -495,3 +495,90 @@ test('saved Phase 2 drafts show recovery commands instead of blind retry',()=>{
   assert.match(html,/\/story cancel run-1/);
   assert.doesNotMatch(html,/data-phase2-retry/);
 });
+
+function feedbackDialog(getElement){
+  const dialog=getElement('#dismissalDialog');
+  dialog.showModal=()=>{dialog.open=true;};
+  dialog.close=()=>{dialog.open=false;};
+  getElement('#dismissalNote').focus=()=>{};
+  return dialog;
+}
+
+test('feedback dismissal opens a note dialog without saving; cancel preserves the candidate', () => {
+  const {context,getElement,documentListeners}=loadApp();
+  candidateSetup(context);
+  const dialog=feedbackDialog(getElement);
+  context.unexpectedSave=()=>assert.fail('Opening or cancelling feedback must not dismiss');
+  vm.runInContext('API.fetch=unexpectedSave',context);
+  assert.match(getElement('#candidateGrid').innerHTML,/btn-dismiss-interactive/);
+  assert.match(getElement('#candidateGrid').innerHTML,/Dismiss with feedback/);
+  const button={dataset:{item:'7'}};
+  documentListeners.click({target:{closest:s=>s==='.btn-dismiss-feedback'?button:null}});
+  assert.equal(dialog.open,true);
+  assert.equal(getElement('#dismissalTitle').textContent,'First candidate');
+  getElement('#dismissalNote').value='No interest in these cases';
+  getElement('#dismissalCancel').listeners.click();
+  assert.equal(dialog.open,false);
+  assert.equal(vm.runInContext('state.candidates[0].status',context),'NEW');
+  const markup=fs.readFileSync(path.join(__dirname,'..','..','index.html'),'utf8').split('<dialog id="dismissalDialog"')[1].split('</dialog>')[0];
+  assert.match(markup,/<textarea[^>]+maxlength="1000"/);
+  assert.doesNotMatch(markup,/<select|type="radio"/);
+});
+
+test('feedback dismissal saves free text with not_relevant and supports Undo', async () => {
+  const {context,getElement}=loadApp();
+  candidateSetup(context);
+  const dialog=feedbackDialog(getElement);
+  const bodies=[];
+  context.saveFeedback=async(_url,init)=>{bodies.push(JSON.parse(init.body));return dismissalResponse(7,81);};
+  vm.runInContext('API.fetch=saveFeedback;openDismissalFeedback(7)',context);
+  getElement('#dismissalNote').value='Discrimination cases\nPlease filter these out.';
+  await getElement('#dismissalForm').listeners.submit({preventDefault(){}});
+  assert.equal(bodies.length,1);
+  assert.equal(bodies[0].reason_code,'not_relevant');
+  assert.equal(bodies[0].note,'Discrimination cases\nPlease filter these out.');
+  assert.equal(dialog.open,false);
+  assert.equal(vm.runInContext('state.candidates[0].status',context),'DISMISSED');
+  assert.match(getElement('#snackbar').innerHTML,/Undo/);
+});
+
+test('feedback survives an uncertain save; duplicate submits and note changes cannot corrupt retries', async () => {
+  const {context,getElement}=loadApp();
+  candidateSetup(context);
+  const dialog=feedbackDialog(getElement);
+  const request=deferred();const bodies=[];
+  context.uncertainSave=(_url,init)=>{bodies.push(JSON.parse(init.body));return request.promise;};
+  vm.runInContext('API.fetch=uncertainSave;openDismissalFeedback(7)',context);
+  getElement('#dismissalNote').value='Keep my original feedback.';
+  const submission=getElement('#dismissalForm').listeners.submit({preventDefault(){}});
+  await getElement('#dismissalForm').listeners.submit({preventDefault(){}});
+  assert.equal(bodies.length,1);
+  assert.equal(getElement('#dismissalSubmit').disabled,true);
+  let prevented=false;
+  dialog.listeners.cancel({preventDefault(){prevented=true;}});
+  assert.equal(prevented,true);
+  request.reject(new Error('Connection lost'));
+  await submission;
+  assert.equal(dialog.open,true);
+  assert.equal(getElement('#dismissalNote').value,'Keep my original feedback.');
+  assert.equal(getElement('#dismissalNote').readOnly,true);
+  assert.equal(getElement('#dismissalSubmit').disabled,false);
+  assert.match(getElement('#dismissalError').textContent,/Connection lost/);
+  assert.equal(vm.runInContext('state.candidates[0].status',context),'NEW');
+  context.retrySave=async(_url,init)=>{bodies.push(JSON.parse(init.body));return dismissalResponse(7,82);};
+  vm.runInContext('API.fetch=retrySave',context);
+  // Even a programmatic note change cannot turn an ambiguous retry into another payload.
+  getElement('#dismissalNote').value='Changed after the failed response';
+  await getElement('#dismissalForm').listeners.submit({preventDefault(){}});
+  assert.deepEqual(bodies[1],bodies[0]);
+  assert.equal(dialog.open,false);
+});
+
+test('court intake displays the deployed rules rather than an obsolete fixed list', () => {
+  const {context,getElement}=loadApp();
+  vm.runInContext("renderCourtPipeline({rules:['Criminal proceedings except financial fraud','Employment discrimination and civil rights']})",context);
+  const text=getElement('#courtPipelineStatus').innerHTML;
+  assert.match(text,/Criminal proceedings except financial fraud/);
+  assert.match(text,/Employment discrimination and civil rights/);
+  assert.doesNotMatch(text,/violent-crime prosecutions/);
+});

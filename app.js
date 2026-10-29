@@ -24,6 +24,7 @@ const state={
   candidateUpdates:{},      // local projections protect against stale dashboard responses
   candidateRevision:0,
   dashboardLoad:0,
+  dismissalNotes:{},        // preserve submitted feedback across ambiguous retries
   mutationRequestIds:{},     // operation key → UUID retained across ambiguous retries
   snackbarTimer:0,
   dismissedQueue:[]          // recently dismissed for undo
@@ -300,7 +301,7 @@ function candidateCard(c){
       actions+=`<button class="btn-restore" data-item="${esc(c.item_id)}" data-feedback="${esc(c.active_dismissal.feedback_id)}"${state.pending[c.item_id]?' disabled':''}>Restore</button>`;
     }
   }else{
-    actions=`<button class="btn-dismiss-interactive" data-item="${esc(c.item_id)}"${state.pending[c.item_id]?' disabled':''}>Dismiss</button>`;
+    actions=`<button class="btn-dismiss-interactive" data-item="${esc(c.item_id)}"${state.pending[c.item_id]?' disabled':''}>Dismiss</button><button class="action btn-dismiss-feedback" data-item="${esc(c.item_id)}"${state.pending[c.item_id]?' disabled':''}>Dismiss with feedback</button>`;
     actions+=`${action(c.source_link,'Source','primary')}`;
     if(c.can_promote_to_phase2!==false)actions+=`<button class="action telegram phase2-action btn-phase2" data-phase2-item="${esc(c.item_id)}"${state.pending[c.item_id]?' disabled':''}>${state.pending[c.item_id]?'Starting Phase 2…':'Promote to Phase 2'}</button>`;
   }
@@ -352,7 +353,7 @@ function renderCourtPipeline(p){
   const el=$('#courtPipelineStatus');if(!el)return;
   if(!p){el.textContent='Court polling schedule not configured';return;}
   const s=p.schedule||{};const r=p.last_run;const n=r?.stats||{};
-  el.innerHTML=`<strong>Court opinions · exclusion-only screening</strong><p>${s.enabled?'Daily at '+String(s.hour).padStart(2,'0')+':'+String(s.minute).padStart(2,'0')+' '+esc(s.timezone):'Daily schedule inactive'} · Next: ${esc(s.next_run_at||'Not scheduled')}</p><p>${r?'Last run: '+esc(r.status)+' · started '+esc(r.started_at)+' · finished '+esc(r.finished_at||'in progress'):'No run recorded'}</p>${r?`<p>${esc(n.sources_checked||0)} sources · ${esc(n.sources_failed||0)} failed · ${esc(n.sources_empty||0)} empty · ${esc(n.documents_found||0)} opinion links · ${esc(n.new_items||0)} new · ${esc(n.passed||0)} passed · ${esc(n.excluded||0)} excluded · ${esc(n.errors||0)} errors · ${esc(n.pending||0)} pending</p>`:''}<p>Exclude explicit nonprecedential notices, immigration rulings, and violent-crime prosecutions or convictions. Everything else passes; uncertainty stays in the queue.</p>`;
+  el.innerHTML=`<strong>Court opinions · exclusion-only screening</strong><p>${s.enabled?'Daily at '+String(s.hour).padStart(2,'0')+':'+String(s.minute).padStart(2,'0')+' '+esc(s.timezone):'Daily schedule inactive'} · Next: ${esc(s.next_run_at||'Not scheduled')}</p><p>${r?'Last run: '+esc(r.status)+' · started '+esc(r.started_at)+' · finished '+esc(r.finished_at||'in progress'):'No run recorded'}</p>${r?`<p>${esc(n.sources_checked||0)} sources · ${esc(n.sources_failed||0)} failed · ${esc(n.sources_empty||0)} empty · ${esc(n.documents_found||0)} opinion links · ${esc(n.new_items||0)} new · ${esc(n.passed||0)} passed · ${esc(n.excluded||0)} excluded · ${esc(n.errors||0)} errors · ${esc(n.pending||0)} pending</p>`:''}<p>Exclusions: ${esc((p.rules||[]).join('; '))}. Everything else passes; uncertainty stays in the queue.</p>`;
 }
 
 // ── One-click dismissal ───────────────────────────────────────────
@@ -361,12 +362,14 @@ function updateCandidate(itemId,patch,pending=false){
   state.candidateUpdates[itemId]={patch,pending,revision:++state.candidateRevision};
   state.candidates=state.candidates.map(c=>String(c.item_id)===String(itemId)?{...c,...patch}:c);
 }
-async function dismissItem(itemId){
+async function dismissItem(itemId,note=''){
   itemId=Number(itemId);
   const candidate=state.candidates.find(c=>Number(c.item_id)===itemId);
   if(!candidate||state.pending[itemId]||(candidate.status||'NEW')!=='NEW')return;
   const previous={status:candidate.status||'NEW',active_dismissal:candidate.active_dismissal||null};
   const mutationKey=`dismiss:${itemId}`;
+  if(Object.hasOwn(state.dismissalNotes,itemId))note=state.dismissalNotes[itemId];
+  else state.dismissalNotes[itemId]=note;
   const requestId=API.mutationRequestId(mutationKey);
   state.pending[itemId]=true;
   updateCandidate(itemId,{status:'DISMISSED',active_dismissal:null},true);
@@ -375,21 +378,64 @@ async function dismissItem(itemId){
   try{
     const r=await API.fetch(`/api/v1/items/${itemId}/dismiss`,{
       method:'POST',headers:API.headers(),
-      body:JSON.stringify({reason_code:'not_relevant',note:'',request_id:requestId})
+      body:JSON.stringify({reason_code:'not_relevant',note,request_id:requestId})
     });
     const d=await API.json(r);
     const fb=d.feedback||d;
     if(!Number.isInteger(fb.feedback_id)||fb.feedback_id<=0)throw new Error('Invalid dismissal response');
     updateCandidate(itemId,{status:d.item?.status||'DISMISSED',active_dismissal:d.active_dismissal||fb});
     API.finishMutation(mutationKey);
+    delete state.dismissalNotes[itemId];
     state.dismissedQueue.push({item_id:itemId,feedback_id:fb.feedback_id});
     showSnackbar(`Dismissed. <button class="snackbar-undo" id="snackbarUndo" data-feedback="${fb.feedback_id}">Undo</button>`,8000);
+    return {saved:true};
   }catch(e){
-    if(e.status&&e.status<500)API.finishMutation(mutationKey);
+    if(e.status&&e.status<500){API.finishMutation(mutationKey);delete state.dismissalNotes[itemId];}
     updateCandidate(itemId,previous);
     showSnackbar(`Could not save dismissal; item restored. ${esc(e.message)}`,5000);
+    return {saved:false,error:e.message,note,ambiguous:Object.hasOwn(state.dismissalNotes,itemId)};
   }finally{delete state.pending[itemId];render();}
 }
+function openDismissalFeedback(itemId){
+  const candidate=state.candidates.find(c=>String(c.item_id)===String(itemId));
+  if(!candidate||state.pending[itemId]||(candidate.status||'NEW')!=='NEW')return;
+  const dialog=$('#dismissalDialog');
+  const note=$('#dismissalNote');
+  if(dialog.dataset.itemId!==String(itemId))note.value='';
+  if(Object.hasOwn(state.dismissalNotes,itemId))note.value=state.dismissalNotes[itemId];
+  note.readOnly=Object.hasOwn(state.dismissalNotes,itemId);
+  dialog.dataset.itemId=String(itemId);
+  $('#dismissalTitle').textContent=candidate.display_headline||candidate.headline;
+  $('#dismissalError').textContent=note.readOnly?'The previous save was not confirmed. Retry with the same feedback.':'';
+  dialog.showModal();
+  note.focus();
+}
+async function submitDismissalFeedback(){
+  const dialog=$('#dismissalDialog');
+  const itemId=dialog.dataset.itemId;
+  if(!itemId||state.pending[itemId])return;
+  $('#dismissalSubmit').disabled=true;
+  $('#dismissalCancel').disabled=true;
+  $('#dismissalNote').disabled=true;
+  $('#dismissalError').textContent='';
+  try{
+    const result=await dismissItem(itemId,$('#dismissalNote').value);
+    if(result?.saved)dialog.close();
+    else if(result){
+      $('#dismissalNote').value=result.note;
+      $('#dismissalError').textContent='Could not save dismissal: '+result.error+(result.ambiguous?' Retry with the same feedback.':'');
+    }else $('#dismissalError').textContent='This candidate is no longer available for dismissal.';
+  }finally{
+    $('#dismissalSubmit').disabled=false;
+    $('#dismissalCancel').disabled=false;
+    $('#dismissalNote').disabled=false;
+    $('#dismissalNote').readOnly=Object.hasOwn(state.dismissalNotes,itemId);
+  }
+}
+$('#dismissalForm').addEventListener('submit',e=>{e.preventDefault();return submitDismissalFeedback();});
+$('#dismissalCancel').addEventListener('click',()=>{if(!state.pending[$('#dismissalDialog').dataset.itemId])$('#dismissalDialog').close();});
+$('#dismissalDialog').addEventListener('cancel',e=>{if(state.pending[$('#dismissalDialog').dataset.itemId])e.preventDefault();});
+
 async function undoLastDismiss(feedbackId){
   const index=feedbackId?state.dismissedQueue.findIndex(e=>String(e.feedback_id)===String(feedbackId)):state.dismissedQueue.length-1;
   const latest=state.dismissedQueue[index];
@@ -495,6 +541,8 @@ document.addEventListener('click',e=>{
   if(phase2Btn){openPromotion(phase2Btn.dataset.phase2Item);return}
   const link=e.target.closest('a.action');
   if(link){const c=link.closest('.story-card');const s=state.stories.find(x=>c&&c.querySelector('[data-favorite]')?.dataset.favorite===(x.id||String(x.story_id)));if(s){state.recent=[s.id||String(s.story_id),...state.recent.filter(x=>x!==(s.id||String(s.story_id)))];save()}}
+  const feedbackBtn=e.target.closest('.btn-dismiss-feedback');
+  if(feedbackBtn){openDismissalFeedback(feedbackBtn.dataset.item);return}
   // interactive dismiss button
   const dimBtn=e.target.closest('.btn-dismiss-interactive');
   if(dimBtn){dismissItem(dimBtn.dataset.item);return}
