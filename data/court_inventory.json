@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "counting_note": "Counts refer to court families/systems, not individual districts, divisions, feeds, or exhaustive publication coverage. State district/division enumeration remains outstanding.",
+  "counting_note": "Counts mix individually inventoried courts/districts in audited states with court families elsewhere. Florida has six appeal districts, Texas fifteen appeal courts, California six appeal districts (Fourth District uses three division feeds). Remaining state subdivisions and specialized/lower-court appellate divisions still need audit. Active means a feed is enabled, not exhaustive or healthy coverage.",
   "directory_source": "https://github.com/freelawproject/courts-db",
   "directory_revision": "c22604dff8b6819d022cc5ddfd6d9080101149e3",
   "jurisdictions_pending_structure_audit": [
@@ -8,11 +8,9 @@
     "Alaska",
     "Arizona",
     "Arkansas",
-    "California",
     "Colorado",
     "Connecticut",
     "Delaware",
-    "Florida",
     "Georgia",
     "Hawaii",
     "Idaho",
@@ -46,7 +44,6 @@
     "South Carolina",
     "South Dakota",
     "Tennessee",
-    "Texas",
     "Utah",
     "Vermont",
     "Virginia",
@@ -106,11 +103,11 @@
       "name": "California Supreme Court",
       "jurisdiction": "California",
       "level": "highest",
-      "unit": "court_family",
+      "unit": "court",
       "discovery_status": "outstanding",
       "official_url": "http://www.courts.ca.gov/supremecourt.htm",
-      "structure_verified": false,
-      "notes": "Directory seed; official structure and district/division coverage require audit."
+      "structure_verified": true,
+      "notes": "Official-source adapter; current exposed opinion documents. Historical backfill outside this batch."
     },
     {
       "court_id": "colo",
@@ -150,11 +147,11 @@
       "name": "Florida Supreme Court",
       "jurisdiction": "Florida",
       "level": "highest",
-      "unit": "court_family",
+      "unit": "court",
       "discovery_status": "outstanding",
       "official_url": "http://www.floridasupremecourt.org/",
-      "structure_verified": false,
-      "notes": "Directory seed; official structure and district/division coverage require audit."
+      "structure_verified": true,
+      "notes": "Official-source adapter; current exposed opinion documents. Historical backfill outside this batch."
     },
     {
       "court_id": "ga",
@@ -404,10 +401,10 @@
       "jurisdiction": "New York",
       "level": "highest",
       "unit": "court_family",
-      "discovery_status": "outstanding",
+      "discovery_status": "blocked_access",
       "official_url": "http://www.nycourts.gov/ctapps/",
       "structure_verified": false,
-      "notes": "Directory seed; official structure and district/division coverage require audit."
+      "notes": "Official Court of Appeals endpoints return HTTP 403. Awaiting approved New York access/key from user. No alternate provider."
     },
     {
       "court_id": "nc",
@@ -535,22 +532,22 @@
       "name": "Texas Supreme Court",
       "jurisdiction": "Texas",
       "level": "highest",
-      "unit": "court_family",
+      "unit": "court",
       "discovery_status": "outstanding",
       "official_url": "http://www.supreme.courts.state.tx.us/",
-      "structure_verified": false,
-      "notes": "Directory seed; official structure and district/division coverage require audit."
+      "structure_verified": true,
+      "notes": "Official-source adapter; current exposed opinion documents. Historical backfill outside this batch."
     },
     {
       "court_id": "texcrimapp",
       "name": "Court of Criminal Appeals of Texas",
       "jurisdiction": "Texas",
       "level": "highest",
-      "unit": "court_family",
+      "unit": "court",
       "discovery_status": "outstanding",
       "official_url": "http://www.cca.courts.state.tx.us/",
-      "structure_verified": false,
-      "notes": "Directory seed; official structure and district/division coverage require audit."
+      "structure_verified": true,
+      "notes": "Official-source adapter; current exposed opinion documents. Historical backfill outside this batch."
     },
     {
       "court_id": "utah",
@@ -696,17 +693,6 @@
       "notes": "Directory seed; official structure and district/division coverage require audit."
     },
     {
-      "court_id": "calctapp",
-      "name": "California Courts of Appeal",
-      "jurisdiction": "California",
-      "level": "intermediate",
-      "unit": "court_family",
-      "discovery_status": "outstanding",
-      "official_url": "http://www.courts.ca.gov/courtsofappeal.htm",
-      "structure_verified": false,
-      "notes": "Directory seed; official structure and district/division coverage require audit."
-    },
-    {
       "court_id": "coloctapp",
       "name": "Colorado Court of Appeals",
       "jurisdiction": "Colorado",
@@ -725,17 +711,6 @@
       "unit": "court_family",
       "discovery_status": "outstanding",
       "official_url": "http://www.jud.ct.gov/external/supapp/appellate.htm",
-      "structure_verified": false,
-      "notes": "Directory seed; official structure and district/division coverage require audit."
-    },
-    {
-      "court_id": "fladistctapp",
-      "name": "Florida District Courts of Appeal",
-      "jurisdiction": "Florida",
-      "level": "intermediate",
-      "unit": "court_family",
-      "discovery_status": "outstanding",
-      "official_url": "http://www.flcourts.org/courts/dca/dca.shtml",
       "structure_verified": false,
       "notes": "Directory seed; official structure and district/division coverage require audit."
     },
@@ -938,17 +913,6 @@
       "notes": "Directory seed; official structure and district/division coverage require audit."
     },
     {
-      "court_id": "nyappdiv",
-      "name": "The Four Departments of the Appellate Division",
-      "jurisdiction": "New York",
-      "level": "intermediate",
-      "unit": "court_family",
-      "discovery_status": "outstanding",
-      "official_url": "http://www.courts.state.ny.us/courts/appellatedivisions.shtml",
-      "structure_verified": false,
-      "notes": "Directory seed; official structure and district/division coverage require audit."
-    },
-    {
       "court_id": "ncctapp",
       "name": "Court of Appeals of North Carolina",
       "jurisdiction": "North Carolina",
@@ -1055,17 +1019,6 @@
       "unit": "court_family",
       "discovery_status": "outstanding",
       "official_url": "http://www.tsc.state.tn.us/courts/court-criminal-appeals",
-      "structure_verified": false,
-      "notes": "Directory seed; official structure and district/division coverage require audit."
-    },
-    {
-      "court_id": "texapp",
-      "name": "Texas Courts of Appeals",
-      "jurisdiction": "Texas",
-      "level": "intermediate",
-      "unit": "court_family",
-      "discovery_status": "outstanding",
-      "official_url": "http://www.courts.state.tx.us/courts/coa.asp",
       "structure_verified": false,
       "notes": "Directory seed; official structure and district/division coverage require audit."
     },
@@ -1301,6 +1254,369 @@
       "discovery_status": "existing",
       "official_url": "",
       "notes": "Existing source."
+    },
+    {
+      "court_id": "fladistctapp1",
+      "name": "Florida First District Court of Appeal",
+      "jurisdiction": "Florida",
+      "level": "intermediate",
+      "unit": "court",
+      "discovery_status": "outstanding",
+      "official_url": "https://www.flcourts.gov/Courts-System/District-Courts-of-Appeal",
+      "structure_verified": true,
+      "notes": "Official-source adapter; district coverage is separate from feed count. Lower-court appellate divisions remain outside this batch."
+    },
+    {
+      "court_id": "fladistctapp2",
+      "name": "Florida Second District Court of Appeal",
+      "jurisdiction": "Florida",
+      "level": "intermediate",
+      "unit": "court",
+      "discovery_status": "outstanding",
+      "official_url": "https://www.flcourts.gov/Courts-System/District-Courts-of-Appeal",
+      "structure_verified": true,
+      "notes": "Official-source adapter; district coverage is separate from feed count. Lower-court appellate divisions remain outside this batch."
+    },
+    {
+      "court_id": "fladistctapp3",
+      "name": "Florida Third District Court of Appeal",
+      "jurisdiction": "Florida",
+      "level": "intermediate",
+      "unit": "court",
+      "discovery_status": "outstanding",
+      "official_url": "https://www.flcourts.gov/Courts-System/District-Courts-of-Appeal",
+      "structure_verified": true,
+      "notes": "Official-source adapter; district coverage is separate from feed count. Lower-court appellate divisions remain outside this batch."
+    },
+    {
+      "court_id": "fladistctapp4",
+      "name": "Florida Fourth District Court of Appeal",
+      "jurisdiction": "Florida",
+      "level": "intermediate",
+      "unit": "court",
+      "discovery_status": "outstanding",
+      "official_url": "https://www.flcourts.gov/Courts-System/District-Courts-of-Appeal",
+      "structure_verified": true,
+      "notes": "Official-source adapter; district coverage is separate from feed count. Lower-court appellate divisions remain outside this batch."
+    },
+    {
+      "court_id": "fladistctapp5",
+      "name": "Florida Fifth District Court of Appeal",
+      "jurisdiction": "Florida",
+      "level": "intermediate",
+      "unit": "court",
+      "discovery_status": "outstanding",
+      "official_url": "https://www.flcourts.gov/Courts-System/District-Courts-of-Appeal",
+      "structure_verified": true,
+      "notes": "Official-source adapter; district coverage is separate from feed count. Lower-court appellate divisions remain outside this batch."
+    },
+    {
+      "court_id": "fladistctapp6",
+      "name": "Florida Sixth District Court of Appeal",
+      "jurisdiction": "Florida",
+      "level": "intermediate",
+      "unit": "court",
+      "discovery_status": "outstanding",
+      "official_url": "https://www.flcourts.gov/Courts-System/District-Courts-of-Appeal",
+      "structure_verified": true,
+      "notes": "Official-source adapter; district coverage is separate from feed count. Lower-court appellate divisions remain outside this batch."
+    },
+    {
+      "court_id": "texapp01",
+      "name": "Texas First Court of Appeals",
+      "jurisdiction": "Texas",
+      "level": "intermediate",
+      "unit": "court",
+      "discovery_status": "outstanding",
+      "official_url": "https://www.txcourts.gov/about-texas-courts/courts-of-appeals/",
+      "structure_verified": true,
+      "notes": "Official-source adapter; district coverage is separate from feed count. Lower-court appellate divisions remain outside this batch."
+    },
+    {
+      "court_id": "texapp02",
+      "name": "Texas Second Court of Appeals",
+      "jurisdiction": "Texas",
+      "level": "intermediate",
+      "unit": "court",
+      "discovery_status": "outstanding",
+      "official_url": "https://www.txcourts.gov/about-texas-courts/courts-of-appeals/",
+      "structure_verified": true,
+      "notes": "Official-source adapter; district coverage is separate from feed count. Lower-court appellate divisions remain outside this batch."
+    },
+    {
+      "court_id": "texapp03",
+      "name": "Texas Third Court of Appeals",
+      "jurisdiction": "Texas",
+      "level": "intermediate",
+      "unit": "court",
+      "discovery_status": "outstanding",
+      "official_url": "https://www.txcourts.gov/about-texas-courts/courts-of-appeals/",
+      "structure_verified": true,
+      "notes": "Official-source adapter; district coverage is separate from feed count. Lower-court appellate divisions remain outside this batch."
+    },
+    {
+      "court_id": "texapp04",
+      "name": "Texas Fourth Court of Appeals",
+      "jurisdiction": "Texas",
+      "level": "intermediate",
+      "unit": "court",
+      "discovery_status": "outstanding",
+      "official_url": "https://www.txcourts.gov/about-texas-courts/courts-of-appeals/",
+      "structure_verified": true,
+      "notes": "Official-source adapter; district coverage is separate from feed count. Lower-court appellate divisions remain outside this batch."
+    },
+    {
+      "court_id": "texapp05",
+      "name": "Texas Fifth Court of Appeals",
+      "jurisdiction": "Texas",
+      "level": "intermediate",
+      "unit": "court",
+      "discovery_status": "outstanding",
+      "official_url": "https://www.txcourts.gov/about-texas-courts/courts-of-appeals/",
+      "structure_verified": true,
+      "notes": "Official-source adapter; district coverage is separate from feed count. Lower-court appellate divisions remain outside this batch."
+    },
+    {
+      "court_id": "texapp06",
+      "name": "Texas Sixth Court of Appeals",
+      "jurisdiction": "Texas",
+      "level": "intermediate",
+      "unit": "court",
+      "discovery_status": "outstanding",
+      "official_url": "https://www.txcourts.gov/about-texas-courts/courts-of-appeals/",
+      "structure_verified": true,
+      "notes": "Official-source adapter; district coverage is separate from feed count. Lower-court appellate divisions remain outside this batch."
+    },
+    {
+      "court_id": "texapp07",
+      "name": "Texas Seventh Court of Appeals",
+      "jurisdiction": "Texas",
+      "level": "intermediate",
+      "unit": "court",
+      "discovery_status": "outstanding",
+      "official_url": "https://www.txcourts.gov/about-texas-courts/courts-of-appeals/",
+      "structure_verified": true,
+      "notes": "Official-source adapter; district coverage is separate from feed count. Lower-court appellate divisions remain outside this batch."
+    },
+    {
+      "court_id": "texapp08",
+      "name": "Texas Eighth Court of Appeals",
+      "jurisdiction": "Texas",
+      "level": "intermediate",
+      "unit": "court",
+      "discovery_status": "outstanding",
+      "official_url": "https://www.txcourts.gov/about-texas-courts/courts-of-appeals/",
+      "structure_verified": true,
+      "notes": "Official-source adapter; district coverage is separate from feed count. Lower-court appellate divisions remain outside this batch."
+    },
+    {
+      "court_id": "texapp09",
+      "name": "Texas Ninth Court of Appeals",
+      "jurisdiction": "Texas",
+      "level": "intermediate",
+      "unit": "court",
+      "discovery_status": "outstanding",
+      "official_url": "https://www.txcourts.gov/about-texas-courts/courts-of-appeals/",
+      "structure_verified": true,
+      "notes": "Official-source adapter; district coverage is separate from feed count. Lower-court appellate divisions remain outside this batch."
+    },
+    {
+      "court_id": "texapp10",
+      "name": "Texas Tenth Court of Appeals",
+      "jurisdiction": "Texas",
+      "level": "intermediate",
+      "unit": "court",
+      "discovery_status": "outstanding",
+      "official_url": "https://www.txcourts.gov/about-texas-courts/courts-of-appeals/",
+      "structure_verified": true,
+      "notes": "Official-source adapter; district coverage is separate from feed count. Lower-court appellate divisions remain outside this batch."
+    },
+    {
+      "court_id": "texapp11",
+      "name": "Texas Eleventh Court of Appeals",
+      "jurisdiction": "Texas",
+      "level": "intermediate",
+      "unit": "court",
+      "discovery_status": "outstanding",
+      "official_url": "https://www.txcourts.gov/about-texas-courts/courts-of-appeals/",
+      "structure_verified": true,
+      "notes": "Official-source adapter; district coverage is separate from feed count. Lower-court appellate divisions remain outside this batch."
+    },
+    {
+      "court_id": "texapp12",
+      "name": "Texas Twelfth Court of Appeals",
+      "jurisdiction": "Texas",
+      "level": "intermediate",
+      "unit": "court",
+      "discovery_status": "outstanding",
+      "official_url": "https://www.txcourts.gov/about-texas-courts/courts-of-appeals/",
+      "structure_verified": true,
+      "notes": "Official-source adapter; district coverage is separate from feed count. Lower-court appellate divisions remain outside this batch."
+    },
+    {
+      "court_id": "texapp13",
+      "name": "Texas Thirteenth Court of Appeals",
+      "jurisdiction": "Texas",
+      "level": "intermediate",
+      "unit": "court",
+      "discovery_status": "outstanding",
+      "official_url": "https://www.txcourts.gov/about-texas-courts/courts-of-appeals/",
+      "structure_verified": true,
+      "notes": "Official-source adapter; district coverage is separate from feed count. Lower-court appellate divisions remain outside this batch."
+    },
+    {
+      "court_id": "texapp14",
+      "name": "Texas Fourteenth Court of Appeals",
+      "jurisdiction": "Texas",
+      "level": "intermediate",
+      "unit": "court",
+      "discovery_status": "outstanding",
+      "official_url": "https://www.txcourts.gov/about-texas-courts/courts-of-appeals/",
+      "structure_verified": true,
+      "notes": "Official-source adapter; district coverage is separate from feed count. Lower-court appellate divisions remain outside this batch."
+    },
+    {
+      "court_id": "texapp15",
+      "name": "Texas Fifteenth Court of Appeals",
+      "jurisdiction": "Texas",
+      "level": "intermediate",
+      "unit": "court",
+      "discovery_status": "outstanding",
+      "official_url": "https://www.txcourts.gov/about-texas-courts/courts-of-appeals/",
+      "structure_verified": true,
+      "notes": "Official-source adapter; district coverage is separate from feed count. Lower-court appellate divisions remain outside this batch."
+    },
+    {
+      "court_id": "calctapp1d",
+      "name": "California First District Court of Appeal",
+      "jurisdiction": "California",
+      "level": "intermediate",
+      "unit": "court",
+      "discovery_status": "outstanding",
+      "official_url": "https://appellate.courts.ca.gov/",
+      "structure_verified": true,
+      "notes": "Official-source adapter; district coverage is separate from feed count. Lower-court appellate divisions remain outside this batch."
+    },
+    {
+      "court_id": "calctapp2d",
+      "name": "California Second District Court of Appeal",
+      "jurisdiction": "California",
+      "level": "intermediate",
+      "unit": "court",
+      "discovery_status": "outstanding",
+      "official_url": "https://appellate.courts.ca.gov/",
+      "structure_verified": true,
+      "notes": "Official-source adapter; district coverage is separate from feed count. Lower-court appellate divisions remain outside this batch."
+    },
+    {
+      "court_id": "calctapp3d",
+      "name": "California Third District Court of Appeal",
+      "jurisdiction": "California",
+      "level": "intermediate",
+      "unit": "court",
+      "discovery_status": "outstanding",
+      "official_url": "https://appellate.courts.ca.gov/",
+      "structure_verified": true,
+      "notes": "Official-source adapter; district coverage is separate from feed count. Lower-court appellate divisions remain outside this batch."
+    },
+    {
+      "court_id": "calctapp4d",
+      "name": "California Fourth District Court of Appeal",
+      "jurisdiction": "California",
+      "level": "intermediate",
+      "unit": "court",
+      "discovery_status": "outstanding",
+      "official_url": "https://appellate.courts.ca.gov/",
+      "structure_verified": true,
+      "notes": "Official-source adapter; district coverage is separate from feed count. Lower-court appellate divisions remain outside this batch."
+    },
+    {
+      "court_id": "calctapp5d",
+      "name": "California Fifth District Court of Appeal",
+      "jurisdiction": "California",
+      "level": "intermediate",
+      "unit": "court",
+      "discovery_status": "outstanding",
+      "official_url": "https://appellate.courts.ca.gov/",
+      "structure_verified": true,
+      "notes": "Official-source adapter; district coverage is separate from feed count. Lower-court appellate divisions remain outside this batch."
+    },
+    {
+      "court_id": "calctapp6d",
+      "name": "California Sixth District Court of Appeal",
+      "jurisdiction": "California",
+      "level": "intermediate",
+      "unit": "court",
+      "discovery_status": "outstanding",
+      "official_url": "https://appellate.courts.ca.gov/",
+      "structure_verified": true,
+      "notes": "Official-source adapter; district coverage is separate from feed count. Lower-court appellate divisions remain outside this batch."
+    },
+    {
+      "court_id": "nyappdiv1",
+      "name": "New York Supreme Court Appellate Division, First Department",
+      "jurisdiction": "New York",
+      "level": "intermediate",
+      "unit": "court",
+      "discovery_status": "blocked_access",
+      "official_url": "https://www.nycourts.gov/reporter/RSS.shtml",
+      "structure_verified": false,
+      "notes": "Official endpoints return HTTP 403. Awaiting court-approved access/key; user will supply later. No alternate provider."
+    },
+    {
+      "court_id": "nyappdiv2",
+      "name": "New York Supreme Court Appellate Division, Second Department",
+      "jurisdiction": "New York",
+      "level": "intermediate",
+      "unit": "court",
+      "discovery_status": "blocked_access",
+      "official_url": "https://www.nycourts.gov/reporter/RSS.shtml",
+      "structure_verified": false,
+      "notes": "Official endpoints return HTTP 403. Awaiting court-approved access/key; user will supply later. No alternate provider."
+    },
+    {
+      "court_id": "nyappdiv3",
+      "name": "New York Supreme Court Appellate Division, Third Department",
+      "jurisdiction": "New York",
+      "level": "intermediate",
+      "unit": "court",
+      "discovery_status": "blocked_access",
+      "official_url": "https://www.nycourts.gov/reporter/RSS.shtml",
+      "structure_verified": false,
+      "notes": "Official endpoints return HTTP 403. Awaiting court-approved access/key; user will supply later. No alternate provider."
+    },
+    {
+      "court_id": "nyappdiv4",
+      "name": "New York Supreme Court Appellate Division, Fourth Department",
+      "jurisdiction": "New York",
+      "level": "intermediate",
+      "unit": "court",
+      "discovery_status": "blocked_access",
+      "official_url": "https://www.nycourts.gov/reporter/RSS.shtml",
+      "structure_verified": false,
+      "notes": "Official endpoints return HTTP 403. Awaiting court-approved access/key; user will supply later. No alternate provider."
+    },
+    {
+      "court_id": "nyappterm1",
+      "name": "New York Supreme Court Appellate Term, First Department",
+      "jurisdiction": "New York",
+      "level": "intermediate",
+      "unit": "court",
+      "discovery_status": "blocked_access",
+      "official_url": "https://www.nycourts.gov/reporter/RSS.shtml",
+      "structure_verified": false,
+      "notes": "Official endpoints return HTTP 403. Awaiting court-approved access/key; user will supply later. No alternate provider."
+    },
+    {
+      "court_id": "nyappterm2",
+      "name": "New York Supreme Court Appellate Term, Second Department",
+      "jurisdiction": "New York",
+      "level": "intermediate",
+      "unit": "court",
+      "discovery_status": "blocked_access",
+      "official_url": "https://www.nycourts.gov/reporter/RSS.shtml",
+      "structure_verified": false,
+      "notes": "Official endpoints return HTTP 403. Awaiting court-approved access/key; user will supply later. No alternate provider."
     }
   ]
 }

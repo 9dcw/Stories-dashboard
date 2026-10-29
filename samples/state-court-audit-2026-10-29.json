@@ -1,0 +1,629 @@
+[
+  {
+    "name": "Florida Supreme Court opinions",
+    "court_id": "fla",
+    "url": "https://flcourts-media.flcourts.gov/_search/opinions/",
+    "scope": "Official opinion-document API; rolling 30-day discovery window, all result pages and publication types.",
+    "checked_at": "2026-10-29T12:37:00Z",
+    "documents_found": 30,
+    "status": "validated",
+    "samples": [
+      {
+        "url": "https://flcourts-media.flcourts.gov/content/download/2497129/opinion/Opinion_SC2024-0025.pdf",
+        "headline": "SC2024-0025: Universal Property & Casualty Insurance Company v. Rebecca Hughes",
+        "pages": 18,
+        "content_hash": "6b1cee150127973cb737e78798545896d520c47caa3624b4423aec0b4ebcf673"
+      }
+    ],
+    "sample_failures": [],
+    "definition_hash": "540da4bfcc3ce003fc0f30740ee23b47d170105858c67b0b072e78a98f87ecf5"
+  },
+  {
+    "name": "Florida First District Court of Appeal opinions",
+    "court_id": "fladistctapp1",
+    "url": "https://flcourts-media.flcourts.gov/_search/opinions/",
+    "scope": "Official opinion-document API; rolling 30-day discovery window, all result pages and publication types.",
+    "checked_at": "2026-10-29T12:37:01Z",
+    "documents_found": 209,
+    "status": "validated",
+    "samples": [
+      {
+        "url": "https://flcourts-media.flcourts.gov/content/download/2497330/opinion/Opinion_2025-0520.pdf",
+        "headline": "2025-0520: Isaac Mitchell Williams v. State of Florida",
+        "pages": 6,
+        "content_hash": "01a331fc859cc0cf1d6d49a3192761bbe420a725a32138cdddee15ddb7a0f918"
+      }
+    ],
+    "sample_failures": [],
+    "definition_hash": "b8840da6809f20b124389ef4ba2722d63d6800fabdc05ec6ddea4e7c31f7522b"
+  },
+  {
+    "name": "Florida Second District Court of Appeal opinions",
+    "court_id": "fladistctapp2",
+    "url": "https://flcourts-media.flcourts.gov/_search/opinions/",
+    "scope": "Official opinion-document API; rolling 30-day discovery window, all result pages and publication types.",
+    "checked_at": "2026-10-29T12:37:04Z",
+    "documents_found": 161,
+    "status": "validated",
+    "samples": [
+      {
+        "url": "https://flcourts-media.flcourts.gov/content/download/2497323/opinion/Opinion_2025-0285.pdf",
+        "headline": "2025-0285: Matthews v. State of Florida",
+        "pages": 2,
+        "content_hash": "bc344158dedb4003c4f9fa6ad8109a8bf8bc75a27691676280a6bfd923e9467b"
+      }
+    ],
+    "sample_failures": [],
+    "definition_hash": "e68e8b2aaea51246cc0658f22b4564babae9ed3f715645d48581780cd0915151"
+  },
+  {
+    "name": "Florida Third District Court of Appeal opinions",
+    "court_id": "fladistctapp3",
+    "url": "https://flcourts-media.flcourts.gov/_search/opinions/",
+    "scope": "Official opinion-document API; rolling 30-day discovery window, all result pages and publication types.",
+    "checked_at": "2026-10-29T12:37:06Z",
+    "documents_found": 129,
+    "status": "validated",
+    "samples": [
+      {
+        "url": "https://flcourts-media.flcourts.gov/content/download/2497344/opinion/Opinion_2024-1000.pdf",
+        "headline": "2024-1000: Homeowners Choice Property & Casualty Insurance Company v. Sandra Moise",
+        "pages": 12,
+        "content_hash": "c74d838763b50ff03309ca91660156aba5c338b1f13141410ee11d4b91f91ba4"
+      }
+    ],
+    "sample_failures": [],
+    "definition_hash": "1b9acddda8161ffc70e151f47e08138d9445823c5e751cdf51a5d65cf95a3728"
+  },
+  {
+    "name": "Florida Fourth District Court of Appeal opinions",
+    "court_id": "fladistctapp4",
+    "url": "https://flcourts-media.flcourts.gov/_search/opinions/",
+    "scope": "Official opinion-document API; rolling 30-day discovery window, all result pages and publication types.",
+    "checked_at": "2026-10-29T12:37:08Z",
+    "documents_found": 149,
+    "status": "validated",
+    "samples": [
+      {
+        "url": "https://flcourts-media.flcourts.gov/content/download/2497346/opinion/Opinion_2025-1488.pdf",
+        "headline": "2025-1488: Gail Allen, et al v. Beth Israel Outpatient Surgical Center, LLC, et al.",
+        "pages": 9,
+        "content_hash": "6e472e10e81791d5a92f58378d40144a0dd2507f8e52083606b188ee646f03dc"
+      }
+    ],
+    "sample_failures": [],
+    "definition_hash": "00013fcdbebf5b10b98d26fa97bd2c2cd3fd30553a6a58e3402aeb5238478e76"
+  },
+  {
+    "name": "Florida Fifth District Court of Appeal opinions",
+    "court_id": "fladistctapp5",
+    "url": "https://flcourts-media.flcourts.gov/_search/opinions/",
+    "scope": "Official opinion-document API; rolling 30-day discovery window, all result pages and publication types.",
+    "checked_at": "2026-10-29T12:37:09Z",
+    "documents_found": 178,
+    "status": "validated",
+    "samples": [
+      {
+        "url": "https://flcourts-media.flcourts.gov/content/download/2497373/opinion/Opinion_2025-1683.pdf",
+        "headline": "2025-1683: Carlos Antonio Hallowell v. State of Florida",
+        "pages": 2,
+        "content_hash": "e435c2516822cbb51bb42285c6cbcfbe54e5d661336dc4ba2a0e799ff402c614"
+      }
+    ],
+    "sample_failures": [],
+    "definition_hash": "d4f1e3c2db26cc6b0e6d9e550631211797a056e0d1d7892136ea4173ea2eb2bf"
+  },
+  {
+    "name": "Florida Sixth District Court of Appeal opinions",
+    "court_id": "fladistctapp6",
+    "url": "https://flcourts-media.flcourts.gov/_search/opinions/",
+    "scope": "Official opinion-document API; rolling 30-day discovery window, all result pages and publication types.",
+    "checked_at": "2026-10-29T12:37:11Z",
+    "documents_found": 168,
+    "status": "validated",
+    "samples": [
+      {
+        "url": "https://flcourts-media.flcourts.gov/content/download/2497283/opinion/Opinion_2024-0064.pdf",
+        "headline": "2024-0064: JUSTIN DIGGS VS STATE OF FLORIDA",
+        "pages": 1,
+        "content_hash": "93582d8f4d5ef159f92c97bd70206368f192b3976ff836c688ec80c850c770d8"
+      }
+    ],
+    "sample_failures": [],
+    "definition_hash": "628b52d26db6cbd63ca62fcd34c5c24944a1a9545a9f64e606899fd1e2cf96b2"
+  },
+  {
+    "name": "California Supreme Court published opinions",
+    "court_id": "cal",
+    "url": "https://courts.ca.gov/opinions/publishedcitable-opinions?field_opinion_source_target_id=103&items_per_page=200",
+    "scope": "Official published/citable opinions listing, all result pages; superior-court appellate divisions and unpublished opinions outside this source.",
+    "checked_at": "2026-10-29T12:36:03Z",
+    "documents_found": 26,
+    "status": "validated",
+    "samples": [
+      {
+        "url": "https://www.courts.ca.gov/opinions/documents/S292969.PDF",
+        "headline": "P. v. Ball 10/26/26 SC",
+        "pages": 11,
+        "content_hash": "068a399580a2297456867c0f4ed100077d4a8828e714c16eb1558fa400e752c3"
+      }
+    ],
+    "sample_failures": [],
+    "definition_hash": "b9f29379516ab55d22e8ad2b2f777b9a0e928d3711e237e2bf54f9d394bf497c"
+  },
+  {
+    "name": "California First District Court of Appeal published opinions",
+    "court_id": "calctapp1d",
+    "url": "https://courts.ca.gov/opinions/publishedcitable-opinions?field_opinion_source_target_id=100&items_per_page=200",
+    "scope": "Official published/citable opinions listing, all result pages; superior-court appellate divisions and unpublished opinions outside this source.",
+    "checked_at": "2026-10-29T12:36:06Z",
+    "documents_found": 66,
+    "status": "validated",
+    "samples": [
+      {
+        "url": "https://www.courts.ca.gov/opinions/documents/A169576.PDF",
+        "headline": "P. v. Northington 10/28/26 CA1/5",
+        "pages": 30,
+        "content_hash": "a6b6b35d737b6bc2ae8f644c0ddcacc75c64664e243db85d980bb2e5fedc41d6"
+      }
+    ],
+    "sample_failures": [],
+    "definition_hash": "aea6b55879fbe71d910283622dd66362f7bd5473d0f664acf938d98a1d65799f"
+  },
+  {
+    "name": "California Second District Court of Appeal published opinions",
+    "court_id": "calctapp2d",
+    "url": "https://courts.ca.gov/opinions/publishedcitable-opinions?field_opinion_source_target_id=102&items_per_page=200",
+    "scope": "Official published/citable opinions listing, all result pages; superior-court appellate divisions and unpublished opinions outside this source.",
+    "checked_at": "2026-10-29T12:36:10Z",
+    "documents_found": 77,
+    "status": "validated",
+    "samples": [
+      {
+        "url": "https://www.courts.ca.gov/opinions/documents/B352855.PDF",
+        "headline": "Civil Rights Dept. v. City of Torrance 9/29/26 CA2/1",
+        "pages": 15,
+        "content_hash": "f15ecb248169c1407c2e1fc5180486752ea2e387e50e7375b2834c1df9cc7ec5"
+      }
+    ],
+    "sample_failures": [],
+    "definition_hash": "0c83225b5ae80224b06692ed6e0e28d2073fcbfc22e74a04c359bf724b5b5aa4"
+  },
+  {
+    "name": "California Third District Court of Appeal published opinions",
+    "court_id": "calctapp3d",
+    "url": "https://courts.ca.gov/opinions/publishedcitable-opinions?field_opinion_source_target_id=107&items_per_page=200",
+    "scope": "Official published/citable opinions listing, all result pages; superior-court appellate divisions and unpublished opinions outside this source.",
+    "checked_at": "2026-10-29T12:36:14Z",
+    "documents_found": 19,
+    "status": "validated",
+    "samples": [
+      {
+        "url": "https://www.courts.ca.gov/opinions/documents/C103080.PDF",
+        "headline": "P. v. Hirschfield 10/26/26 CA3",
+        "pages": 12,
+        "content_hash": "22e8436ea3117c4394398661996739b9290b9f9ca6afbe6694a6aeefa8f627bb"
+      }
+    ],
+    "sample_failures": [],
+    "definition_hash": "e60208aac262202224f7d4bfc2ddba9b5a4256d3a26456f4ec495ff617f09172"
+  },
+  {
+    "name": "California Fourth District Court of Appeal Division One published opinions",
+    "court_id": "calctapp4d",
+    "url": "https://courts.ca.gov/opinions/publishedcitable-opinions?field_opinion_source_target_id=106&items_per_page=200",
+    "scope": "Official published/citable opinions listing, all result pages; superior-court appellate divisions and unpublished opinions outside this source.",
+    "checked_at": "2026-10-29T12:36:17Z",
+    "documents_found": 26,
+    "status": "validated",
+    "samples": [
+      {
+        "url": "https://www.courts.ca.gov/opinions/documents/D087158.PDF",
+        "headline": "Trona Teachers Assn. v. Bd. of Trust. Trona Jt. Uni. Sch. Dist. 10/26/26 CA4/1",
+        "pages": 20,
+        "content_hash": "330ac1f3803116de25e3747065a12c0cf55c9e45275ea9cea35f9ab1996070e3"
+      }
+    ],
+    "sample_failures": [],
+    "definition_hash": "055dda8d53b2584be0c5a07d16a806924bf22bcab476ca6864e1f6be8ab508c5"
+  },
+  {
+    "name": "California Fourth District Court of Appeal Division Two published opinions",
+    "court_id": "calctapp4d",
+    "url": "https://courts.ca.gov/opinions/publishedcitable-opinions?field_opinion_source_target_id=98&items_per_page=200",
+    "scope": "Official published/citable opinions listing, all result pages; superior-court appellate divisions and unpublished opinions outside this source.",
+    "checked_at": "2026-10-29T12:36:21Z",
+    "documents_found": 33,
+    "status": "validated",
+    "samples": [
+      {
+        "url": "https://www.courts.ca.gov/opinions/documents/E086670.PDF",
+        "headline": "P. v. Baxter 9/28/26 CA4/2",
+        "pages": 7,
+        "content_hash": "3b808185d285bca0574f48ec1dc57b394f9c0b4bbef35a2be8e60efc1bf88924"
+      }
+    ],
+    "sample_failures": [],
+    "definition_hash": "6bd134a8f0581a30ad23d8d6dd5a472a2636303fada6d3ef59d82353df72759a"
+  },
+  {
+    "name": "California Fourth District Court of Appeal Division Three published opinions",
+    "court_id": "calctapp4d",
+    "url": "https://courts.ca.gov/opinions/publishedcitable-opinions?field_opinion_source_target_id=101&items_per_page=200",
+    "scope": "Official published/citable opinions listing, all result pages; superior-court appellate divisions and unpublished opinions outside this source.",
+    "checked_at": "2026-10-29T12:36:24Z",
+    "documents_found": 23,
+    "status": "validated",
+    "samples": [
+      {
+        "url": "https://www.courts.ca.gov/opinions/documents/G065980M.PDF",
+        "headline": "TC Telephone v. Pub. Utilities Com. 10/27/26 CA4/3",
+        "pages": 24,
+        "content_hash": "0b1826bf765bf1d83c20bc7eab08bfed55b8f4f836b432a57b44f6c5f125cad4"
+      }
+    ],
+    "sample_failures": [],
+    "definition_hash": "898375e138d72b82012445721676cfb87856881cdb539721c5df329cadef8dd8"
+  },
+  {
+    "name": "California Fifth District Court of Appeal published opinions",
+    "court_id": "calctapp5d",
+    "url": "https://courts.ca.gov/opinions/publishedcitable-opinions?field_opinion_source_target_id=99&items_per_page=200",
+    "scope": "Official published/citable opinions listing, all result pages; superior-court appellate divisions and unpublished opinions outside this source.",
+    "checked_at": "2026-10-29T12:36:27Z",
+    "documents_found": 16,
+    "status": "validated",
+    "samples": [
+      {
+        "url": "https://www.courts.ca.gov/opinions/documents/F090527.PDF",
+        "headline": "Castillo v. Belkorp AG, LLP 10/23/26 CA5",
+        "pages": 30,
+        "content_hash": "4a95b623ec9e0945610fe51121f9a0977dc2a840a319f99a6a11c66c008ca06f"
+      }
+    ],
+    "sample_failures": [],
+    "definition_hash": "13aceab0809ca27773fc629a2b564bea2b51b8697aec90515f6f9d3a53553a07"
+  },
+  {
+    "name": "California Sixth District Court of Appeal published opinions",
+    "court_id": "calctapp6d",
+    "url": "https://courts.ca.gov/opinions/publishedcitable-opinions?field_opinion_source_target_id=105&items_per_page=200",
+    "scope": "Official published/citable opinions listing, all result pages; superior-court appellate divisions and unpublished opinions outside this source.",
+    "checked_at": "2026-10-29T12:36:31Z",
+    "documents_found": 11,
+    "status": "validated",
+    "samples": [
+      {
+        "url": "https://www.courts.ca.gov/opinions/documents/H052967.PDF",
+        "headline": "P. v. Andrade 10/20/26 CA6",
+        "pages": 20,
+        "content_hash": "31f0de1bef79d9ea40ba2e37684be671f695aa6c25c55efe1c37cbd26fa71c9f"
+      }
+    ],
+    "sample_failures": [],
+    "definition_hash": "34d51dd0034d8705d7c8a8395b5284dce4bcbf5cb9d196df53b97acba8b0720e"
+  },
+  {
+    "name": "Texas Supreme Court opinions",
+    "court_id": "tex",
+    "url": "https://search.txcourts.gov/docketsrch.aspx?coa=cossup",
+    "scope": "Official release calendar and dated releases; opinion documents only, rolling 30-day discovery window within currently exposed quarter. Previous-quarter outage recovery remains outstanding.",
+    "checked_at": "2026-10-29T12:36:02Z",
+    "documents_found": 3,
+    "status": "validated",
+    "samples": [
+      {
+        "url": "https://search.txcourts.gov/SearchMedia.aspx?MediaVersionID=0ef71b7c-99f7-480a-a3cd-a1cebf3c9454&MediaID=c37cb5ce-b1ef-4f24-842e-88ac2a1d8ddc&coa=cossup&DT=Opinion",
+        "headline": "24-0905: UATP MANAGEMENT, LLC; UATP IP, LLC; UA ATTRACTIONS, LLC; RACHELLE NURSE-GOODLY; AND JOSEPH GOODLY v. CHINIQUA GETER AS NEXT FRIEND OF K.G., A MINOR Appeal from 268th District Court of Fort Bend County",
+        "pages": 8,
+        "content_hash": "03da857d07d92720be9de8c7eda5c9ef81d1367e7a46320b9dbe70d8733eb856"
+      }
+    ],
+    "sample_failures": [],
+    "definition_hash": "f7c9bc73ede6cb6e5b3d395b742feb395e466c43e2dd5ccbbb8399894e128d99"
+  },
+  {
+    "name": "Texas First Court of Appeals opinions",
+    "court_id": "texapp01",
+    "url": "https://search.txcourts.gov/docketsrch.aspx?coa=coa01",
+    "scope": "Official release calendar and dated releases; opinion documents only, rolling 30-day discovery window within currently exposed quarter. Previous-quarter outage recovery remains outstanding.",
+    "checked_at": "2026-10-29T12:36:10Z",
+    "documents_found": 65,
+    "status": "validated",
+    "samples": [
+      {
+        "url": "https://search.txcourts.gov/SearchMedia.aspx?MediaVersionID=c766a1d2-ba57-4d63-953f-ff5c84a7fd11&MediaID=dc46d742-662b-4f3f-8ec1-bce1b30652ef&coa=coa01&DT=Opinion",
+        "headline": "01-23-00419-CV: Jack Madison Maniscalo v. Darren Womack and Richard Womack Appeal from Probate Court No 3 of Harris County",
+        "pages": 50,
+        "content_hash": "e3e1fd8f531182a70a6a5f6b068a0e43eef7126e951fbc23b33dd37a907116e8"
+      }
+    ],
+    "sample_failures": [],
+    "definition_hash": "20bccf510db5e77f3069e285508c517acce57401fd502dcd933452a8037590e2"
+  },
+  {
+    "name": "Texas Second Court of Appeals opinions",
+    "court_id": "texapp02",
+    "url": "https://search.txcourts.gov/docketsrch.aspx?coa=coa02",
+    "scope": "Official release calendar and dated releases; opinion documents only, rolling 30-day discovery window within currently exposed quarter. Previous-quarter outage recovery remains outstanding.",
+    "checked_at": "2026-10-29T12:36:24Z",
+    "documents_found": 57,
+    "status": "validated",
+    "samples": [
+      {
+        "url": "https://search.txcourts.gov/SearchMedia.aspx?MediaVersionID=e4bd2524-e79c-47aa-876a-9ddde3c3cbbf&MediaID=8687a51a-63a3-46ff-acbd-713f9ba8d545&coa=coa02&DT=Opinion",
+        "headline": "02-26-00674-CV: In re Kevin Abercrombie, Christie Abercrombie, 280 Sports, LLC, and Abercrombie Holdings, LLC Appeal from 352nd District Court of Tarrant County",
+        "pages": 2,
+        "content_hash": "ade76d70c5d5230a1697e1f61cf13b6e37ad4597feb19674cf0502742e4cd592"
+      }
+    ],
+    "sample_failures": [],
+    "definition_hash": "ff39f2e66404d6f7af07e37dd9e7d883b714f7c7546e05d45640243d14d06316"
+  },
+  {
+    "name": "Texas Third Court of Appeals opinions",
+    "court_id": "texapp03",
+    "url": "https://search.txcourts.gov/docketsrch.aspx?coa=coa03",
+    "scope": "Official release calendar and dated releases; opinion documents only, rolling 30-day discovery window within currently exposed quarter. Previous-quarter outage recovery remains outstanding.",
+    "checked_at": "2026-10-29T12:36:32Z",
+    "documents_found": 66,
+    "status": "validated",
+    "samples": [
+      {
+        "url": "https://search.txcourts.gov/SearchMedia.aspx?MediaVersionID=5abf8e06-953e-4641-8faa-8c2803f1a881&MediaID=215a9181-6721-43cf-a6c4-ec917979bd60&coa=coa03&DT=Opinion",
+        "headline": "03-24-00678-CV: WC Teakwood Plaza, LLC v. Mark Riley; Hardeman Family Joint Venture, LTD; and 8209 Burnet, L.P. Appeal from 345th District Court of Travis County",
+        "pages": 13,
+        "content_hash": "3339cc17a42f58009bfa374aab85ff1d18cb8d6a1a76754cabf3867d17be6d2b"
+      }
+    ],
+    "sample_failures": [],
+    "definition_hash": "9abe9b15784d7a3c736bc839af89b01264d358727748873dc9fab2e038db29b2"
+  },
+  {
+    "name": "Texas Fourth Court of Appeals opinions",
+    "court_id": "texapp04",
+    "url": "https://search.txcourts.gov/docketsrch.aspx?coa=coa04",
+    "scope": "Official release calendar and dated releases; opinion documents only, rolling 30-day discovery window within currently exposed quarter. Previous-quarter outage recovery remains outstanding.",
+    "checked_at": "2026-10-29T12:36:41Z",
+    "documents_found": 59,
+    "status": "validated",
+    "samples": [
+      {
+        "url": "https://search.txcourts.gov/SearchMedia.aspx?MediaVersionID=d48b9784-8bcb-4a05-8f12-44460a7d0f46&MediaID=d431c16a-916f-4398-88ab-a15c40bfc7a6&coa=coa04&DT=Opinion",
+        "headline": "04-25-00265-CV: Webber, LLC v. Rachel Preter Appeal from 407th Judicial District Court of Bexar County",
+        "pages": 18,
+        "content_hash": "cd6e8fcbdf50c7bcfd6b391e113946166a8e1e0ecc8542d9cf54c49c368a78de"
+      }
+    ],
+    "sample_failures": [],
+    "definition_hash": "ce24a8d07e628408c004d6ac15194cd3c83209618a8be6a5a7a9bcf7d067e734"
+  },
+  {
+    "name": "Texas Fifth Court of Appeals opinions",
+    "court_id": "texapp05",
+    "url": "https://search.txcourts.gov/docketsrch.aspx?coa=coa05",
+    "scope": "Official release calendar and dated releases; opinion documents only, rolling 30-day discovery window within currently exposed quarter. Previous-quarter outage recovery remains outstanding.",
+    "checked_at": "2026-10-29T12:36:54Z",
+    "documents_found": 117,
+    "status": "validated",
+    "samples": [
+      {
+        "url": "https://search.txcourts.gov/SearchMedia.aspx?MediaVersionID=146ebdc7-c75d-40f2-8241-4fdfca222721&MediaID=34b63d41-6bf8-4556-a1d6-f713b052d3e6&coa=coa05&DT=Opinion",
+        "headline": "05-24-00796-CV: Cao Dai Tay Ninh Temples of Texas, Quan Bui, and Luong Xuan Duong v. Tam Thanh Nguyen and Dai Dao Tam Ky Pho Do Appeal from 298th Judicial District Court of Dallas County",
+        "pages": 23,
+        "content_hash": "8cd003335d2decb1dd4713cfe5851cda8168fc65dfaabd8b3f96deb680a06be9"
+      }
+    ],
+    "sample_failures": [],
+    "definition_hash": "52af6b8b25cf480598d7f5f0a25259c7522484fc06677977de0279c1324aa45d"
+  },
+  {
+    "name": "Texas Sixth Court of Appeals opinions",
+    "court_id": "texapp06",
+    "url": "https://search.txcourts.gov/docketsrch.aspx?coa=coa06",
+    "scope": "Official release calendar and dated releases; opinion documents only, rolling 30-day discovery window within currently exposed quarter. Previous-quarter outage recovery remains outstanding.",
+    "checked_at": "2026-10-29T12:37:16Z",
+    "documents_found": 17,
+    "status": "validated",
+    "samples": [
+      {
+        "url": "https://search.txcourts.gov/SearchMedia.aspx?MediaVersionID=d0f5fdd0-88e3-4c00-88a8-d06fb6847d30&MediaID=a4b0b99c-7361-43f0-bb58-1f14c9b60063&coa=coa06&DT=Opinion",
+        "headline": "06-26-00051-CV: The Texas Department of Transportation v. Clyde Reed Appeal from 60th District Court of Jefferson County",
+        "pages": 10,
+        "content_hash": "1ded26954979d63c04df60f8d76552dc6eea144e43d73c0b048ebdeeee1e2cb8"
+      }
+    ],
+    "sample_failures": [],
+    "definition_hash": "61136f0837e03a4aa46576fd3c89c79853c6ca71a37adb34e594e4e3b648e486"
+  },
+  {
+    "name": "Texas Seventh Court of Appeals opinions",
+    "court_id": "texapp07",
+    "url": "https://search.txcourts.gov/docketsrch.aspx?coa=coa07",
+    "scope": "Official release calendar and dated releases; opinion documents only, rolling 30-day discovery window within currently exposed quarter. Previous-quarter outage recovery remains outstanding.",
+    "checked_at": "2026-10-29T12:37:24Z",
+    "documents_found": 24,
+    "status": "validated",
+    "samples": [
+      {
+        "url": "https://search.txcourts.gov/SearchMedia.aspx?MediaVersionID=c05cb21a-5877-4fe7-b140-fd1012e0189c&MediaID=21366695-37db-41e0-977b-f033b537aafe&coa=coa07&DT=Opinion",
+        "headline": "07-25-00373-CV: Next Level Automotive, LLC v. Allied Solutions, LLC Appeal from County Court at Law No 1 of Tarrant County",
+        "pages": 6,
+        "content_hash": "750f662e497c0014fb4cf471c3c5eee493e534977f367d687abd74c3c6f18f56"
+      }
+    ],
+    "sample_failures": [],
+    "definition_hash": "e0bc368021104eb74a70f60f3c1f6553df771c62f45630b037542fca7becb5a3"
+  },
+  {
+    "name": "Texas Eighth Court of Appeals opinions",
+    "court_id": "texapp08",
+    "url": "https://search.txcourts.gov/docketsrch.aspx?coa=coa08",
+    "scope": "Official release calendar and dated releases; opinion documents only, rolling 30-day discovery window within currently exposed quarter. Previous-quarter outage recovery remains outstanding.",
+    "checked_at": "2026-10-29T12:37:32Z",
+    "documents_found": 22,
+    "status": "validated",
+    "samples": [
+      {
+        "url": "https://search.txcourts.gov/SearchMedia.aspx?MediaVersionID=129c6eb7-b190-4a0a-a48a-25ab18d1b685&MediaID=e209cbc4-d5b5-4074-91e4-c1193efaffbb&coa=coa08&DT=Opinion",
+        "headline": "08-25-00145-CV: Richard Dale Reynolds v. Yesenia Molina and YM Unique Enterprises, LLC Appeal from County Court at Law No 7 of El Paso County",
+        "pages": 14,
+        "content_hash": "eec8eca8dd56d483b628445ea4a54aa58bec0026100a2224129f8c71e6558b07"
+      }
+    ],
+    "sample_failures": [],
+    "definition_hash": "8062d540f9716764dbb5256aa2f1f947097c518291ac462b180f8334cb9e1836"
+  },
+  {
+    "name": "Texas Ninth Court of Appeals opinions",
+    "court_id": "texapp09",
+    "url": "https://search.txcourts.gov/docketsrch.aspx?coa=coa09",
+    "scope": "Official release calendar and dated releases; opinion documents only, rolling 30-day discovery window within currently exposed quarter. Previous-quarter outage recovery remains outstanding.",
+    "checked_at": "2026-10-29T12:37:44Z",
+    "documents_found": 43,
+    "status": "validated",
+    "samples": [
+      {
+        "url": "https://search.txcourts.gov/SearchMedia.aspx?MediaVersionID=d00bbb6f-52f1-4f0c-8217-4d35ea9421fe&MediaID=b17cd348-e97a-4cd1-89bf-a7476233ea33&coa=coa09&DT=Opinion",
+        "headline": "09-24-00429-CV: Michael Shermot v. Southern Mail Service, Inc., Lance Farrell, and Letitia Farrell Appeal from 457th District Court of Montgomery County",
+        "pages": 2,
+        "content_hash": "1a75007fdc11c81d563de2bf13aa4a6c10b599bc9eecb1dba4ac71a25b840de8"
+      }
+    ],
+    "sample_failures": [],
+    "definition_hash": "b6587547a38867679370f13a6072a3415a49b473c9cf7f356f7b774a226dabd0"
+  },
+  {
+    "name": "Texas Tenth Court of Appeals opinions",
+    "court_id": "texapp10",
+    "url": "https://search.txcourts.gov/docketsrch.aspx?coa=coa10",
+    "scope": "Official release calendar and dated releases; opinion documents only, rolling 30-day discovery window within currently exposed quarter. Previous-quarter outage recovery remains outstanding.",
+    "checked_at": "2026-10-29T12:37:54Z",
+    "documents_found": 15,
+    "status": "validated",
+    "samples": [
+      {
+        "url": "https://search.txcourts.gov/SearchMedia.aspx?MediaVersionID=5cc767df-ba5c-4a8b-a7dd-8fea25865ab2&MediaID=db1d8fbb-c16f-436a-8a4c-a21f25453348&coa=coa10&DT=Opinion",
+        "headline": "10-26-00439-CV: In re Bobby E. Williams, II Appeal from 13th District Court of Navarro County",
+        "pages": 1,
+        "content_hash": "37ba9b26e62adfa1f3ae0926ab1d1b817a95c9fd97569146c4b47c4515a0eb37"
+      }
+    ],
+    "sample_failures": [],
+    "definition_hash": "23527332b609f1e979e7d2a8289be3f9f880aee792946d1b2d3dde756ecae042"
+  },
+  {
+    "name": "Texas Eleventh Court of Appeals opinions",
+    "court_id": "texapp11",
+    "url": "https://search.txcourts.gov/docketsrch.aspx?coa=coa11",
+    "scope": "Official release calendar and dated releases; opinion documents only, rolling 30-day discovery window within currently exposed quarter. Previous-quarter outage recovery remains outstanding.",
+    "checked_at": "2026-10-29T12:38:01Z",
+    "documents_found": 25,
+    "status": "validated",
+    "samples": [
+      {
+        "url": "https://search.txcourts.gov/SearchMedia.aspx?MediaVersionID=25bd79e3-d2f4-4dea-9a58-00256f92b9e2&MediaID=298eb0ea-b70b-452e-aaff-6550687b02ef&coa=coa11&DT=Opinion",
+        "headline": "11-24-00283-CV: Kathy Burgess individually and as representative of the Estate of Stephen Burgess v. Gustavo Jimenez, Inc. d/b/a SW Freightlines and Jeffrey Ebener Appeal from 161st District Court of Ector County",
+        "pages": 13,
+        "content_hash": "6c96943dd16e061c043fff1cc7551f10be8ea9e0fcf1ffc383f9892c591e182b"
+      }
+    ],
+    "sample_failures": [],
+    "definition_hash": "cc17b8a5439ba6b181274d41e024a65661a3c5d51bda0fdf845ba28c58a67ebc"
+  },
+  {
+    "name": "Texas Twelfth Court of Appeals opinions",
+    "court_id": "texapp12",
+    "url": "https://search.txcourts.gov/docketsrch.aspx?coa=coa12",
+    "scope": "Official release calendar and dated releases; opinion documents only, rolling 30-day discovery window within currently exposed quarter. Previous-quarter outage recovery remains outstanding.",
+    "checked_at": "2026-10-29T12:38:05Z",
+    "documents_found": 28,
+    "status": "validated",
+    "samples": [
+      {
+        "url": "https://search.txcourts.gov/SearchMedia.aspx?MediaVersionID=746fde01-2943-4c5b-b33f-4306ed8849e9&MediaID=c9249c39-ca9d-4c40-b523-610f368cf0ee&coa=coa12&DT=Opinion",
+        "headline": "12-26-00079-CV: Shawn G. Brown v. HV of Fork Owners Association, Inc. Appeal from 402nd District Court of Wood County",
+        "pages": 6,
+        "content_hash": "06c7c00bb0296bb6a98a97b8a5ac73b5378224a35829a4f5440f91164b1276cd"
+      }
+    ],
+    "sample_failures": [],
+    "definition_hash": "4e06685894d6a9c03bfe5da2e2858d26e042712bb82b059aa73274b0179d1e01"
+  },
+  {
+    "name": "Texas Thirteenth Court of Appeals opinions",
+    "court_id": "texapp13",
+    "url": "https://search.txcourts.gov/docketsrch.aspx?coa=coa13",
+    "scope": "Official release calendar and dated releases; opinion documents only, rolling 30-day discovery window within currently exposed quarter. Previous-quarter outage recovery remains outstanding.",
+    "checked_at": "2026-10-29T12:38:10Z",
+    "documents_found": 70,
+    "status": "validated",
+    "samples": [
+      {
+        "url": "https://search.txcourts.gov/SearchMedia.aspx?MediaVersionID=ec915e06-d389-4fc5-be51-521f4844a3fd&MediaID=3dae1631-2a5b-4632-bdf8-948e0e16fd26&coa=coa13&DT=Opinion",
+        "headline": "13-24-00387-CV: Jesus S. Cortez and Edna Esther Cortez v. Benito Navarro Uribe Appeal from 93rd District Court of Hidalgo County",
+        "pages": 2,
+        "content_hash": "4d1df09d8adc125e28ad94c1cae4e0bc060571b972a13d5f7da1bebd8281438f"
+      }
+    ],
+    "sample_failures": [],
+    "definition_hash": "51ed7aa64fdccf6c716ad0e65bff2c7fcd79c472be63be680252c36a1ceb9eb3"
+  },
+  {
+    "name": "Texas Fourteenth Court of Appeals opinions",
+    "court_id": "texapp14",
+    "url": "https://search.txcourts.gov/docketsrch.aspx?coa=coa14",
+    "scope": "Official release calendar and dated releases; opinion documents only, rolling 30-day discovery window within currently exposed quarter. Previous-quarter outage recovery remains outstanding.",
+    "checked_at": "2026-10-29T12:38:23Z",
+    "documents_found": 78,
+    "status": "validated",
+    "samples": [
+      {
+        "url": "https://search.txcourts.gov/SearchMedia.aspx?MediaVersionID=883d93e8-d495-40b3-9ea0-a141c06661bd&MediaID=0cc16fdb-2970-41e4-b01a-3620f834ab38&coa=coa14&DT=Opinion",
+        "headline": "14-26-00385-CV: American Bulk Pipe & Steel, LLC v. Delta Seaboard, LLC, Sandalwood Consulting, LLC, and Robert Derrick Appeal from 434th Judicial District Court of Fort Bend County",
+        "pages": 2,
+        "content_hash": "726f018c3a2adb3c97c80f1f7923ae16a687bfab51f3f5096b52982c3d838ca5"
+      }
+    ],
+    "sample_failures": [],
+    "definition_hash": "4ca331c3b8916121b47b9b77062a3d96e91cfeee69f6bfb927e7efc570538392"
+  },
+  {
+    "name": "Texas Fifteenth Court of Appeals opinions",
+    "court_id": "texapp15",
+    "url": "https://search.txcourts.gov/docketsrch.aspx?coa=coa15",
+    "scope": "Official release calendar and dated releases; opinion documents only, rolling 30-day discovery window within currently exposed quarter. Previous-quarter outage recovery remains outstanding.",
+    "checked_at": "2026-10-29T12:38:32Z",
+    "documents_found": 17,
+    "status": "validated",
+    "samples": [
+      {
+        "url": "https://search.txcourts.gov/SearchMedia.aspx?MediaVersionID=47e2e2d3-d566-418c-a9cf-291a3e2ce392&MediaID=442bc68f-707f-489e-be9f-5aeed09061da&coa=coa15&DT=Opinion",
+        "headline": "15-26-00021-CV: Kristen Plaisance v. Montgomery County, Texas, and the Montgomery County Elections Office Appeal from 261st District Court of Travis County",
+        "pages": 3,
+        "content_hash": "8d65a658b3bcdb552f3256d40c275d87abea3bd3bf9ba9bc73d71f0075dc4de4"
+      }
+    ],
+    "sample_failures": [],
+    "definition_hash": "82b5d6825d79f75babceb9f5996e896bdf85952139be7a1d47cde0b210fdfc8e"
+  },
+  {
+    "definition_hash": "6691295be24468f1ab1d7997a6b1edf5de587617821bcab0fae2e9a2d18ecdbb",
+    "name": "Texas Court of Criminal Appeals opinions",
+    "court_id": "texcrimapp",
+    "url": "https://search.txcourts.gov/docketsrch.aspx?coa=coscca",
+    "scope": "Official release calendar and dated releases; opinion documents only, rolling 30-day discovery window within currently exposed quarter. Previous-quarter outage recovery remains outstanding.",
+    "checked_at": "2026-10-29T12:41:48Z",
+    "documents_found": 16,
+    "status": "validated",
+    "samples": [
+      {
+        "url": "https://search.txcourts.gov/SearchMedia.aspx?MediaVersionID=6c138243-825e-48cc-994c-f681c8751a81&MediaID=8a14ac16-2afd-4310-b9af-35796b627c7c&coa=coscca&DT=Opinion",
+        "headline": "AP-77,091: HASKELL, RONALD LEE FROM HARRIS COUNTY",
+        "pages": 66,
+        "content_hash": "8a660936cb46d2201f2a17a8256366f6abca3a44aa6a9f0113827c7ec4bc648f"
+      }
+    ],
+    "sample_failures": []
+  }
+]

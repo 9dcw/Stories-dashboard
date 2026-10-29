@@ -71,3 +71,67 @@ Full-document fetch failures remain visible and retry using the existing runner.
 
 No changes to criminal, immigration, civil-rights/employment, publication-status,
 financial-story exceptions, uncertainty handling, or existing editorial statuses.
+
+## Florida, Texas, California and New York batch (October 29, 2026)
+
+This batch uses official court sources only. No CourtListener sources or
+credentials are used. Per-source listing counts, full-text hashes, extraction
+failures and timestamps are in `samples/state-court-audit-2026-10-29.json`.
+
+- Florida: Supreme Court plus all six District Courts of Appeal, using the
+  official `flcourts-media.flcourts.gov` opinion API. Fetch every page in a
+  rolling 30-day discovery window, including all opinion-document types. A
+  missing document or truncated pagination is an error, not a silent omission.
+- Texas: Supreme Court, Court of Criminal Appeals, and all fifteen Courts of
+  Appeals. Use each official release calendar, follow its dated opinion/handdown
+  pages in a rolling 30-day window, and extract opinion-document links. Repair
+  the official template's literal `coa` server variable using the audited court
+  code, preserving both media identifiers. Routine order documents are outside
+  these opinion sources. The criminal court has a separate handdown layout.
+  The calendar exposes the current quarter; recovery across a quarter boundary
+  remains outstanding. The Fifteenth Court of Appeals is included.
+- California: Supreme Court and six Court of Appeal districts. The Fourth
+  District uses three separately filtered division feeds, so seven courts use
+  nine feeds. Parse case titles/dates/PDFs from the official published/citable
+  listing and follow all result pages. Unpublished and superior-court appellate
+  division listings are outside this batch; no archive crawl is performed.
+- New York: Court of Appeals (the state's highest court), four Appellate
+  Division departments, and two Appellate Term department entries are inventoried
+  as `blocked_access`. Official RSS and opinion/search endpoints returned HTTP
+  403 from this host. The user will obtain approved access/a key later. None of
+  these feeds is activated, and no alternate provider is used. Appellate Term
+  subdivisions still require structure verification after access is arranged.
+
+Official structure references:
+
+- https://www.flcourts.gov/Courts-System/District-Courts-of-Appeal
+- https://www.txcourts.gov/about-texas-courts/courts-of-appeals/
+- https://appellate.courts.ca.gov/
+- https://www.nycourts.gov/reporter/RSS.shtml
+
+The inventory expands the prior intermediate families into individual districts
+and adds New York's Appellate Terms. It now contains 141 entries; the denominator
+still mixes individual courts in audited states with families in other states.
+There are 48 remaining state/D.C. structure audits. These are discovery/coverage
+boundaries, not new editorial exclusions. `court_exclusions_v2` and its prompt
+are unchanged.
+
+Audit without production writes:
+
+```
+python scripts/configure_state_courts.py --audit-output /tmp/audit.json
+```
+
+Use `--state FL`, `--state TX`, `--state CA`, or `--court COURT_ID` for independent
+batches. With `--db PATH --activate`, each validated source is enabled
+independently. Reuse requires a same-day audit and exact source-definition hash.
+A failure in one source does not prevent activation of the others. Empty feeds
+remain pending until a full-text sample can be validated. The initial exposed
+listings contain over two thousand documents; initial intake can create a
+substantial screening backlog. Existing full-text screening, retries, review
+handling, and editorial statuses are preserved.
+
+The daily runner now accepts repeatable `--source ID` alongside `--limit N`, so
+bounded source-specific checks can use the production lock and unchanged rules
+without polling or screening unrelated sources. The scheduled default still
+polls all active Lane B sources.

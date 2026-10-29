@@ -22,10 +22,10 @@ def pilot_sources(now=None):
 def source_record(spec):
     fetch = dict(max_attempts=2, min_interval=0.5)
     if spec['court_id'] == 'scotus': fetch['endpoint_adapter'] = 'scotus_current_term'
-    return dict(source_id=0, name=spec['name'], collector_type='html_list', poll_url=spec['url'],
-                collector_config=json.dumps(dict(court_ids=[spec['court_id']], official_hosts=spec['hosts'],
+    return dict(source_id=0, name=spec['name'], collector_type=spec.get('collector_type','html_list'), poll_url=spec['url'],
+                collector_config=json.dumps(dict(court_ids=spec.get('court_ids',[spec['court_id']]), official_hosts=spec['hosts'],
                     opinion_url_pattern=spec['pattern'], allowed_path_prefixes=[],
-                    fetch=fetch, coverage_scope=spec['scope'])))
+                    fetch=fetch, coverage_scope=spec['scope'], **spec.get('config',{}))))
 
 
 def install(store, specs, *, activate=False):
@@ -39,10 +39,10 @@ def install(store, specs, *, activate=False):
             sid=matches[0]['source_id']
             with store._connect() as c:
                 c.execute('UPDATE sources SET collector_type=?,poll_url=?,collector_config=? WHERE source_id=?',
-                          ('html_list',spec['url'],record['collector_config'],sid))
+                          (record['collector_type'],spec['url'],record['collector_config'],sid))
         else:
             sid=store.add_source(spec['name'],'B',spec['jurisdiction'],spec['url'],active=False,
-                                 collector_type='html_list',collector_config=record['collector_config'])
+                                 collector_type=record['collector_type'],collector_config=record['collector_config'])
         if activate: store.set_source_active(sid,True)
         result.append(dict(source_id=sid,name=spec['name']))
     return result

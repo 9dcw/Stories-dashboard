@@ -207,7 +207,7 @@ def save_screen(store, item_id, result, content_hash=''):
              json.dumps(result),content_hash,RULE_VERSION,utc_now()))
 
 
-def run_pipeline(store, agent, *, limit=None, poll=True, fetcher=fetch_resource):
+def run_pipeline(store, agent, *, limit=None, poll=True, fetcher=fetch_resource, source_ids=None):
     stats = {'sources_checked':0,'sources_failed':0,'sources_empty':0,'documents_found':0,'new_items':0,
              'passed':0,'excluded':0,'review':0,'errors':0,'processed':0,'pending':0}
     with store._connect() as c:
@@ -217,11 +217,12 @@ def run_pipeline(store, agent, *, limit=None, poll=True, fetcher=fetch_resource)
     try:
         if poll:
             for source in store.list_sources():
-                if not source['active'] or source['lane'] != 'B':continue
+                if not source['active'] or source['lane'] != 'B' or (source_ids is not None and source['source_id'] not in source_ids):continue
                 stats['sources_checked'] += 1
                 r = {'documents_found':0,'new_items':0,'status':'OK','error':''}
                 try:
-                    body, typ, resolved = fetcher(source['poll_url'],source_config=source['collector_config'],timeout=30,max_bytes=8_000_000)
+                    from state_courts import fetch_listing
+                    body, typ, resolved = fetch_listing(source, fetcher)
                     candidates = court_candidates(source,body.decode('utf8',errors='replace'))
                     for item in candidates:
                         _, inserted = store.add_item_with_result(source['source_id'],item.headline,item.url,item.published_at)
@@ -243,6 +244,7 @@ def run_pipeline(store, agent, *, limit=None, poll=True, fetcher=fetch_resource)
                 AND (cs.item_id IS NULL OR cs.decision='ERROR' OR cs.rule_version!=?)
                 ORDER BY CASE WHEN cs.decision='ERROR' THEN 1 ELSE 0 END,
                 COALESCE(i.published_at,i.first_seen_at) DESC,i.item_id DESC''',(RULE_VERSION,))]
+        if source_ids is not None:rows=[r for r in rows if r['source_id'] in source_ids]
         # Historical invalid links remain visible as validation errors.
         selected = rows if limit is None else rows[:limit]
         stats['pending'] = len(rows)
