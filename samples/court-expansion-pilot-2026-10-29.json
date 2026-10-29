@@ -1,0 +1,40 @@
+[
+  {
+    "name": "U.S. Supreme Court opinions",
+    "url": "https://www.supremecourt.gov/opinions/slipopinion/26",
+    "scope": "Opinions of the Court, current October term; order-related and in-chambers opinions not included.",
+    "status": "validated",
+    "documents_found": 1,
+    "samples": [
+      {
+        "url": "https://www.supremecourt.gov/opinions/26pdf/26a476_k537.pdf",
+        "pages": 5,
+        "content_hash": "7883149526371c5543f77a310dfcfead3834a7247654b02190abd5eec6ecaa94"
+      }
+    ]
+  },
+  {
+    "name": "Maine Supreme Judicial Court published opinions",
+    "url": "https://www.courts.maine.gov/courts/sjc/opinions.html",
+    "scope": "Published opinions exposed by the current listing; no archive crawl.",
+    "status": "validated",
+    "documents_found": 105,
+    "samples": [
+      {
+        "url": "https://www.courts.maine.gov/courts/sjc/lawcourt/2026/26me104.pdf",
+        "pages": 17,
+        "content_hash": "e0467a5fdc331476d190eeb86c2572d00d8816af6fe17a5d878c6c99cc15aeb4"
+      },
+      {
+        "url": "https://www.courts.maine.gov/courts/sjc/lawcourt/2026/26me103.pdf",
+        "pages": 14,
+        "content_hash": "ab9531ac42efdd3918aefe7505d6cd46742ccdec706b9153cb2f984132f28265"
+      },
+      {
+        "url": "https://www.courts.maine.gov/courts/sjc/lawcourt/2026/26me102.pdf",
+        "pages": 30,
+        "content_hash": "0e2c44adfb89dbe9d09e8249035a8823a03d3a96a1e8d34d6fcae948b528a12a"
+      }
+    ]
+  }
+]

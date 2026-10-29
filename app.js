@@ -169,6 +169,7 @@ async function loadDashboard(){
     });
     state.sources=d.sources||[];
     state.courtPipeline=d.court_pipeline;
+    state.courtInventory=d.court_inventory;
     state.proposals=d.source_proposals||[];
     const gen=d.generated_at||new Date().toISOString();
     $('#updatedAt').textContent=`Live dashboard · ${gen.slice(0,16).replace('T',' ')}`;
@@ -332,6 +333,7 @@ function render(){
   $('#sourceHeading').textContent=state.view==='problems'?'Source errors':'Sources';
   $('#sourceManagementSection').hidden=state.view!=='sources'&&!sources.length;
   $('#courtPipelineStatus').hidden=!['sources','discovery'].includes(state.view);
+  renderCourtInventory();
   const total=stories.length+candidates.length+proposals.length+sources.length;
   const base=['sources','discovery'].includes(state.view)?(state.view==='sources'?state.sources.length:state.proposals.length):categoryCount(state.view);
   $('#storyCount').textContent=`${viewLabel()} · ${total} matching items`;
@@ -624,3 +626,11 @@ window.appTests=function(){
 setInterval(()=>{if(state.stories.some(s=>s.status==='Phase 2 pending'||['queued','running'].includes(s.phase2_job?.state)))loadDashboard();},5000);
 
 setInterval(()=>{if(state.courtPipeline?.last_run?.status==='RUNNING')loadDashboard();},15000);
+
+function renderCourtInventory(){
+  const el=$('#courtInventory');if(!el)return;
+  el.hidden=!['sources','discovery'].includes(state.view);
+  const p=state.courtInventory;if(!p){el.textContent='Court inventory unavailable';return;}
+  const rows=(p.courts||[]).map(c=>`<tr><td>${esc(c.jurisdiction)}</td><td>${esc(c.name)}</td><td>${esc(c.status)}</td><td>${esc(c.active_feeds)}</td><td>${esc(c.notes)}${c.errors.length?' · Poll error: '+esc(c.errors.join('; ')):''}</td></tr>`).join('');
+  el.innerHTML=`<h2>Court coverage inventory</h2><p><strong>${esc(p.total)} court families inventoried · ${esc(p.active)} active · ${esc(p.outstanding)} outstanding</strong></p><p>Expansion: ${esc(p.expansion_active)} active of ${esc(p.expansion_total)} inventoried. ${esc(p.structure_audits_outstanding.length)} state/D.C. structure audits outstanding.</p><p>${esc(p.counting_note)}</p><details><summary>View courts and outstanding work</summary><div style="overflow-x:auto"><table><thead><tr><th>Jurisdiction</th><th>Court</th><th>Status</th><th>Active feeds</th><th>Scope / outstanding work</th></tr></thead><tbody>${rows}</tbody></table></div></details>`;
+}

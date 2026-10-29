@@ -52,9 +52,11 @@ class Links(HTMLParser):
             self.links.append(a['href'])
 
 
-def official_url(url):
+def official_url(url, config=None):
     p = urlsplit(url)
-    return p.scheme == 'https' and bool(p.hostname) and p.hostname.endswith('.uscourts.gov')
+    cfg = json.loads(config or '{}') if isinstance(config, str) else (config or {})
+    return p.scheme == 'https' and not p.username and not p.password and p.port in (None, 443) and bool(p.hostname) and (
+        p.hostname.endswith('.uscourts.gov') or p.hostname in cfg.get('official_hosts', []))
 
 
 def court_candidates(source, body):
@@ -68,7 +70,7 @@ def court_candidates(source, body):
         raise ValueError('Court collector has no audited opinion_url_pattern')
     found = {}
     for c in candidates:
-        if official_url(c.url) and re.search(pattern, c.url, re.I):
+        if official_url(c.url, config) and re.search(pattern, c.url, re.I):
             key = canonicalize_url(c.url)
             if key not in found or found[key].headline.lower() in {'pdf', key.lower()}:
                 found[key] = c
@@ -79,11 +81,11 @@ def extract_document(url, config, fetcher=fetch_resource):
     """Resolve official landing pages and extract every PDF page, with no clipping."""
     visited = set()
     for _ in range(4):
-        if url in visited or not official_url(url):
+        if url in visited or not official_url(url, config):
             raise ValueError('Opinion URL loop or non-official destination')
         visited.add(url)
         body, content_type, resolved = fetcher(url, source_config=config, timeout=30, max_bytes=20_000_000)
-        if not official_url(resolved):
+        if not official_url(resolved, config):
             raise ValueError('Opinion redirected outside official courts')
         if body.lstrip().startswith(b'%PDF') or content_type == 'application/pdf':
             import pymupdf
@@ -101,7 +103,7 @@ def extract_document(url, config, fetcher=fetch_resource):
         pdfs = list(dict.fromkeys(urljoin(resolved, html.unescape(v)) for v in links.links
                     if '.pdf' in urlsplit(v).path.lower()))
         # Federal Circuit pages include navigation PDFs; the document is on this host.
-        pdfs = [v for v in pdfs if official_url(v) and
+        pdfs = [v for v in pdfs if official_url(v, config) and
                 (urlsplit(v).hostname == urlsplit(resolved).hostname or '/opinions/' in v or '/opndir/' in v)]
         if len(pdfs) == 1:
             url = pdfs[0]; continue

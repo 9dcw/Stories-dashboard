@@ -127,8 +127,10 @@ def build_read_model(store: StoryStore, generated_at: str | None = None) -> dict
         "collector_type": row["collector_type"], "status": row["status"],
         "validation_status": row["validation_status"], "reason": row["reason"],
     } for row in store.list_source_candidates()]
+    from court_inventory import coverage_report as court_coverage_report
     return {
         "generated_at": export_time, "recent_candidates": candidates, "stories": stories,
+        "court_inventory": court_coverage_report(store.list_sources()),
         "court_pipeline": court_pipeline,
         "sources": sources, "source_proposals": proposals, "coverage": store.coverage_report(),
     }

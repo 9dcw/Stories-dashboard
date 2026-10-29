@@ -18,6 +18,8 @@ COPY source_fetch.py /app/
 COPY polling.py /app/
 COPY polling_sources.py /app/
 COPY court_pipeline.py /app/
+COPY court_inventory.py /app/
+COPY court_pilot.py /app/
 COPY appeal_identity.py /app/
 COPY gist.py /app/
 COPY summarize_items.py /app/

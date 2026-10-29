@@ -26,3 +26,7 @@
 #promotionDialog label,#dismissalDialog label{display:block;font-weight:600;margin-top:20px}
 #researchBrief,#dismissalNote{box-sizing:border-box;width:100%;padding:12px;font:inherit;border:1px solid #64748b;border-radius:8px;background:inherit;color:inherit;resize:vertical}
 #promotionError,#dismissalError{color:#d74646}.research-brief{white-space:pre-wrap}
+
+#courtInventory table { width:100%; border-collapse:collapse; text-align:left; }
+#courtInventory th, #courtInventory td { padding:.65rem; border-bottom:1px solid var(--border, #637087); vertical-align:top; }
+#courtInventory summary { cursor:pointer; padding:.5rem 0; }

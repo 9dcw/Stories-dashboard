@@ -582,3 +582,14 @@ test('court intake displays the deployed rules rather than an obsolete fixed lis
   assert.match(text,/Employment discrimination and civil rights/);
   assert.doesNotMatch(text,/violent-crime prosecutions/);
 });
+
+test('court inventory shows court counts separately from feeds and exposes outstanding scope',()=>{
+  const {context,getElement}=loadApp();
+  vm.runInContext(`state.view='sources';state.courtInventory={total:112,active:15,outstanding:97,expansion_total:99,expansion_active:2,structure_audits_outstanding:['Maine'],counting_note:'Families, not divisions',courts:[{jurisdiction:'Maine',name:'Example <court>',status:'active',active_feeds:2,notes:'Additional scope pending',errors:[]}]};renderCourtInventory();`,context);
+  const html=getElement('#courtInventory').innerHTML;
+  assert.match(html,/112 court families inventoried/);
+  assert.match(html,/15 active/);
+  assert.match(html,/97 outstanding/);
+  assert.match(html,/Example &lt;court&gt;/);
+  assert.match(html,/Additional scope pending/);
+});

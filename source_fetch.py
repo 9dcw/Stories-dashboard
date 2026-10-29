@@ -59,6 +59,12 @@ def policy_for(url: str, source_config: str | dict | None = None) -> FetchPolicy
 
 
 def _adapt_endpoint(url: str, policy: FetchPolicy) -> str:
+    if policy.endpoint_adapter == 'scotus_current_term' and re.fullmatch(
+        r'https://www\.supremecourt\.gov/opinions/slipopinion/\d{2}', url
+    ):
+        now = datetime.now(ZoneInfo('America/New_York'))
+        term = now.year if now.month >= 10 else now.year - 1
+        return f'https://www.supremecourt.gov/opinions/slipopinion/{term % 100:02}'
     if policy.endpoint_adapter != "courtlistener_opinion":
         return url
     match = re.search(r"/opinion/(\d+)(?:/|$)", url)
