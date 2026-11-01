@@ -147,3 +147,8 @@ CREATE TABLE IF NOT EXISTS court_schedule (
  singleton INTEGER PRIMARY KEY CHECK(singleton=1), enabled INTEGER NOT NULL DEFAULT 0,
  timezone TEXT NOT NULL DEFAULT 'Europe/Berlin', hour INTEGER NOT NULL DEFAULT 7, minute INTEGER NOT NULL DEFAULT 0
 );
+
+CREATE TABLE IF NOT EXISTS court_origin_identity (
+    item_id INTEGER PRIMARY KEY REFERENCES items(item_id),
+    identity_json TEXT NOT NULL
+);

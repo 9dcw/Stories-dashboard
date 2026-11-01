@@ -260,8 +260,11 @@ def run_pipeline(store, agent, *, limit=None, poll=True, fetcher=fetch_resource,
                     with store._connect() as c:
                         c.execute('INSERT OR REPLACE INTO court_documents(item_id,document_json) VALUES(?,?)',(item['item_id'],json.dumps(doc)))
                 from appeal_identity import save_identity
+                from originating_courts import save_courts
                 with store._connect() as c:
                     save_identity(c, item['item_id'], doc['resolved_url'], doc['pages'])
+                    jurisdiction = c.execute('SELECT jurisdiction FROM sources WHERE source_id=?', (item['source_id'],)).fetchone()[0]
+                    save_courts(c, item['item_id'], doc['pages'], jurisdiction)
                 result = screen_document(item,doc,agent)
                 save_screen(store,item['item_id'],result,doc['content_hash'])
                 stats['excluded' if result['decision']=='EXCLUDED' else 'passed'] += 1
