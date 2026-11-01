@@ -179,3 +179,24 @@ def test_rule_change_rescreens_cached_new_items_but_preserves_dismissals(tmp_pat
     with store._connect() as c:
         assert c.execute("SELECT count(*) FROM items WHERE status='DISMISSED'").fetchone()[0]==1
         assert c.execute('SELECT count(*) FROM court_screenings WHERE rule_version=?',(RULE_VERSION,)).fetchone()[0]==1
+
+
+@pytest.mark.parametrize('review,quote,expected', [
+    (False, 'PER CURIAM. Affirmed.', 'EXCLUDED'),
+    (True, 'PER CURIAM. Affirmed.', 'PASS'),
+    (False, 'A passage absent from the document.', 'PASS'),
+])
+def test_no_case_information_requires_verified_evidence_and_certainty(review, quote, expected):
+    result = screen_document({'headline': 'Example v. Example'},
+        {'pages': ['DISTRICT COURT OF APPEAL\nPER CURIAM. Affirmed.']},
+        lambda _: answer('NO_CASE_INFORMATION', quote=quote, review=review))
+    assert result['decision'] == expected
+    if expected == 'EXCLUDED':
+        assert result['reason_code'] == 'NO_CASE_INFORMATION'
+
+
+def test_short_factual_affirmance_is_retained():
+    text = 'Affirmed. The insurer paid the roof claim after the homeowner filed suit.'
+    result = screen_document({'headline': 'Homeowner v. Insurer'}, {'pages': [text]},
+        lambda _: answer())
+    assert result['decision'] == 'PASS'
