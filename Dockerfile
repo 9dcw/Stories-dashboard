@@ -23,6 +23,7 @@ COPY court_pilot.py /app/
 COPY state_courts.py /app/
 COPY state_court_sources.py /app/
 COPY appeal_identity.py /app/
+COPY originating_courts.py /app/
 COPY gist.py /app/
 COPY summarize_items.py /app/
 COPY source_discovery.py /app/

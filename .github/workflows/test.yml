@@ -45,7 +45,7 @@ jobs:
             echo "Secrets check passed"
           '
       - name: Check dashboard imports in image
-        run: docker run --rm --entrypoint python3 stories-dashboard:test -c 'import appeal_identity; import export_stories; from api.read_model import build_live_read_model'
+        run: docker run --rm --entrypoint python3 stories-dashboard:test -c 'import appeal_identity; import originating_courts; from pathlib import Path; from tempfile import TemporaryDirectory; from story_store import StoryStore; from api.read_model import build_live_read_model; directory = TemporaryDirectory(); model = build_live_read_model(StoryStore(Path(directory.name) / "smoke.sqlite3")); assert "originating_court_activity" in model'
       - name: Smoke test with temp DB
         run: |
           # Create a minimal temp DB
