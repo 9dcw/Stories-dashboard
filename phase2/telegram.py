@@ -31,7 +31,9 @@ def parse(text):
             return dict(action='prompt_update',text=tail[1])
     if len(parts)==3 and parts[1]=='read' and parts[2]=='narrative':
         return dict(action='read',identifier='narrative')
-    raise ValueError('Use /story revise <guidance>, /story prompt update <feedback>, or /story prompt show')
+    if len(parts)==3 and parts[1]=='visuals' and parts[2]=='build':
+        return dict(action='operate',operation='build_visuals',target='narrative',instruction='')
+    raise ValueError('Use /story revise <guidance>, /story visuals build, /story prompt update <feedback>, or /story prompt show')
 
 
 def dispatch(store,event,allowed_users,chat_id):

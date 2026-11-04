@@ -9,7 +9,7 @@ from jsonschema import Draft202012Validator
 from phase2.doc_policy import instructions, validate_rows, VERSION
 
 ROOT = Path(__file__).resolve().parent
-OPERATIONS = {"create_artifact", "revise_artifact", "investigate", "refresh_artifact", "review_artifact", "reconcile_package"}
+OPERATIONS = {"create_artifact", "revise_artifact", "investigate", "refresh_artifact", "review_artifact", "reconcile_package", "build_visuals"}
 
 
 def package_manifest(manifest):

@@ -152,6 +152,10 @@ class WorkflowStore:
                 if existing and existing[0]:
                     return None
             if target=='narrative':
+                if operation=='build_visuals':
+                    artifact=db.execute("SELECT current_version,stale FROM artifacts WHERE workspace_id=? AND artifact_key='narrative'",(wid,)).fetchone()
+                    if not artifact or not artifact['current_version'] or artifact['stale']:
+                        raise Conflict('Complete the narrative before building visuals')
                 original=db.execute("SELECT r.manifest FROM artifact_versions v JOIN artifacts a USING(artifact_id) JOIN step_executions s USING(step_id) JOIN workflow_runs r USING(run_id) WHERE a.workspace_id=? AND a.artifact_key='narrative' ORDER BY v.version_number LIMIT 1",(wid,)).fetchone()
                 if original:
                     pinned=json.loads(original[0])
@@ -168,7 +172,7 @@ class WorkflowStore:
             db.execute('''INSERT INTO workflow_runs(run_id,workspace_id,story_id,request_id,operation,target,instruction,requester,manifest,created_at,updated_at)
                           VALUES (?,?,?,?,?,?,?,?,?,?,?)''', (run_id,wid,story_id,request_id,operation,target,instruction,requester,canonical(manifest),now,now))
             keys = ['provision'] + manifest['steps'] if operation == 'initial' else manifest['steps'] if operation=='reconcile_package' else ['provision'] if operation == 'migrate' else ['review' if operation == 'review_artifact' else target]
-            if target=='narrative': keys=['provision','narrative']
+            if target=='narrative': keys=['narrative'] if operation=='build_visuals' else ['provision','narrative']
             for key in keys:
                 self._insert_step(db, run_id, key, 1, now)
             self._notify(db, run_id, 'queued', f'Queued {operation} {target}. Run {run_id}')
@@ -414,7 +418,7 @@ class WorkflowStore:
             pending=db.execute("SELECT 1 FROM step_executions WHERE run_id=? AND state IN ('queued','running','blocked')", (job['run_id'],)).fetchone()
             if not pending:
                 db.execute("UPDATE workflow_runs SET state='completed',updated_at=? WHERE run_id=?", (now,job['run_id']))
-                self._notify(db,job['run_id'],'complete','Research operation completed. Ready for human editorial review; no publication approval.')
+                self._notify(db,job['run_id'],'complete','Visual build completed. Assets and remaining production gaps are linked in the narrative; images need human review.' if job['operation']=='build_visuals' else 'Research operation completed. Ready for human editorial review; no publication approval.')
 
     @staticmethod
     def _block(db, job, error):

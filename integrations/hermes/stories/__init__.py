@@ -17,6 +17,7 @@ from urllib.parse import urlsplit
 HELP = """Visual narrative — use in the story's Telegram topic.
 
 /story revise <guidance> — research, develop the narrative, or find visual assets
+/story visuals build — build changed/missing visuals, upload to Images and link them in the narrative
 /story prompt update <feedback> — append standing feedback for future first drafts
 /story prompt show — display the current initial-development prompt
 
@@ -38,7 +39,7 @@ def help_response(text):
 
 def register(ctx):
     # Register for discoverability; the event hook handles the trusted source context.
-    ctx.register_command('story',lambda args:'Use /story in a registered Stories topic.',description='Develop the visual narrative',args_hint='revise | prompt update | prompt show')
+    ctx.register_command('story',lambda args:'Use /story in a registered Stories topic.',description='Develop the visual narrative',args_hint='revise | visuals build | prompt update | prompt show')
     ctx.register_hook('pre_gateway_dispatch',dispatch_event)
     ctx.register_hook('pre_tool_call',guard_discussion_tools)
     ctx.register_tool(name='stories_read_artifact',toolset='stories',schema={'name':'stories_read_artifact','description':'Read one published research artifact for the current Stories topic. Human Doc edits require explicit import.','parameters':{'type':'object','properties':{'artifact':{'type':'string','enum':['narrative']}},'required':['artifact'],'additionalProperties':False}},handler=read_artifact)

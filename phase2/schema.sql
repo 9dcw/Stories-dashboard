@@ -52,3 +52,12 @@ CREATE TABLE IF NOT EXISTS narrative_prompt_versions (
  version INTEGER PRIMARY KEY AUTOINCREMENT, request_id TEXT NOT NULL UNIQUE,
  feedback TEXT NOT NULL, prompt TEXT NOT NULL, author TEXT NOT NULL, created_at REAL NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS visual_builds (
+ workspace_id TEXT NOT NULL REFERENCES story_workspaces,
+ visual_id TEXT NOT NULL, instruction_hash TEXT NOT NULL,
+ instructions TEXT NOT NULL, plan TEXT, file_id TEXT, output_path TEXT, mime_type TEXT,
+ state TEXT NOT NULL DEFAULT 'planned', error TEXT NOT NULL DEFAULT '',
+ created_at REAL NOT NULL, updated_at REAL NOT NULL,
+ PRIMARY KEY(workspace_id,visual_id,instruction_hash)
+);

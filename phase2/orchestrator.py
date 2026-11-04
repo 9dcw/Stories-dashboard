@@ -51,6 +51,11 @@ class Worker:
         keeper=threading.Thread(target=keepalive,daemon=True)
         keeper.start()
         try:
+            if job['operation']=='build_visuals':
+                from phase2.visuals import build_visuals
+                build_visuals(self,job)
+                self.store.finish(job)
+                return
             if job['step_key']=='provision':
                 with self.render_lock(job):
                     self.google.provision(self.store,job,self.telegram)

@@ -31,6 +31,7 @@ def build_context(store, job):
         decisions=[d for d in all_decisions if d['decision_id'] not in superseded]
         value=dict(research_brief=story.get('research_brief', ''),story={k:story[k] for k in ['story_id','title','origin_url','origin_item_id','event_key']},root_key=workspace['root_key'],operation=job['operation'],target=job['target'],instruction=job['instruction'],upstream=upstream,dependency_versions=versions,target_version=current['current_version'],current_output=json.loads(current['output']) if current['output'] else None,decisions=decisions,decision_ids=[d['decision_id'] for d in all_decisions])
         if key=='narrative':
+            value['built_visuals']=[dict(r) for r in db.execute('SELECT visual_id,instruction_hash,instructions,file_id,state FROM visual_builds WHERE workspace_id=? ORDER BY created_at',(job['workspace_id'],))]
             guidance=[story.get('research_brief','')]
             guidance.extend(r[0] for r in db.execute("SELECT instruction FROM workflow_runs WHERE workspace_id=? AND target='narrative' AND operation='revise_artifact' ORDER BY created_at,rowid",(job['workspace_id'],)) if r[0])
             value['producer_guidance']=' | '.join(g for g in guidance if g)
