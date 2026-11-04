@@ -408,18 +408,19 @@ test('blocked Google SDK reports an actionable sign-in error', () => {
 });
 
 
-test('opinion screening retains uncertain and failed items and exposes exclusions on demand', () => {
+test('opinion screening hides uncertain exclusions, retains errors, and exposes exclusions on demand', () => {
   const {context}=loadApp();
   const result=vm.runInContext(`(() => {
     const base={item_id:1,lane:'B',status:'NEW'};
-    const pass=matchesRecord({...base,screening:{decision:'PASS',needs_review:true}},'candidate');
+    const pass=matchesRecord({...base,screening:{decision:'PASS',needs_review:false}},'candidate');
+    const uncertain=matchesRecord({...base,screening:{decision:'EXCLUDED',reason_code:'SCREENING_UNCERTAIN',needs_review:true}},'candidate');
     const error=matchesRecord({...base,screening:{decision:'ERROR',needs_review:true}},'candidate');
     const excluded=matchesRecord({...base,screening:{decision:'EXCLUDED'}},'candidate');
     state.filters.screening='EXCLUDED';
     const audit=matchesRecord({...base,screening:{decision:'EXCLUDED'}},'candidate');
-    return {pass,error,excluded,audit};
+    return {pass,uncertain,error,excluded,audit};
   })()`,context);
-  assert.deepEqual(JSON.parse(JSON.stringify(result)),{pass:true,error:true,excluded:false,audit:true});
+  assert.deepEqual(JSON.parse(JSON.stringify(result)),{pass:true,uncertain:false,error:true,excluded:false,audit:true});
 });
 
 

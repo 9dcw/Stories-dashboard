@@ -48,7 +48,7 @@ def test_supreme_court_patterns_exclude_other_publication_types():
     assert len(court_candidates(source,body))==1
     assert spec['url'].endswith('/26')
     assert pilot_sources(datetime(2027,1,1))[0]['url'].endswith('/26')
-    assert RULE_VERSION=='court_exclusions_v3'
+    assert RULE_VERSION=='court_exclusions_v4'
 
 
 def test_term_adapter_changes_listing_only(monkeypatch):

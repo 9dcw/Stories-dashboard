@@ -40,6 +40,7 @@ def test_nonprecedential_does_not_spend_agent_call():
 
 
 @pytest.mark.parametrize('subject,passage',[
+    ('FAMILY_MATTER','This appeal concerns a grandparent visitation order and related attorney fees.'),
     ('IMMIGRATION','This appeal challenges the petitioner’s removal order and denial of asylum.'),
     ('CRIMINAL_PROCEEDING','This appeal challenges a drug-conspiracy sentence and supervised-release revocation.'),
     ('CIVIL_RIGHTS_EMPLOYMENT','The employee alleges that his employer fired him in retaliation for protected discrimination complaints.'),
@@ -48,19 +49,20 @@ def test_subject_exclusion_requires_matching_page_evidence(subject,passage):
     doc={'pages':[passage]}
     assert screen_document({'headline':'Case'},doc,lambda _:answer(subject,quote=passage))['decision']=='EXCLUDED'
     bad=screen_document({'headline':'Case'},doc,lambda _:answer(subject,quote='A quotation that is absent from the document.'))
-    assert bad['decision']=='PASS' and bad['needs_review']
+    assert bad['decision']=='EXCLUDED' and bad['needs_review']
+    assert bad['reason_code']=='SCREENING_UNCERTAIN'
     wrong=screen_document({'headline':'Case'},doc,lambda _:answer(subject,quote=passage,page=2))
-    assert wrong['decision']=='PASS'
+    assert wrong['decision']=='EXCLUDED' and wrong['reason_code']=='SCREENING_UNCERTAIN'
 
 
-def test_uncertain_subject_and_noninsurance_cases_pass():
+def test_uncertain_subject_is_excluded_and_noninsurance_case_passes():
     text='This is a commercial contract dispute between two technology companies.'
     r=screen_document({'headline':'Case'},{'pages':[text]},lambda _:answer('IMMIGRATION',quote=text,review=True))
-    assert r['decision']=='PASS' and r['needs_review']
+    assert r['decision']=='EXCLUDED' and r['needs_review']
     assert screen_document({'headline':'Case'},{'pages':[text]},lambda _:answer())['decision']=='PASS'
 
 
-def test_long_opinion_reads_all_chunks_and_disagreement_passes():
+def test_long_opinion_reads_all_chunks_and_excludes_disagreement():
     pages=['A commercial dispute about contract interpretation. '*600,'A discussion of immigration appears only in a citation. '*600]
     calls=[]
     def agent(prompt):
@@ -68,7 +70,7 @@ def test_long_opinion_reads_all_chunks_and_disagreement_passes():
         return answer('IMMIGRATION',quote=pages[0][:100]) if len(calls)==1 else answer()
     result=screen_document({'headline':'Case'},{'pages':pages},agent)
     assert len(calls)>=2 and '[PAGE 2]' in ''.join(calls)
-    assert result['decision']=='PASS' and result['needs_review']
+    assert result['decision']=='EXCLUDED' and result['needs_review']
 
 
 def test_pdf_extraction_reads_beyond_three_pages():
@@ -144,12 +146,12 @@ def test_schedule_dst_and_disabled_status(tmp_path):
     ('CRIMINAL_PROCEEDING','The defendant challenges the calculation of his sentence for nonviolent drug possession.'),
     ('CIVIL_RIGHTS_EMPLOYMENT','The prisoner seeks damages under Section 1983 for unconstitutional confinement conditions.'),
 ])
-def test_new_exclusions_remain_visible_on_uncertainty(subject,passage):
+def test_uncertain_exclusions_are_screened_out(subject,passage):
     result=screen_document({'headline':'Case'},{'pages':[passage]},lambda _:answer(subject,quote=passage,review=True))
-    assert result['decision']=='PASS' and result['needs_review']
+    assert result['decision']=='EXCLUDED' and result['needs_review']
 
 
-def test_financial_story_exception_in_later_chunk_prevents_criminal_exclusion():
+def test_financial_story_disagreement_is_uncertain_instead_of_verified_criminal_exclusion():
     ordinary='This criminal appeal concerns the defendant’s challenge to his sentence. '
     financial='The charged scheme involved staged insurance claims and payments obtained from insurers. '
     pages=[ordinary*500,financial*500];calls=[]
@@ -158,7 +160,7 @@ def test_financial_story_exception_in_later_chunk_prevents_criminal_exclusion():
         if prompt.startswith('Combine these partial'):return json.dumps(dict(display_headline='Insurance fraud appeal',gist='The appeal concerns staged insurance claims and the criminal sentence.'))
         return answer('CRIMINAL_PROCEEDING',quote=ordinary) if len(calls)==1 else answer('NONE')
     result=screen_document({'headline':'Case'},{'pages':pages},agent)
-    assert result['decision']=='PASS' and result['needs_review']
+    assert result['decision']=='EXCLUDED' and result['needs_review']
     assert '[PAGE 2]' in ''.join(calls)
 
 
@@ -183,16 +185,15 @@ def test_rule_change_rescreens_cached_new_items_but_preserves_dismissals(tmp_pat
 
 @pytest.mark.parametrize('review,quote,expected', [
     (False, 'PER CURIAM. Affirmed.', 'EXCLUDED'),
-    (True, 'PER CURIAM. Affirmed.', 'PASS'),
-    (False, 'A passage absent from the document.', 'PASS'),
+    (True, 'PER CURIAM. Affirmed.', 'EXCLUDED'),
+    (False, 'A passage absent from the document.', 'EXCLUDED'),
 ])
 def test_no_case_information_requires_verified_evidence_and_certainty(review, quote, expected):
     result = screen_document({'headline': 'Example v. Example'},
         {'pages': ['DISTRICT COURT OF APPEAL\nPER CURIAM. Affirmed.']},
         lambda _: answer('NO_CASE_INFORMATION', quote=quote, review=review))
     assert result['decision'] == expected
-    if expected == 'EXCLUDED':
-        assert result['reason_code'] == 'NO_CASE_INFORMATION'
+    assert result['reason_code'] == ('SCREENING_UNCERTAIN' if review or quote.startswith('A passage') else 'NO_CASE_INFORMATION')
 
 
 def test_short_factual_affirmance_is_retained():
@@ -200,3 +201,72 @@ def test_short_factual_affirmance_is_retained():
     result = screen_document({'headline': 'Homeowner v. Insurer'}, {'pages': [text]},
         lambda _: answer())
     assert result['decision'] == 'PASS'
+
+
+@pytest.mark.parametrize('disposition', ['AFFIRMED.', 'Denied.', 'DISMISSED.', 'PER CURIAM. Affirmed.'])
+def test_bare_disposition_can_supply_verified_no_content_evidence(disposition):
+    result = screen_document({'headline': 'Example v. Example'},
+        {'pages': ['COURT OF APPEAL\n' + disposition]},
+        lambda _: answer('NO_CASE_INFORMATION', quote=disposition))
+    assert result['decision'] == 'EXCLUDED'
+    assert result['reason_code'] == 'NO_CASE_INFORMATION'
+    assert result['evidence'] == [{'page': 1, 'quote': disposition}]
+
+
+def test_short_disposition_does_not_validate_wrong_page_or_subject():
+    for subject, page in [('NO_CASE_INFORMATION', 2), ('CRIMINAL_PROCEEDING', 1)]:
+        result = screen_document({'headline': 'Example'}, {'pages': ['AFFIRMED.']},
+            lambda _: answer(subject, quote='AFFIRMED.', page=page))
+        assert result['reason_code'] == 'SCREENING_UNCERTAIN'
+        assert result['evidence'] == []
+
+
+def test_uncertain_result_preserves_chunk_diagnostics():
+    text = 'The defendant appeals a robbery conviction and sentence.'
+    result = screen_document({'headline': 'Example'}, {'pages': [text]},
+        lambda _: answer('CRIMINAL_PROCEEDING', quote=text, review=True))
+    assert result['decision'] == 'EXCLUDED'
+    assert result['reason_code'] == 'SCREENING_UNCERTAIN'
+    assert result['screening_details'][0]['subject_exclusion'] == 'CRIMINAL_PROCEEDING'
+    assert result['screening_details'][0]['evidence'][0]['quote'] == text
+
+
+@pytest.mark.parametrize('text', [
+    'Airbnb allegedly retained interest earned on reservation payments.',
+    'Homeowners sued over insurance coverage after a tree damaged their home.',
+    'The defendant trafficked counterfeit luxury goods through a financial scheme.',
+    'A photographer sought copyright damages for photographs used on packaging.',
+])
+def test_accepted_substantive_passes_remain_passes(text):
+    # Aggregation must preserve a clear model pass without imposing relevance rules.
+    result = screen_document({'headline': 'Example'}, {'pages': [text]}, lambda _: answer())
+    assert result['decision'] == 'PASS' and not result['needs_review']
+
+
+def test_uncertainty_migration_is_idempotent_and_preserves_editorial_decisions(tmp_path):
+    from court_pipeline import save_screen
+    from scripts.exclude_uncertain_court_candidates import migrate
+    store = StoryStore(tmp_path / 'db.sqlite3')
+    sid = make_source(store)
+    ids = []
+    for n, status in enumerate(['NEW', 'PROMOTED', 'DISMISSED', 'IGNORED', 'NEW', 'NEW']):
+        item = store.add_item(sid, 'Example', f'https://www.ca1.uscourts.gov/opnfiles/{n}.pdf')
+        ids.append(item.item_id)
+        result = dict(decision='ERROR' if n == 5 else 'PASS', needs_review=n != 4,
+                      reason='Previous reason', gist='Saved summary')
+        save_screen(store, item.item_id, result, 'document-hash')
+        with store._connect() as c:
+            c.execute('UPDATE items SET status=? WHERE item_id=?', (status, item.item_id))
+            c.execute("UPDATE court_screenings SET rule_version='court_exclusions_v3' WHERE item_id=?", (item.item_id,))
+    with store._connect() as c:
+        before = [tuple(r) for r in c.execute('SELECT * FROM items ORDER BY item_id')]
+        assert migrate(c) == 1
+        assert migrate(c) == 0
+        assert before == [tuple(r) for r in c.execute('SELECT * FROM items ORDER BY item_id')]
+        row = c.execute('SELECT * FROM court_screenings WHERE item_id=?', (ids[0],)).fetchone()
+        assert row['decision'] == 'EXCLUDED' and row['rule_version'] == RULE_VERSION
+        result = json.loads(row['result_json'])
+        assert result['policy_migration']['previous_result']['reason'] == 'Previous reason'
+        assert row['content_hash'] == 'document-hash'
+        assert c.execute("SELECT count(*) FROM court_screenings WHERE decision='PASS'").fetchone()[0] == 4
+        assert c.execute("SELECT count(*) FROM court_screenings WHERE decision='ERROR'").fetchone()[0] == 1

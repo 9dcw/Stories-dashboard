@@ -48,7 +48,13 @@ rejection, or requirement to prove precedent. All other subjects pass.
 
 Ordinary coverage, contract, tort, personal-injury and liability cases still pass
 unless an exclusion is independently central. No procedural/no-outcome filter was
-added. Uncertainty passes for review. The version is `court_exclusions_v2`; prior
+added. Family matters (custody, visitation, parental rights, adoption, dependency,
+divorce, support and marital-property division, including related fees) are excluded
+when central. Merely involving a child or relatives does not exclude an ordinary
+injury, insurance, reimbursement, inheritance or commercial dispute. Rulings with
+no concrete case information are excluded; a verified bare disposition such as
+“AFFIRMED.” is valid evidence even when shorter than 20 characters.
+Uncertain screening is excluded from the candidate feed. The version is `court_exclusions_v4`; prior
 NEW court candidates are eligible for re-screening from cached full documents on
 intake. Dismissed, promoted and ignored items are not re-screened or restored.
 
@@ -56,8 +62,11 @@ The configured cheap Hermes gist model handles subject screening and factual
 gisting together, with no tools enabled. Full PDFs are extracted with page
 labels. Long opinions are read in complete chunks; an exclusion requires
 unanimity across chunks, no uncertainty, and page-verified exact quotations.
-Chunk disagreements, unsupported exclusion evidence, and uncertainty pass for
-review. Long summaries receive a final synthesis from all partial summaries.
+Chunk disagreements, unsupported exclusion evidence, and uncertainty receive
+`EXCLUDED / SCREENING_UNCERTAIN`, with `needs_review=true` for audit. They are
+not treated as verified subject exclusions. Per-chunk classifications, reasons,
+and validated evidence are preserved in `screening_details`.
+Long summaries receive a final synthesis from all partial summaries.
 Document/model errors remain visible and are retried, not excluded.
 
 `court_screenings` is independent of editorial item status. Excluded opinions

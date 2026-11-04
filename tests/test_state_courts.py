@@ -53,7 +53,7 @@ def test_state_registration_is_idempotent_and_district_ids_are_independent(tmp_p
     assert len(store.list_sources())==33
     assert len({s['court_id'] for s in specs})==31
     assert all('courtlistener' not in json.dumps(s).lower() for s in specs+pending_new_york())
-    assert RULE_VERSION=='court_exclusions_v3'
+    assert RULE_VERSION=='court_exclusions_v4'
     assert len(pending_new_york())==7
 
 
