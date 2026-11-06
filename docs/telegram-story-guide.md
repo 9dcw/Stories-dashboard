@@ -45,3 +45,17 @@ uncertain outcome, blocks a blind retry: reconcile the saved local result or Dri
 file first to avoid paying twice. Resolve open Doc comments/suggestions before
 building; concurrent edits to image instructions stop receipt publication and
 preserve completed Drive files. Other narrative cells and human notes are retained.
+
+
+Visual renderer configuration: readiness and generation resolve the same backend.
+An explicit `PHASE2_IMAGE_PROVIDER` overrides the Hermes image setting; otherwise
+the Hermes selection is honored. Without a selection, configured FAL is retained,
+then available Codex/OpenAI backends are considered. Codex uses the workflow's
+pinned chat model instead of the installed adapter's obsolete host model;
+`PHASE2_IMAGE_HOST_MODEL` can explicitly override that host. These controls do not
+change the image instructions or force a rebuild. Provider image references are
+checkpointed before downloading, so download retries reuse the generated output.
+Definite preflight failures and explicitly rejected HTTP requests can be retried;
+timeouts with no known outcome still require reconciliation. Visual planners also
+receive the narrative source registry, and previously skipped plans are reassessed
+when that registry changes.

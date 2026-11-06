@@ -194,8 +194,11 @@ def build_visuals(worker,job):
             initial.append(previous.group() if previous and ready else receipt(item,'Build queued; instructions retained above.'))
         document=write_receipts(worker,job,artifact,document,items,initial)
     from phase2.visual_renderer import Renderer
-    renderer=getattr(worker,'visual_renderer',None) or Renderer(worker.research.python,worker.research.source,worker.lock_dir/'visual-assets')
+    renderer=getattr(worker,'visual_renderer',None) or Renderer(worker.research.python,worker.research.source,worker.lock_dir/'visual-assets',host_model=job['manifest']['engine']['model'] if job['manifest']['engine']['provider']=='openai-codex' else '')
     folder=json.loads(store.workspace(job['workspace_id'])['resources'])['images']
+    narrative=json.loads(store.version(artifact['current_version'])['output'])
+    source_registry=narrative.get('sources',[])
+    source_context_hash=digest(source_registry)
 
     def build(item):
         marker=digest([job['workspace_id'],item['visual_id'],item['instruction_hash']])
@@ -206,20 +209,23 @@ def build_visuals(worker,job):
                 raise Conflict('Saved visual was moved or deleted; restore its Drive file before rebuilding')
             label='Original AI illustration; human visual review required.' if json.loads(saved['plan'])['kind']=='generate' else 'Retrieved source; rights uncleared.'
             return receipt(item,label,saved['file_id'])
-        if saved and saved['state']=='generating' and not renderer.cached(marker):
+        if saved and saved['state']=='generating' and not getattr(renderer,'recoverable',renderer.cached)(marker):
             raise Conflict('A prior generation has an uncertain outcome; reconcile it before requesting another paid image')
         save(store,job,item)
         plan=json.loads(saved['plan']) if saved and saved['plan'] else None
+        if plan and saved['state']=='skipped' and source_registry and plan.get('_source_context_hash')!=source_context_hash:
+            plan=None  # No image exists; reassess gaps when source references become available.
         if plan is None:
             task=copy.deepcopy(job)
             task['manifest']['prompts']['narrative']=PLAN_PROMPT
             task['manifest']['schemas']['narrative']=PLAN_SCHEMA
             task['step_id']=job['step_id']+'-'+item['visual_id']
-            result=worker.research.run(task,dict(instructions=item['instructions']),lambda:store.heartbeat(job))
+            result=worker.research.run(task,dict(instructions=item['instructions'],source_registry=source_registry),lambda:store.heartbeat(job))
             if not store.record_usage(job,result['usage']): raise Conflict('Visual planning token budget exhausted')
             plan=json.loads(result['text']); Draft202012Validator(PLAN_SCHEMA).validate(plan)
             if plan['kind']=='generate' and not plan['prompt'].strip(): raise Conflict('Visual agent returned an empty generation prompt')
             if plan['kind']=='retrieve' and not plan['url'].strip(): raise Conflict('Visual agent returned an empty source URL')
+            plan['_source_context_hash']=source_context_hash
             save(store,job,item,plan=canonical(plan))
         if plan['kind']=='skip':
             save(store,job,item,state='skipped')
@@ -260,8 +266,9 @@ def build_visuals(worker,job):
             try: results.append(future.result())
             except Exception as exc:
                 # Never persist arbitrary provider errors containing credentials.
-                error=str(exc) if isinstance(exc,Conflict) else 'Visual build failed ('+type(exc).__name__+'); inspect worker configuration and retry.'
-                save(store,job,item,error=error)
+                from phase2.visual_renderer import RenderFailure
+                error=str(exc) if isinstance(exc,(Conflict,RenderFailure)) else 'Visual build failed ('+type(exc).__name__+'); inspect worker configuration and retry.'
+                save(store,job,item,error=error,**({'state':'planned'} if getattr(exc,'retry_safe',False) else {}))
                 results.append(receipt(item,'Build blocked: '+error))
     with worker.render_lock(job):
         current=google.read(artifact['doc_id']); _,current_values=rows(current)

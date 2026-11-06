@@ -287,3 +287,32 @@ def test_managed_baseline_advances_for_receipts_but_not_human_edits(visual_worke
     run(w,story,'human-edited')
     assert w.store.artifacts(wid)['narrative']['baseline']==old_baseline
     assert not w.google.review_snapshot(w.store.artifacts(wid)['narrative'],'narrative')['managed_matches']
+
+
+def test_definite_renderer_failure_is_retryable_without_replanning(visual_worker):
+    from phase2.visual_renderer import RenderFailure
+    w,story,docs=visual_worker
+    original=w.visual_renderer.render
+    def unavailable(*args): raise RenderFailure('Selected image provider is unavailable',True)
+    w.visual_renderer.render=unavailable
+    status,job=run(w,story,'definite-failure')
+    assert status['state']=='blocked'
+    assert all(r['state']=='planned' for r in ledger(w.store,job['workspace_id']))
+    w.visual_renderer.render=original
+    status,_=run(w,story,'definite-retry')
+    assert status['state']=='completed' and len(w.research.calls)==2
+
+
+def test_skipped_plan_reassesses_when_narrative_sources_are_available(visual_worker):
+    w,story,docs=visual_worker;w.research.kind='skip'
+    _,job=run(w,story,'missing-sources')
+    with w.store.connect(write=True) as db:
+        artifact=w.store.artifacts(job['workspace_id'])['narrative']
+        output=json.loads(w.store.version(artifact['current_version'])['output'])
+        output['sources']=[dict(id='S1',url='https://court.example.test/opinion.pdf')]
+        db.execute('UPDATE artifact_versions SET output=? WHERE version_id=?',(json.dumps(output),artifact['current_version']))
+    w.research.kind='generate'
+    status,_=run(w,story,'sources-resolved')
+    assert status['state']=='completed' and len(w.visual_renderer.calls)==2
+    assert len(w.research.calls)==4
+    assert all(call['source_registry'][0]['id']=='S1' for call in w.research.calls[2:])
