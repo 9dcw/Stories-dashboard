@@ -1,6 +1,8 @@
 import json
 import sqlite3
 
+import pytest
+
 from polling import Candidate, poll_sources
 from story_store import StoryStore
 
@@ -14,6 +16,12 @@ HTML = """<html><body><ul>
 <li><a href="/notice/1">Notice one</a><time datetime="2026-10-07">October 7</time></li>
 <li><a href="/notice/2?gclid=abc">Notice two</a></li>
 </ul></body></html>"""
+
+
+@pytest.fixture(autouse=True)
+def fixed_polling_clock(monkeypatch):
+    # Fixture publications are dated Oct 7; recency must not depend on test day.
+    monkeypatch.setattr('polling.utc_now',lambda:'2026-10-08T12:00:00Z')
 
 
 def make_store(tmp_path):

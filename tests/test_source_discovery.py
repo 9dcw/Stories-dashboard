@@ -1,10 +1,18 @@
 import json
+import pytest
 from export_stories import export_json
 from source_discovery import run_discovery, validate_source
 from story_store import StoryStore
 
 RSS='''<rss><channel><item><title>Current enforcement release</title><link>https://agency.gov/release/1</link><pubDate>Tue, 07 Oct 2026 12:00:00 GMT</pubDate></item></channel></rss>'''
 HTML='''<html><body><h2>Current order</h2><a href="/order/1">Current order</a><time datetime="2026-10-07">October 7</time></body></html>'''
+
+@pytest.fixture(autouse=True)
+def fixed_validation_clock(monkeypatch):
+    # These fixed-date source fixtures should keep testing extraction, not aging.
+    from collectors import validate_candidate
+    monkeypatch.setattr('source_discovery.validate_candidate',lambda source,item:validate_candidate(source,item,now='2026-10-08T12:00:00Z'))
+
 
 def test_source_proposals_are_persistent_and_deduplicated(tmp_path):
     s=StoryStore(tmp_path/'db.sqlite3')
