@@ -179,6 +179,8 @@ class GoogleDocs:
             row=output['narrative_rows'][asset['row_index']]
             row['collateral']+='\n'+note
         if output.get('asset_requests'):
+            from phase2.asset_inventory import refresh_inventory
+            refresh_inventory(store,self,job['workspace_id'])
             # System-added verified receipts must never be dropped to fit a word cap.
             output['policy_exception']=output.get('policy_exception') or 'Retains original asset provenance and verified retrieval results; review rights before production.'
 

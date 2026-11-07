@@ -255,6 +255,8 @@ def build_visuals(worker,job):
         meta=google.metadata(file_id)
         if meta.get('trashed') or folder not in meta.get('parents',[]): raise Conflict('Visual upload verification failed')
         save(store,job,item,state='ready',file_id=file_id,error='')
+        from phase2.asset_inventory import refresh_inventory
+        refresh_inventory(store,google,job['workspace_id'])
         label='Original AI illustration; human visual review required.' if plan['kind']=='generate' else 'Retrieved source; rights uncleared.'
         return receipt(item,label,file_id)
 

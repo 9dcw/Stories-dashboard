@@ -61,3 +61,10 @@ CREATE TABLE IF NOT EXISTS visual_builds (
  created_at REAL NOT NULL, updated_at REAL NOT NULL,
  PRIMARY KEY(workspace_id,visual_id,instruction_hash)
 );
+
+CREATE TABLE IF NOT EXISTS asset_folder_inventory (
+ workspace_id TEXT PRIMARY KEY REFERENCES story_workspaces,
+ folder_id TEXT NOT NULL, files TEXT NOT NULL DEFAULT '[]',
+ checked_at REAL, attempted_at REAL NOT NULL,
+ error TEXT NOT NULL DEFAULT ''
+);

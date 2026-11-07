@@ -200,6 +200,8 @@ class WorkflowStore:
             result = dict(row) if row else dict(state='migrated', error='')
             result['can_start_research']=not bool(db.execute("SELECT 1 FROM workflow_runs WHERE workspace_id=? AND operation='initial' AND state<>'cancelled'",(story['workspace_id'],)).fetchone())
             result['artifacts'] = [dict(a) for a in db.execute('SELECT artifact_key,doc_id,current_version,stale,render_state FROM artifacts WHERE workspace_id=? ORDER BY artifact_key', (story['workspace_id'],))]
+            from phase2.asset_inventory import progress
+            result['visual_assets']=progress(db,story['workspace_id'])
             result['proposals']=[dict(v) for v in db.execute("SELECT v.version_id,v.proposal_doc_id,a.artifact_key FROM artifact_versions v JOIN artifacts a USING(artifact_id) WHERE a.workspace_id=? AND v.state='candidate'",(story['workspace_id'],))]
             if row:
                 steps = [dict(s) for s in db.execute('SELECT step_key,state,attempt,error,output_version FROM step_executions WHERE run_id=? ORDER BY rowid', (row['run_id'],))]

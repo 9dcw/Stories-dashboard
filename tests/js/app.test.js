@@ -594,3 +594,26 @@ test('court inventory shows court counts separately from feeds and exposes outst
   assert.match(html,/Example &lt;court&gt;/);
   assert.match(html,/Additional scope pending/);
 });
+
+
+test('Phase 2 cards show Drive asset count and current-build progress',()=>{
+  const {context}=loadApp();
+  const html=vm.runInContext(`card({story_id:7,title:'Story',status:'Phase 2',phase2_job:{state:'completed',visual_assets:{saved:9,folder_url:'https://drive.google.com/drive/folders/images',checked_at:1794000000,build:{saved:7,total:7,blocked:0,skipped:0}}}})`,context);
+  assert.match(html,/Visual assets: 9 saved in Drive/);
+  assert.match(html,/7 of 7 visuals saved/);
+  assert.match(html,/<progress value="7" max="7"/);
+  assert.match(html,/href="https:\/\/drive.google.com\/drive\/folders\/images"/);
+});
+
+test('asset counts distinguish unchecked, zero, stale and blocked progress',()=>{
+  const {context}=loadApp();
+  const render=assets=>vm.runInContext(`visualAssetProgress({status:'Phase 2',phase2_job:{visual_assets:${JSON.stringify(assets)}}})`,context);
+  assert.match(render({saved:null,folder_url:'folder'}),/checking Drive/);
+  assert.doesNotMatch(render({saved:null,folder_url:'folder'}),/0 saved/);
+  assert.match(render({saved:0,folder_url:'folder'}),/0 saved in Drive/);
+  const stale=render({saved:3,stale:true,folder_url:'folder',build:{saved:2,total:5,blocked:2,skipped:1}});
+  assert.match(stale,/3 saved in Drive/);assert.match(stale,/Count needs refresh/);
+  assert.match(stale,/2 of 5 visuals saved/);assert.match(stale,/2 blocked/);assert.match(stale,/1 needs input/);
+  assert.match(render({saved:null,refresh_failed:true}),/count unavailable/);
+  assert.match(render({saved:3,build_outdated:true}),/Narrative revised since last build/);
+});

@@ -5,6 +5,7 @@ import fcntl
 import json
 import logging
 import threading
+import time
 from concurrent.futures import ThreadPoolExecutor
 from contextlib import contextmanager
 from pathlib import Path
@@ -291,8 +292,10 @@ class Worker:
         return job is not None
 
     def run(self,stop):
-        with ThreadPoolExecutor(max_workers=2) as pool:
+        with ThreadPoolExecutor(max_workers=3) as pool:
             active=set()
+            inventory=None
+            next_inventory=0
             while not stop.is_set():
                 self.store.recover_pending()
                 active={f for f in active if not f.done()}
@@ -300,5 +303,9 @@ class Worker:
                     job=self.store.claim()
                     if job:
                         active.add(pool.submit(self.execute,job))
+                if time.monotonic()>=next_inventory and (inventory is None or inventory.done()):
+                    from phase2.asset_inventory import refresh_due
+                    inventory=pool.submit(refresh_due,self.store,self.google)
+                    next_inventory=time.monotonic()+60
                 notify_one(self.store,self.telegram)
                 stop.wait(1)

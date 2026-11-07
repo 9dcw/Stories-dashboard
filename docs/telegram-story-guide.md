@@ -59,3 +59,15 @@ Definite preflight failures and explicitly rejected HTTP requests can be retried
 timeouts with no known outcome still require reconciliation. Visual planners also
 receive the narrative source registry, and previously skipped plans are reassessed
 when that registry changes.
+
+
+Phase 2 dashboard cards show the verified number of images, videos and PDFs in
+that story's Images folder. Click the count to open the folder. During a visual
+build, the card also shows how many current instruction rows have saved assets;
+older image versions contribute to the folder total but never inflate current
+build completion. Blocked rows and rows needing production input are shown
+separately. Counts refresh after uploads and approximately every ten minutes for
+manual Drive changes; the Phase 2 page checks for updated counts every minute.
+Unchecked folders are not shown as empty. If Drive cannot be reached, the last
+verified count remains visible with a refresh notice. A narrative revision hides
+the previous build's completion fraction until visuals are built again.

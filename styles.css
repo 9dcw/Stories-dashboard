@@ -30,3 +30,5 @@
 #courtInventory table { width:100%; border-collapse:collapse; text-align:left; }
 #courtInventory th, #courtInventory td { padding:.65rem; border-bottom:1px solid var(--border, #637087); vertical-align:top; }
 #courtInventory summary { cursor:pointer; padding:.5rem 0; }
+
+.visual-progress{display:flex;flex-direction:column;gap:5px;margin:12px 0 0;padding:10px 12px;border:1px solid var(--border);border-radius:10px;background:var(--surface2);font-size:12px}.visual-progress a{color:var(--text);text-decoration:none}.visual-progress a:hover{text-decoration:underline}.visual-progress progress{width:100%;height:7px;accent-color:var(--green)}.visual-gap{color:var(--muted)}
