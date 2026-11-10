@@ -61,3 +61,26 @@ def test_oversized_sources_are_rejected(monkeypatch):
     monkeypatch.setattr('phase2.source_reader.requests.get',lambda *_a,**_k:Response(chunks=[b'x'*250000]*9))
     with pytest.raises(ValueError,match='2 MB'):
         fetch('https://source.example.org/large')
+
+
+def test_pdf_dissent_index_and_later_page_range(monkeypatch):
+    import fitz
+    pdf=fitz.open()
+    for i in range(40):
+        page=pdf.new_page()
+        page.insert_text((40,40),'Judge Smith, dissenting. Additional case facts.' if i==38 else 'Majority opinion background and case facts.')
+    body=pdf.tobytes();pdf.close()
+    monkeypatch.setattr(socket,'getaddrinfo',lambda *_a,**_k:[(None,None,None,None,('93.184.216.34',443))])
+    monkeypatch.setattr('phase2.source_reader.requests.get',lambda *_a,**_k:Response(headers={'Content-Type':'application/pdf'},chunks=[body]))
+    first=fetch('https://court.example.test/case.pdf')
+    assert first['truncated'] and first['total_pages']==40
+    assert any(i['page']==39 for i in first['opinion_index'])
+    assert 'Judge Smith' not in first['text']
+    later=fetch('https://court.example.test/case.pdf',page_start=39,page_count=2)
+    assert later['page_start']==39 and later['page_end']==40
+    assert 'Judge Smith, dissenting' in later['text']
+
+
+@pytest.mark.parametrize('start,count',[(0,1),(1,31),(-1,1),(True,1)])
+def test_invalid_pdf_ranges_are_rejected_before_network(start,count):
+    with pytest.raises(ValueError,match='page range'):fetch('https://court.example.test/case.pdf',page_start=start,page_count=count)

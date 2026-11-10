@@ -401,3 +401,13 @@ def test_validation_feedback_does_not_echo_invalid_json():
     with pytest.raises(json.JSONDecodeError) as caught:
         json.loads('untrusted source content')
     assert Worker.validation_feedback(caught.value)=='Response must be valid JSON'
+
+
+def test_failed_research_retains_measured_usage(workflow,tmp_path):
+    from phase2.hermes_adapter import ResearchFailure
+    store,story=workflow;store.enqueue(story,'research-failure')
+    w=worker(store,tmp_path);w.tick()
+    def failed(*args):raise ResearchFailure('Search unavailable',usage={'total_tokens':1234})
+    w.research.run=failed;w.tick()
+    status=store.status(story)
+    assert status['state']=='blocked' and status['tokens']==1234

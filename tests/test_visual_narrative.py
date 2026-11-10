@@ -97,7 +97,7 @@ def test_prompt_update_is_idempotent_and_pinned_on_new_promotion(setup):
 def test_revise_replaces_blocked_run_without_resetting_usage(setup,tmp_path):
     store,story=setup;old=store.enqueue(story,'promotion')
     job=store.claim();store.checkpoint(job,resources={'folder':'folder','images':'images'},topic=('-1003984316484','12','13'));store.document(job,'narrative','doc-narrative');store.finish(job)
-    job=store.claim();store.record_usage(job,{'total_tokens':200000})
+    job=store.claim();used_tokens=job['manifest']['budgets']['step_tokens']+1;store.record_usage(job,{'total_tokens':used_tokens})
     assert store.status(story)['state']=='blocked'
     new=store.enqueue(story,'follow-up',operation='revise_artifact',target='narrative',instruction='Finish a focused draft.')
     assert old!=new
@@ -105,7 +105,7 @@ def test_revise_replaces_blocked_run_without_resetting_usage(setup,tmp_path):
     assert len(r.calls)==1 and store.status(story)['state']=='completed'
     with store.connect() as db:
         oldrow=db.execute('SELECT state,tokens FROM workflow_runs WHERE run_id=?',(old,)).fetchone()
-        assert tuple(oldrow)==('cancelled',200000)
+        assert tuple(oldrow)==('cancelled',used_tokens)
 
 
 def test_commands_preserve_guidance_and_reject_old_artifact_syntax():

@@ -35,6 +35,22 @@ def digest(value):
     return hashlib.sha256(canonical(value).encode()).hexdigest()
 
 
+def apply_research_policy(original):
+    # Apply the explicit new research requirement to older queued narrative runs.
+    # Preserve the prior contract hash and the pinned engine and producer prompt.
+    if 'narrative' not in original.get('steps',[]):return original
+    from phase2.research_agents import VERSION as RESEARCH_VERSION
+    if original.get('research_policy_version')==RESEARCH_VERSION:return original
+    import copy
+    manifest=copy.deepcopy(original)
+    manifest['research_base_workflow_hash']=original.get('hash','')
+    manifest['research_policy_version']=RESEARCH_VERSION
+    manifest['budgets']['step_tokens']=max(300000,manifest['budgets']['step_tokens'])
+    manifest['budgets']['run_tokens']=max(400000,manifest['budgets']['run_tokens'])
+    manifest.pop('hash',None);manifest['hash']=digest(manifest)
+    return manifest
+
+
 def snapshot(legacy=False):
     manifest = json.loads((ROOT / ("workflows/initial.v1.json" if legacy else "workflows/narrative.v1.json")).read_text())
     registry = json.loads((ROOT / "prompts/registry.json").read_text()) if legacy else {"narrative":{"prompt":"narrative.md","schema":"narrative.json"}}
@@ -49,7 +65,7 @@ def snapshot(legacy=False):
     manifest["policy"] = (ROOT / "prompts/evidence-policy.md").read_text()
     manifest["code_hash"] = digest({str(p.relative_to(ROOT)): p.read_text() for p in sorted(ROOT.rglob('*.py'))})
     manifest["hash"] = digest(manifest)
-    return apply_content_policy(manifest)
+    return apply_research_policy(apply_content_policy(manifest))
 
 
 def apply_content_policy(original):

@@ -7,6 +7,8 @@ from html.parser import HTMLParser
 import ipaddress
 import json
 import socket
+import threading
+import re
 from urllib.parse import urljoin,urlsplit,parse_qs
 
 import requests
@@ -59,7 +61,9 @@ def public_url(url):
     return url
 
 
-def fetch(url):
+def fetch(url,page_start=1,page_count=30):
+    if type(page_start) is not int or page_start<1 or type(page_count) is not int or not 1<=page_count<=30:
+        raise ValueError('PDF page range must start at a positive page and contain 1–30 pages')
     current=url
     for _ in range(6):
         public_url(current)
@@ -80,36 +84,51 @@ def fetch(url):
             body=b''.join(chunks)
             links=[]
             page_limited=False
+            pdf_info={}
             if mime=='application/pdf':
                 import fitz
                 with fitz.open(stream=body,filetype='pdf') as pdf:
-                    page_limited=len(pdf)>30
-                    text='\n'.join(f'Page {i+1}\n'+pdf[i].get_text() for i in range(min(len(pdf),30)))
+                    if page_start>len(pdf):raise ValueError('PDF page range exceeds document length')
+                    end=min(len(pdf),page_start-1+page_count)
+                    page_limited=page_start>1 or end<len(pdf)
+                    text='\n'.join(f'Page {i+1}\n'+pdf[i].get_text() for i in range(page_start-1,end))
+                    index=[]
+                    for i in range(min(len(pdf),300)):
+                        for line in pdf[i].get_text().splitlines():
+                            if re.search(r'\b(?:dissent(?:ing)?|concurr(?:ing|ence))\b',line,re.I):
+                                index.append(dict(page=i+1,excerpt=line[:300]))
+                                if len(index)>=40:break
+                        if len(index)>=40:break
+                    pdf_info=dict(total_pages=len(pdf),page_start=page_start,page_end=end,opinion_index=index,opinion_index_truncated=len(pdf)>300 or len(index)>=40)
             elif mime in {'text/html','application/xhtml+xml'}:
                 parser=ArticleText();parser.feed(body.decode(response.encoding or 'utf-8',errors='replace'))
                 text='\n'.join(parser.parts)
                 links=list(dict.fromkeys(urljoin(current,l) for l in parser.links if urlsplit(urljoin(current,l)).scheme in {'http','https'}))[:100]
             else:
                 text=body.decode('utf-8',errors='replace')
-            return dict(url=current,requested_url=url,content_type=mime,sha256=hashlib.sha256(body).hexdigest(),retrieved_at=datetime.now(timezone.utc).isoformat(),text=text[:32000],truncated=len(text)>32000 or page_limited,links=links)
+            return dict(url=current,requested_url=url,content_type=mime,sha256=hashlib.sha256(body).hexdigest(),retrieved_at=datetime.now(timezone.utc).isoformat(),text=text[:32000],truncated=len(text)>32000 or page_limited,links=links,**pdf_info)
     raise ValueError('Source exceeded the redirect limit')
 
 
-def register(snapshots):
+def register(snapshots,limit=12,max_chars=32000):
     from tools.registry import registry
     attempts=0
+    lock=threading.Lock()
     def handler(args,**kwargs):
         nonlocal attempts
         try:
-            if attempts>=12:
-                raise ValueError('Per-step source retrieval limit reached')
-            attempts+=1
-            value=fetch(args['url'])
-            snapshots.append(value)
-            return json.dumps(dict(success=True,**value),ensure_ascii=False)
+            with lock:
+                if attempts>=limit:
+                    raise ValueError('Per-step source retrieval limit reached')
+                attempts+=1
+            options={key:args[key] for key in ['page_start','page_count'] if key in args}
+            value=fetch(args['url'],**options)
+            with lock:snapshots.append(value)
+            visible=dict(value,text=value['text'][:max_chars],truncated=value.get('truncated',False) or len(value['text'])>max_chars)
+            return json.dumps(dict(success=True,**visible),ensure_ascii=False)
         except Exception as exc:
             return json.dumps({'success':False,'error':'Source retrieval failed ('+type(exc).__name__+'); record the access gap without inventing evidence.'})
-    registry.register(name='stories_fetch_source',toolset='stories_research',schema={'name':'stories_fetch_source','description':'Read one public article or primary record by HTTP GET. Returns bounded text, links, content hash and truncation status. No authentication, private addresses, external writes or shell execution.','parameters':{'type':'object','properties':{'url':{'type':'string'}},'required':['url'],'additionalProperties':False}},handler=handler)
+    registry.register(name='stories_fetch_source',toolset='stories_research',schema={'name':'stories_fetch_source','description':'Read one public article or primary record by HTTP GET. Returns bounded text, links, content hash and truncation status. PDFs include an opinion_index of dissent/concurrence mentions across pages; use page_start/page_count to read later passages or appended separate opinions. No authentication, private addresses, external writes or shell execution.','parameters':{'type':'object','properties':{'url':{'type':'string'},'page_start':{'type':'integer','minimum':1},'page_count':{'type':'integer','minimum':1,'maximum':30}},'required':['url'],'additionalProperties':False}},handler=handler)
 
 
 def fetch_asset(url):

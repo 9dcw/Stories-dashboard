@@ -8,7 +8,7 @@ import uuid
 from contextlib import contextmanager
 from pathlib import Path
 
-from phase2.registry import OPERATIONS, canonical, dependents, digest, snapshot
+from phase2.registry import OPERATIONS, canonical, dependents, digest, snapshot, apply_research_policy
 from phase2.doc_policy import instructions
 
 
@@ -240,7 +240,7 @@ class WorkflowStore:
                                  AND w.state<>'blocked' ORDER BY r.created_at,s.rowid''', (now,)).fetchall()
             for item in rows:
                 job = dict(item)
-                manifest = json.loads(job['manifest'])
+                manifest = apply_research_policy(json.loads(job['manifest']))
                 running=db.execute("SELECT count(*) FROM step_executions WHERE state='running'").fetchone()[0]
                 if running>=min(2,manifest['budgets']['concurrency']):
                     continue

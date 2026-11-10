@@ -117,3 +117,15 @@ New artifacts and subsequent reviews apply [Google Docs content policy](doc-cont
 ## Delete a Phase 2 story
 
 The Phase 2 card offers Delete for pending and ready stories. After confirmation, the authenticated DELETE `/api/v1/stories/{story_id}` marks the project Deleted and atomically cancels unfinished workflow runs, invalidating running step leases. The story stays out of both Phase 2 and new candidates. Docs, Drive assets, Telegram history, structured evidence and identifiers remain stored. Repeated deletion is safe; Phase 3 deletion and retrying/re-promoting a deleted story are rejected. An external request already in flight may finish, but its worker cannot commit a new project state after cancellation.
+
+
+Narrative research now uses `case-research.v1`: two isolated search-only agents
+investigate the producer's direction and same-case separate opinions before
+narrative drafting. Both actual web searches and source retrievals are recorded;
+source quotations and case identity are checked against retrieved text. Partial
+searches retain their evidence and explicit gaps. Combined scout and writer
+usage is counted against a 300,000-token step / 400,000-token run budget, with
+bounded parallelism, per-agent limits and the existing wall-clock deadline.
+Existing queued narratives receive the effective research contract while the
+original workflow hash, model and producer prompt remain preserved. No generic
+delegation, shell, messaging or external-write tools are exposed to these agents.

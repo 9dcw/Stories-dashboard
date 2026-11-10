@@ -40,6 +40,7 @@ def test_nonprecedential_does_not_spend_agent_call():
 
 
 @pytest.mark.parametrize('subject,passage',[
+    ('MANDAMUS','Relator petitions this court for a writ of mandamus directing the trial court to vacate its insurance discovery order.'),
     ('FAMILY_MATTER','This appeal concerns a grandparent visitation order and related attorney fees.'),
     ('IMMIGRATION','This appeal challenges the petitioner’s removal order and denial of asylum.'),
     ('CRIMINAL_PROCEEDING','This appeal challenges a drug-conspiracy sentence and supervised-release revocation.'),
@@ -270,3 +271,31 @@ def test_uncertainty_migration_is_idempotent_and_preserves_editorial_decisions(t
         assert row['content_hash'] == 'document-hash'
         assert c.execute("SELECT count(*) FROM court_screenings WHERE decision='PASS'").fetchone()[0] == 4
         assert c.execute("SELECT count(*) FROM court_screenings WHERE decision='ERROR'").fetchone()[0] == 1
+
+
+def test_mandamus_rule_does_not_create_a_citation_or_generic_procedure_filter():
+    from court_pipeline import SCREEN_PROMPT
+    assert 'Exclude MANDAMUS' in SCREEN_PROMPT
+    assert 'An incidental discussion of mandamus standards' in SCREEN_PROMPT
+    passage='This insurance coverage appeal cites a mandamus opinion to explain discovery standards.'
+    result=screen_document({'headline':'Coverage appeal'},{'pages':[passage]},lambda _:answer())
+    assert result['decision']=='PASS'
+
+
+def test_mandamus_replay_preserves_promoted_cases_and_unrelated_classifications(tmp_path):
+    from scripts.rescreen_mandamus_candidates import apply_result
+    from court_pipeline import save_screen
+    store=StoryStore(tmp_path/'db.sqlite3');sid=make_source(store)
+    first=store.add_item(sid,'Mandamus petition','https://www.ca1.uscourts.gov/opnfiles/mandamus.pdf')
+    second=store.add_item(sid,'Promoted case','https://www.ca1.uscourts.gov/opnfiles/promoted.pdf')
+    for item in [first,second]:save_screen(store,item.item_id,dict(decision='PASS',reason_code='',needs_review=False,gist='Retained summary'),'hash')
+    result=dict(decision='EXCLUDED',reason_code='MANDAMUS',needs_review=False,evidence=[dict(page=1,quote='Original proceeding seeking a writ of mandamus.')])
+    with store._connect() as connection:
+        connection.execute("UPDATE items SET status='PROMOTED' WHERE item_id=?",(second.item_id,))
+        assert not apply_result(connection,first.item_id,dict(result,reason_code='FAMILY_MATTER'),'hash')
+        assert not apply_result(connection,second.item_id,result,'hash')
+        assert apply_result(connection,first.item_id,result,'hash')
+        assert not apply_result(connection,first.item_id,result,'hash')
+        row=connection.execute('SELECT * FROM court_screenings WHERE item_id=?',(first.item_id,)).fetchone()
+        assert row['reason_code']=='MANDAMUS' and row['rule_version']==RULE_VERSION
+        assert json.loads(row['result_json'])['policy_migration']['previous_result']['gist']=='Retained summary'

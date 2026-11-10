@@ -46,15 +46,19 @@ rejection, or requirement to prove precedent. All other subjects pass.
    within civil-rights litigation, prison conditions, and Title VII/ADA/FLSA
    discrimination or retaliation claims. Merely mentioning these issues is insufficient.
 
+5. Mandamus proceedings, including original petitions for a writ of mandamus,
+   regardless of the underlying subject or whether relief is granted or denied.
+   Incidental citations to mandamus cases do not trigger this exclusion.
+
 Ordinary coverage, contract, tort, personal-injury and liability cases still pass
-unless an exclusion is independently central. No procedural/no-outcome filter was
-added. Family matters (custody, visitation, parental rights, adoption, dependency,
+unless an exclusion is independently central. Apart from mandamus, no general
+procedural/no-outcome filter was added. Family matters (custody, visitation, parental rights, adoption, dependency,
 divorce, support and marital-property division, including related fees) are excluded
 when central. Merely involving a child or relatives does not exclude an ordinary
 injury, insurance, reimbursement, inheritance or commercial dispute. Rulings with
 no concrete case information are excluded; a verified bare disposition such as
 “AFFIRMED.” is valid evidence even when shorter than 20 characters.
-Uncertain screening is excluded from the candidate feed. The version is `court_exclusions_v4`; prior
+Uncertain screening is excluded from the candidate feed. The version is `court_exclusions_v5`; prior
 NEW court candidates are eligible for re-screening from cached full documents on
 intake. Dismissed, promoted and ignored items are not re-screened or restored.
 
@@ -101,3 +105,5 @@ The runner defaults to the existing Hermes gist adapter and model. Environment
 variables `STORY_GIST_COMMAND`, `STORY_GIST_MODEL`, and `STORY_GIST_PROVIDER`
 allow an explicit deployment configuration. The production wrapper sets
 `STORY_GIST_TOOLSETS=none`, so the classifier cannot browse or write externally.
+
+Mandamus proceedings are excluded under v5 even when the underlying dispute is otherwise eligible. A cited mandamus case or an incidental reference does not exclude an ordinary appeal; classification still requires a matching passage from this proceeding.

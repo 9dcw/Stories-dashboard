@@ -71,3 +71,17 @@ manual Drive changes; the Phase 2 page checks for updated counts every minute.
 Unchecked folders are not shown as empty. If Drive cannot be reached, the last
 verified count remains visible with a refresh notice. A narrative revision hides
 the previous build's completion fraction until visuals are built again.
+
+
+Every `/story revise <direction or question>` now launches two isolated,
+search-only agents before narrative drafting: one researches the producer's
+direction and contrary evidence, and the other searches for dissenting and
+concurring opinions in the same case. Both must actually perform web searches.
+They retrieve primary sources, verify quoted passages and case identity, and
+pass findings and unresolved access gaps to the narrative agent. The narrative
+keeps the majority holding distinct from separate-opinion reasoning and records
+additional relevant facts beside the affected beat. A failure to locate a
+dissent is reported as not located after searching, never proof of unanimity.
+Appended PDF opinions can be retrieved by page range. These requirements apply
+to existing stories with pinned development prompts as well as new stories;
+they do not regenerate visual assets or rewrite existing Docs on deployment.

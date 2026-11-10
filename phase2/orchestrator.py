@@ -15,7 +15,7 @@ from jsonschema import ValidationError
 from phase2.context import build_context
 from phase2.google_docs import doc_url
 from phase2.doc_policy import render_document
-from phase2.registry import digest, apply_content_policy
+from phase2.registry import digest, apply_content_policy, apply_research_policy
 from phase2.hermes_adapter import ResearchFailure
 from phase2.registry import validate_output
 from phase2.store import Conflict, LostLease
@@ -39,7 +39,7 @@ class Worker:
             yield
 
     def execute(self,job):
-        job=dict(job,manifest=apply_content_policy(job['manifest']))
+        job=dict(job,manifest=apply_research_policy(apply_content_policy(job['manifest'])))
         stop=threading.Event()
         lost=threading.Event()
         def keepalive():
@@ -72,6 +72,7 @@ class Worker:
                 self.store.finish(job)
                 return
             context=build_context(self.store,job)
+            context['research_policy_version']=job['manifest'].get('research_policy_version','')
             context['content_policy_version']=job['manifest']['content_policy_version']
             context.pop('hash',None)
             context['hash']=digest(context)
@@ -106,7 +107,7 @@ class Worker:
                     self.validate_result(job,inputs,output)
                 except (ValueError,ValidationError) as validation_error:
                     # One bounded repair using exactly the same snapshot and schema.
-                    repair=dict(inputs,validation_repair='The previous response failed the registered contract: '+self.validation_feedback(validation_error)+'. Return a complete valid JSON object; do not invent evidence.',previous_invalid_output=str(result.get('text',''))[:32000])
+                    repair=dict(inputs,validation_repair='The previous response failed the registered contract: '+self.validation_feedback(validation_error)+'. Return a complete valid JSON object; do not invent evidence.',previous_invalid_output=str(result.get('text',''))[:32000],research_packets=result.get('provenance',{}).get('search_agents',[]),research_source_snapshots=result.get('provenance',{}).get('source_snapshots',[]))
                     repaired=self.research.run(job,repair,lambda:self.store.heartbeat(job))
                     if not self.store.record_usage(job,repaired['usage']):
                         return
@@ -164,6 +165,7 @@ class Worker:
         except (ValidationError,ValueError):
             self.fail(job,'Structured output failed validation after repair')
         except ResearchFailure as exc:
+            if exc.usage and not self.store.record_usage(job,exc.usage):return
             self.fail(job,str(exc),retryable=exc.retryable)
         except Exception as exc:
             status=getattr(getattr(exc,'resp',None),'status',None)
