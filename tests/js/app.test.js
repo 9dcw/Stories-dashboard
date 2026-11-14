@@ -84,6 +84,23 @@ function deferred() {
   const promise = new Promise((yes, no) => { resolve = yes; reject = no; });
   return { promise, resolve, reject };
 }
+
+test('large candidate feeds render in batches and search covers every candidate', () => {
+  const {context,getElement,documentListeners}=loadApp();
+  vm.runInContext(`
+    state.candidates=Array.from({length:125},(_,i)=>({item_id:i,headline:'Candidate '+i,status:'NEW',source:'Court'}));
+    render();
+  `,context);
+  assert.equal((getElement('#candidateGrid').innerHTML.match(/class="candidate-card"/g)||[]).length,50);
+  assert.equal(getElement('#moreCandidates').hidden,false);
+  documentListeners.click({target:{closest:selector=>selector==='#moreCandidates'?{}:null}});
+  assert.equal((getElement('#candidateGrid').innerHTML.match(/class="candidate-card"/g)||[]).length,100);
+  getElement('#searchInput').listeners.input({target:{value:'Candidate 124'}});
+  assert.match(getElement('#candidateGrid').innerHTML,/Candidate 124/);
+  assert.equal(getElement('#moreCandidates').hidden,true);
+  getElement('#searchInput').listeners.input({target:{value:''}});
+  assert.equal((getElement('#candidateGrid').innerHTML.match(/class="candidate-card"/g)||[]).length,50);
+});
 function candidateSetup(context) {
   vm.runInContext(`
     state.candidates=[{item_id:7,headline:'First candidate',status:'NEW',summary_status:'COMPLETE'},

@@ -9,8 +9,8 @@ import time
 from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import NoReturn
-from fastapi import Cookie, Depends, FastAPI, HTTPException, Request, Response
-from fastapi.responses import FileResponse
+from fastapi import Cookie, Depends, FastAPI, HTTPException, Query, Request, Response
+from fastapi.responses import FileResponse, JSONResponse
 
 from api.auth import (
     LoginRateLimiter, SessionCodec, login_client_key, require_csrf, require_origin,
@@ -267,12 +267,27 @@ def create_app(config: RuntimeConfig | None = None) -> FastAPI:
         return {"authenticated": False}
 
     @app.get("/api/v1/dashboard")
-    def dashboard(session: dict[str, str] = Depends(session_dependency)) -> dict:
+    def dashboard(
+        session: dict[str, str] = Depends(session_dependency),
+        page_size: int | None = Query(default=None, ge=1, le=100),
+        cursor: str = Query(default="", max_length=1024),
+        view: str = "candidates", query: str = Query(default="", max_length=2000),
+        source: str = "", lane: str = "", screening: str = "retained",
+        dismissed: str = "hide", problem: str = "",
+    ) -> JSONResponse:
         try:
             model = build_live_read_model(store)
             for story in model['stories']:
                 story['phase2_job'] = jobs.public(story['story_id'])
-            return model
+            if page_size is not None:
+                from api.candidate_page import paginate_candidates
+                try:
+                    model = paginate_candidates(model, view=view, query=query, limit=page_size, cursor=cursor,
+                                                filters=dict(source=source, lane=lane, screening=screening,
+                                                             dismissed=dismissed, problem=problem))
+                except ValueError as error:
+                    raise HTTPException(status_code=400, detail=str(error)) from error
+            return JSONResponse(model)
         except sqlite3.OperationalError as error:
             _database_unavailable(error)
 

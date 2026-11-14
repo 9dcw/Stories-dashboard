@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#0b1020"><meta name="description" content="Insurance story discovery desk.">
-  <link rel="manifest" href="./manifest.json"><link rel="stylesheet" href="./styles.css?v=20261107-visual-assets">
+  <link rel="manifest" href="./manifest.json"><link rel="stylesheet" href="./styles.css?v=20261114-fast-dashboard">
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <title>Stories Dashboard</title>
 </head>
@@ -27,7 +27,7 @@
   <section class="court-pipeline-status" hidden id="courtInventory" aria-label="Court coverage inventory"></section>
   <h2 id="viewHeading">New Candidates</h2>
   <section class="global-filter-panel" aria-label="Filter dashboard"><div class="global-filters" id="filters"></div><p class="muted" id="visibleCount" role="status" aria-live="polite"></p></section>
-  <section class="section" id="candidateSection"><div class="section-heading"><h2 id="candidateHeading">New Candidates</h2><span class="muted" id="candidateCount"></span></div><div class="candidate-grid" id="candidateGrid"></div></section>
+  <section class="section" id="candidateSection"><div class="section-heading"><h2 id="candidateHeading">New Candidates</h2><span class="muted" id="candidateCount"></span></div><div class="candidate-grid" id="candidateGrid"></div><button class="action" id="moreCandidates" hidden>Show 50 more candidates</button></section>
   <section class="section" id="promotedSection"><div class="section-heading"><h2 id="resultsHeading">Promoted stories</h2><span class="muted" id="resultsCount"></span></div><div class="story-grid" id="storyGrid"></div></section>
   <section class="section" id="sourceReviewSection"><div class="section-heading"><h2>Discovery items</h2><span class="muted" id="sourceProposalCount"></span></div><div id="coverageGrid" hidden></div><div class="source-proposal-grid" id="sourceProposalGrid"></div></section>
   <section class="section" id="sourceManagementSection"><div class="section-heading"><h2 id="sourceHeading">Sources</h2><span class="muted" id="sourceManagementCount"></span></div><div class="source-management-grid" id="sourceManagementGrid"></div></section>
@@ -56,5 +56,5 @@
     <div class="actions"><button type="button" id="promotionCancel" class="action">Cancel</button><button type="submit" id="promotionSubmit" class="action primary">Promote &amp; start research</button></div>
   </form>
 </dialog>
-<script src="./app.js?v=20261107-visual-assets" defer></script>
+<script src="./app.js?v=20261114-fast-dashboard" defer></script>
 </body></html>

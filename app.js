@@ -24,6 +24,12 @@ const state={
   candidateUpdates:{},      // local projections protect against stale dashboard responses
   candidateRevision:0,
   dashboardLoad:0,
+  candidateLimit:50,
+  candidateFilterKey:'',
+  candidatePage:null,
+  candidateBaselines:{},
+  candidatesLoading:false,
+  candidateSearchTimer:0,
   dismissalNotes:{},        // preserve submitted feedback across ambiguous retries
   mutationRequestIds:{},     // operation key → UUID retained across ambiguous retries
   snackbarTimer:0,
@@ -151,22 +157,33 @@ function renderLogin(){
 }
 
 // ── Dashboard loading ─────────────────────────────────────────────
-async function loadDashboard(){
+async function loadDashboard({append=false}={}){
+  if(append&&state.candidatesLoading)return;
   const loadId=++state.dashboardLoad;
   const candidateRevision=state.candidateRevision;
+  state.candidatesLoading=true;
+  $('#moreCandidates').disabled=true;
   try{
-    const r=await API.fetch('/api/v1/dashboard');
+    const params={page_size:50,view:state.view,query:state.query,...state.filters};
+    if(append&&state.candidatePage?.next_cursor)params.cursor=state.candidatePage.next_cursor;
+    const url='/api/v1/dashboard?'+Object.entries(params).map(([k,v])=>encodeURIComponent(k)+'='+encodeURIComponent(v)).join('&');
+    const r=await API.fetch(url);
     if(!r.ok)throw new Error('Dashboard unavailable');
     const d=await r.json();
     if(loadId!==state.dashboardLoad)return;
     state.stories=(d.stories||[]).filter(s=>!state.deletedStories.has(String(s.story_id)));
-    state.candidates=(d.recent_candidates||[]).filter(c=>c.status!=='IGNORED').map(c=>{
+    state.candidatePage=d.candidate_page||null;
+    state.candidateBaselines=append?Object.fromEntries(state.candidates.map(c=>[c.item_id,c])):{};
+    for(const c of d.recent_candidates||[])state.candidateBaselines[c.item_id]=c;
+    const incoming=(d.recent_candidates||[]).filter(c=>c.status!=='IGNORED').map(c=>{
       const update=state.candidateUpdates[c.item_id];
       if(!update)return c;
       if(update.pending||update.revision>candidateRevision)return {...c,...update.patch};
       delete state.candidateUpdates[c.item_id];
       return c;
     });
+    state.candidates=append?[...new Map([...state.candidates,...incoming].map(c=>[c.item_id,c])).values()]:incoming;
+    if(state.candidatePage)state.candidateLimit=Math.max(50,state.candidates.length);
     state.sources=d.sources||[];
     state.courtPipeline=d.court_pipeline;
     state.courtInventory=d.court_inventory;
@@ -180,7 +197,18 @@ async function loadDashboard(){
     if(loadId!==state.dashboardLoad)return;
     $('#storyCount').textContent='Could not load dashboard';
     $('#updatedAt').textContent=e.message||'Check connection';
+  }finally{
+    if(loadId===state.dashboardLoad){state.candidatesLoading=false;$('#moreCandidates').disabled=false;}
   }
+}
+
+function requestFilteredDashboard(){
+  if(!state.candidatePage)return;
+  ++state.dashboardLoad; // Ignore responses for filters that have already changed.
+  state.candidatesLoading=true;
+  $('#moreCandidates').disabled=true;
+  clearTimeout(state.candidateSearchTimer);
+  state.candidateSearchTimer=setTimeout(()=>loadDashboard(),200);
 }
 
 // ── Render helpers (preserving original card layouts) ─────────────
@@ -205,7 +233,10 @@ function inCategory(r,kind,view=state.view){
   if(view==='phase3')return kind==='story'&&storyStage(r)==='Phase 3';
   return view==='sources'?kind==='source':view==='discovery'&&kind==='discovery';
 }
-function categoryCount(view){return [[state.candidates,'candidate'],[state.stories,'story'],[state.sources,'source']].reduce((n,[records,kind])=>n+records.filter(r=>inCategory(r,kind,view)).length,0)}
+function categoryCount(view){
+  const candidateCount=state.candidatePage?(state.candidatePage.category_counts[view]||0)+state.candidates.reduce((n,c)=>n+Number(inCategory(c,'candidate',view))-Number(inCategory(state.candidateBaselines[c.item_id]||c,'candidate',view)),0):state.candidates.filter(c=>inCategory(c,'candidate',view)).length;
+  return candidateCount+[[state.stories,'story'],[state.sources,'source']].reduce((n,[records,kind])=>n+records.filter(r=>inCategory(r,kind,view)).length,0);
+}
 function renderCategories(){
   $('#categoryMenu').innerHTML=categories.map(([key,label])=>`<button class="filter ${state.view===key?'active':''}" data-view="${key}" aria-pressed="${state.view===key}">${label} <span>${categoryCount(key)}</span></button>`).join('');
   $('#managementMenu').innerHTML=[['sources','Sources'],['discovery','Discovery review']].map(([key,label])=>`<button class="text-button" data-view="${key}" aria-pressed="${state.view===key}">${label}</button>`).join('');
@@ -213,7 +244,7 @@ function renderCategories(){
 function renderFilters(){
   let controls=[];
   if(state.view==='candidates'){
-    const names=[...new Set(state.candidates.filter(activeCandidate).map(c=>c.source).filter(Boolean))].sort();
+    const names=state.candidatePage?.sources||[...new Set(state.candidates.filter(activeCandidate).map(c=>c.source).filter(Boolean))].sort();
     controls.push(filterSelect('source','Source',[['','All sources'],...names.map(n=>[n,n])]));
     controls.push(`<details class="advanced-filters"><summary>Advanced</summary><div class="refinement-grid">${filterSelect('lane','Content area',[['','All content areas'],...Object.entries(laneLabels)])}${filterSelect('screening','Opinion screening',[['retained','Passed screening'],['','All screening results'],['EXCLUDED','Excluded'],['review','Needs review'],['pending','Not screened']])}${filterSelect('dismissed','Dismissed',[['hide','Hide dismissed'],['include','Show dismissed'],['only','Dismissed only']])}</div></details>`);
   }
@@ -228,7 +259,7 @@ function selectView(view){
   state.view=view;clearFilters();
 }
 function clearFilters(){
-  state.filters={...defaultFilters};state.query='';$('#searchInput').value='';$('#clearSearch').style.display='none';renderFilters();render();
+  state.filters={...defaultFilters};state.query='';$('#searchInput').value='';$('#clearSearch').style.display='none';renderFilters();render();requestFilteredDashboard();
 }
 function matchesRecord(record,kind){
   const f=state.filters;
@@ -322,8 +353,10 @@ function candidateCard(c){
 }
 
 function render(){
+  const filterKey=JSON.stringify([state.view,state.query,state.filters]);
+  if(filterKey!==state.candidateFilterKey){state.candidateLimit=state.candidatePage?Math.max(50,state.candidates.length):50;state.candidateFilterKey=filterKey;}
   const stories=state.stories.filter(s=>matchesRecord(s,'story')).sort(storySort);
-  const candidates=state.candidates.filter(c=>matchesRecord(c,'candidate')).sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+  const candidates=state.candidates.filter(c=>matchesRecord(c,'candidate')).sort((a,b)=>String(b.date).localeCompare(String(a.date))||b.item_id-a.item_id);
   const proposals=state.proposals.filter(p=>matchesRecord(p,'discovery'));
   const sources=state.sources.filter(s=>matchesRecord(s,'source'));
   renderCategories();
@@ -336,9 +369,12 @@ function render(){
   $('#resultsCount').textContent=`${stories.length} stories`;
   $('#resultsHeading').textContent=state.view==='problems'?'Phase 2 setup problems':viewLabel();
   $('#promotedSection').hidden=!['phase2','phase3'].includes(state.view)&&!stories.length;
-  $('#candidateGrid').innerHTML=candidates.map(candidateCard).join('');
-  $('#candidateCount').textContent=`${candidates.length} candidates`;
-  $('#candidateSection').hidden=state.view!=='candidates'&&!candidates.length;
+  const visibleCandidates=candidates.slice(0,state.candidateLimit);
+  const candidateTotal=state.candidatePage?state.candidatePage.total+state.candidates.reduce((n,c)=>n+Number(matchesRecord(c,'candidate'))-Number(matchesRecord(state.candidateBaselines[c.item_id]||c,'candidate')),0):candidates.length;
+  $('#candidateGrid').innerHTML=visibleCandidates.map(candidateCard).join('');
+  $('#candidateCount').textContent=`${visibleCandidates.length} of ${candidateTotal} candidates`;
+  $('#moreCandidates').hidden=state.candidatePage?!state.candidatePage.next_cursor:visibleCandidates.length>=candidates.length;
+  $('#candidateSection').hidden=state.view!=='candidates'&&!candidateTotal;
   renderSources({source_proposals:proposals});
   $('#sourceReviewSection').hidden=state.view!=='discovery';
   renderSourceManagement(sources);
@@ -346,10 +382,10 @@ function render(){
   $('#sourceManagementSection').hidden=state.view!=='sources'&&!sources.length;
   $('#courtPipelineStatus').hidden=!['sources','discovery'].includes(state.view);
   renderCourtInventory();
-  const total=stories.length+candidates.length+proposals.length+sources.length;
+  const total=stories.length+candidateTotal+proposals.length+sources.length;
   const base=['sources','discovery'].includes(state.view)?(state.view==='sources'?state.sources.length:state.proposals.length):categoryCount(state.view);
   $('#storyCount').textContent=`${viewLabel()} · ${total} matching items`;
-  $('#visibleCount').textContent=`${total} shown · ${base} ${state.view==='candidates'?'active candidates':viewLabel()+' items'}`;
+  $('#visibleCount').textContent=`${total-candidateTotal+visibleCandidates.length} shown · ${base} ${state.view==='candidates'?'active candidates':viewLabel()+' items'}`;
   $('#emptyState').hidden=total>0;
   $('#emptyHeading').textContent=`No matching items in ${viewLabel()}`;
 }
@@ -542,6 +578,7 @@ function showSnackbar(html,ms){
 
 // ── Event delegation ─────────────────────────────────────────────────
 document.addEventListener('click',e=>{
+  if(e.target.closest('#moreCandidates')){if(state.candidatePage)loadDashboard({append:true});else{state.candidateLimit+=50;render();}return}
   const view=e.target.closest('[data-view]');
   if(view){selectView(view.dataset.view);return}
   if(e.target.closest('[data-clear-filters]')){clearFilters();return}
@@ -571,10 +608,10 @@ document.addEventListener('click',e=>{
 });
 
 // bind existing controls
-$('#searchInput').addEventListener('input',e=>{state.query=e.target.value;$('#clearSearch').style.display=state.query?'block':'none';render()});
-$('#clearSearch').addEventListener('click',()=>{$('#searchInput').value='';state.query='';$('#clearSearch').style.display='none';render()});
+$('#searchInput').addEventListener('input',e=>{state.query=e.target.value;$('#clearSearch').style.display=state.query?'block':'none';render();requestFilteredDashboard()});
+$('#clearSearch').addEventListener('click',()=>{$('#searchInput').value='';state.query='';$('#clearSearch').style.display='none';render();requestFilteredDashboard()});
 $('#themeToggle').addEventListener('click',()=>{const dark=document.documentElement.dataset.theme==='dark';document.documentElement.dataset.theme=dark?'':'dark';localStorage.setItem('stories-theme',dark?'light':'dark');$('#themeToggle').textContent=dark?'☼':'☾'});
-document.addEventListener('change',e=>{const key=e.target.dataset.globalFilter;if(key&&Object.hasOwn(defaultFilters,key)){state.filters[key]=e.target.value;render();}});
+document.addEventListener('change',e=>{const key=e.target.dataset.globalFilter;if(key&&Object.hasOwn(defaultFilters,key)){state.filters[key]=e.target.value;render();requestFilteredDashboard();}});
 
 // ── Init ──────────────────────────────────────────────────────────────
 async function init(){

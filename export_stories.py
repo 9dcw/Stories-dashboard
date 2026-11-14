@@ -47,7 +47,7 @@ def phase2_action_url(
     return f"https://t.me/{TELEGRAM_BOT_USERNAME}?" + urlencode({"text": instruction})
 
 
-def build_read_model(store: StoryStore, generated_at: str | None = None) -> dict:
+def build_read_model(store: StoryStore, generated_at: str | None = None, *, live: bool = False) -> dict:
     """Build a deterministic view from SQLite; promoted Phase 2 work is not a candidate."""
     from court_pipeline import read_court_state
     screenings, court_pipeline, court_sources = read_court_state(store)
@@ -57,7 +57,7 @@ def build_read_model(store: StoryStore, generated_at: str | None = None) -> dict
     }
     from appeal_identity import group_items, load_identities
     from originating_courts import load_courts, activity_report
-    originating = load_courts(store)
+    originating = {} if live else load_courts(store)
     candidates = []
     rows = store.list_items()
     for row in rows:
@@ -66,6 +66,11 @@ def build_read_model(store: StoryStore, generated_at: str | None = None) -> dict
         if row["status"] == "IGNORED" or row["item_id"] in promoted_item_ids:
             continue
         source_link = public_source_url(row["raw_url"])
+        screening = screenings.get(row["item_id"])
+        if live and screening is not None:
+            screening = {key: screening[key] for key in (
+                "decision", "reason_code", "reason", "needs_review", "evidence", "rule_version", "screened_at"
+            ) if key in screening}
         candidates.append({
             "item_id": row["item_id"], "headline": row["headline"],
             "display_headline": row["display_headline"], "source": row["source_name"],
@@ -73,20 +78,23 @@ def build_read_model(store: StoryStore, generated_at: str | None = None) -> dict
             "date": row["published_at"] or row["first_seen_at"], "source_link": source_link,
             "status": row["status"], "gist": row["gist"],
             "summary_status": row["summary_status"],
-            "screening": screenings.get(row["item_id"]),
+            "screening": screening,
             "appeal_identity": row.get("appeal_identity"),
             "originating_courts": {"documents": [{"item_id": d["item_id"], **originating[d["item_id"]]}
                 for d in row.get("appeal_documents", []) if d["item_id"] in originating]},
             "appeal_documents": row.get("appeal_documents", []),
-            "dismissal_action_url": f"https://t.me/{TELEGRAM_BOT_USERNAME}?" + urlencode({
+            **({} if live else {"dismissal_action_url": f"https://t.me/{TELEGRAM_BOT_USERNAME}?" + urlencode({
                 "text": f"Dismiss story item {row['item_id']} from the Stories Dashboard: {row['headline']}. "
                         "Set its status to DISMISSED, preserve the record, and refresh the dashboard export. "
                         f"Source: {source_link}",
-            }),
+            })}),
             "can_promote_to_phase2": row["status"] == "NEW",
             "summary_prompt_version": row["summary_prompt_version"],
             "summarized_at": row["summarized_at"],
         })
+        if live:
+            for key in ("appeal_identity", "originating_courts", "summary_prompt_version", "summarized_at"):
+                candidates[-1].pop(key, None)
     stories = []
     for row in project_rows:
         if row["status"] not in PROMOTED_STORY_STATUSES:
@@ -136,7 +144,7 @@ def build_read_model(store: StoryStore, generated_at: str | None = None) -> dict
         "generated_at": export_time, "recent_candidates": candidates, "stories": stories,
         "court_inventory": court_coverage_report(store.list_sources()),
         "court_pipeline": court_pipeline,
-        "originating_court_activity": activity_report(store, originating),
+        **({} if live else {"originating_court_activity": activity_report(store, originating)}),
         "sources": sources, "source_proposals": proposals, "coverage": store.coverage_report(),
     }
 

@@ -17,7 +17,7 @@ def sanitize_feedback(event: dict | None) -> dict | None:
 
 def build_live_read_model(store: StoryStore) -> dict:
     with store.read_snapshot() as snapshot:
-        model = build_read_model(snapshot)
+        model = build_read_model(snapshot, live=True)
         dismissals = snapshot.get_active_dismissals([
             candidate["item_id"] for candidate in model["recent_candidates"]
         ])

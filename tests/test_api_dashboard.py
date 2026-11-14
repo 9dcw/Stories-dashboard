@@ -5,6 +5,20 @@ def mutation_headers(csrf):
     return {"Origin": "http://localhost:8000", "X-CSRF-Token": csrf}
 
 
+def test_dashboard_pages_and_searches_all_candidates(client, api_db):
+    login(client)
+    first = client.get("/api/v1/dashboard", params=dict(page_size=1)).json()
+    assert len(first["recent_candidates"]) == 1
+    assert first["candidate_page"]["total"] == 2
+    second = client.get("/api/v1/dashboard", params=dict(page_size=1, cursor=first["candidate_page"]["next_cursor"])).json()
+    assert first["recent_candidates"][0]["item_id"] != second["recent_candidates"][0]["item_id"]
+    search = client.get("/api/v1/dashboard", params=dict(page_size=1, query="Second candidate")).json()
+    assert search["candidate_page"]["total"] == 1
+    assert search["recent_candidates"][0]["headline"] == "Second candidate"
+    assert client.get("/api/v1/dashboard?page_size=101").status_code == 422
+    assert client.get("/api/v1/dashboard?page_size=1&cursor=invalid").status_code == 400
+
+
 def test_dashboard_requires_authentication_and_reads_live_sqlite(client, api_db):
     assert client.get("/api/v1/dashboard").status_code == 401
     login(client)
