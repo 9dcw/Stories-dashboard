@@ -8,6 +8,7 @@ from court_pipeline import court_candidates,extract_document
 from source_fetch import fetch_resource
 from state_courts import fetch_listing
 from state_court_sources import sources
+from step2_courts import specs as expansion_sources
 from story_store import StoryStore,utc_now
 
 
@@ -39,13 +40,13 @@ def audit_source(spec,sample_count=1):
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--db',type=Path);p.add_argument('--activate',action='store_true')
-    p.add_argument('--state',choices=['FL','TX','CA'],action='append')
+    p.add_argument('--state',choices=['FL','TX','CA','IL','PA'],action='append')
     p.add_argument('--court',action='append')
     p.add_argument('--audit-output',required=True,type=Path)
     p.add_argument('--reuse-audit',type=Path,help='Reuse a same-day audit; still verify source definition matches')
     a=p.parse_args()
     if a.activate and not a.db:p.error('--activate requires --db')
-    specs=[s for s in sources() if (not a.state or s['jurisdiction'][3:] in a.state) and (not a.court or s['court_id'] in a.court)]
+    specs=[s for s in sources()+expansion_sources() if (not a.state or s['jurisdiction'][3:] in a.state) and (not a.court or s['court_id'] in a.court)]
     if not specs:p.error('No matching official sources')
     prior=json.loads(a.reuse_audit.read_text()) if a.reuse_audit else []
     audits=[];installed=[]

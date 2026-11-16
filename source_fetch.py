@@ -104,7 +104,7 @@ def _headers(url: str, policy: FetchPolicy) -> dict[str, str]:
     return headers
 
 
-def fetch_resource(url: str, *, source_config: str | dict | None = None, timeout: int = 20, max_bytes: int = 2_000_000) -> tuple[bytes, str, str]:
+def fetch_resource(url: str, *, source_config: str | dict | None = None, timeout: int = 20, max_bytes: int = 2_000_000, request_data: bytes | None = None) -> tuple[bytes, str, str]:
     policy = policy_for(url, source_config)
     request_url = _adapt_endpoint(url, policy)
     config = json.loads(source_config or "{}") if isinstance(source_config, str) else (source_config or {})
@@ -124,7 +124,10 @@ def fetch_resource(url: str, *, source_config: str | dict | None = None, timeout
             if wait > 0:
                 time.sleep(wait)
             _LAST_REQUEST[key] = time.monotonic()
-        request = Request(request_url, data=urlencode(form).encode() if form else None, headers=_headers(request_url, policy))
+        headers = _headers(request_url, policy)
+        if request_data is not None:
+            headers["Content-Type"] = "application/x-www-form-urlencoded"
+        request = Request(request_url, data=request_data if request_data is not None else (urlencode(form).encode() if form else None), headers=headers)
         try:
             with urlopen(request, timeout=timeout) as response:
                 content_type = response.headers.get_content_type()

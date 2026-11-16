@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "counting_note": "Counts mix individually inventoried courts/districts in audited states with court families elsewhere. Florida has six appeal districts, Texas fifteen appeal courts, California six appeal districts (Fourth District uses three division feeds). Remaining state subdivisions and specialized/lower-court appellate divisions still need audit. Active means a feed is enabled, not exhaustive or healthy coverage.",
+  "counting_note": "Counts mix individually inventoried courts/districts in audited states with court families elsewhere. Florida has six appeal districts, Texas fifteen appeal courts, California six appeal districts (Fourth District uses three division feeds). Remaining state subdivisions and specialized/lower-court appellate divisions still need audit. Active means a feed is enabled, not exhaustive or healthy coverage. Illinois appellate coverage is counted as five districts; First District enrollment does not imply statewide coverage.",
   "directory_source": "https://github.com/freelawproject/courts-db",
   "directory_revision": "c22604dff8b6819d022cc5ddfd6d9080101149e3",
   "jurisdictions_pending_structure_audit": [
@@ -748,15 +748,59 @@
       "notes": "Directory seed; official structure and district/division coverage require audit."
     },
     {
-      "court_id": "illappct",
-      "name": "Appellate Court of Illinois",
+      "court_id": "illappct1",
+      "name": "Illinois First District Appellate Court",
       "jurisdiction": "Illinois",
       "level": "intermediate",
-      "unit": "court_family",
+      "unit": "district",
       "discovery_status": "outstanding",
-      "official_url": "http://www.state.il.us/court/appellatecourt/",
-      "structure_verified": false,
-      "notes": "Directory seed; official structure and district/division coverage require audit."
+      "official_url": "https://www.illinoiscourts.gov/top-level-opinions?d=1&t=appellate",
+      "structure_verified": true,
+      "notes": "Five-district structure verified against official Illinois Courts directory 2026-11-16; only First District included in pilot."
+    },
+    {
+      "court_id": "illappct2",
+      "name": "Illinois Second District Appellate Court",
+      "jurisdiction": "Illinois",
+      "level": "intermediate",
+      "unit": "district",
+      "discovery_status": "outstanding",
+      "official_url": "https://www.illinoiscourts.gov/top-level-opinions?d=2&t=appellate",
+      "structure_verified": true,
+      "notes": "Five-district structure verified against official Illinois Courts directory 2026-11-16; only First District included in pilot."
+    },
+    {
+      "court_id": "illappct3",
+      "name": "Illinois Third District Appellate Court",
+      "jurisdiction": "Illinois",
+      "level": "intermediate",
+      "unit": "district",
+      "discovery_status": "outstanding",
+      "official_url": "https://www.illinoiscourts.gov/top-level-opinions?d=3&t=appellate",
+      "structure_verified": true,
+      "notes": "Five-district structure verified against official Illinois Courts directory 2026-11-16; only First District included in pilot."
+    },
+    {
+      "court_id": "illappct4",
+      "name": "Illinois Fourth District Appellate Court",
+      "jurisdiction": "Illinois",
+      "level": "intermediate",
+      "unit": "district",
+      "discovery_status": "outstanding",
+      "official_url": "https://www.illinoiscourts.gov/top-level-opinions?d=4&t=appellate",
+      "structure_verified": true,
+      "notes": "Five-district structure verified against official Illinois Courts directory 2026-11-16; only First District included in pilot."
+    },
+    {
+      "court_id": "illappct5",
+      "name": "Illinois Fifth District Appellate Court",
+      "jurisdiction": "Illinois",
+      "level": "intermediate",
+      "unit": "district",
+      "discovery_status": "outstanding",
+      "official_url": "https://www.illinoiscourts.gov/top-level-opinions?d=5&t=appellate",
+      "structure_verified": true,
+      "notes": "Five-district structure verified against official Illinois Courts directory 2026-11-16; only First District included in pilot."
     },
     {
       "court_id": "indctapp",
