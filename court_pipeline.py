@@ -217,6 +217,23 @@ def save_screen(store, item_id, result, content_hash=''):
              json.dumps(result),content_hash,RULE_VERSION,utc_now()))
 
 
+
+def terminal_failure(result):
+    """Failure is an explicit outcome; another attempt requires an explicit reset."""
+    return result | {'original_decision':result.get('original_decision',result.get('decision')),
+        'decision':'ERROR','terminal_failure':True,'failure_policy':'terminal_failures_v1',
+        'needs_review':True,'failed_at':utc_now(),
+        'retry_policy':'manual_only'}
+
+
+def save_failure_note(store, item_id, result):
+    # Preserve previously generated text and evidence while closing the summary queue.
+    with store._connect() as c:
+        c.execute("""INSERT INTO candidate_notes(item_id,summary_status,summary_error)
+            VALUES(?,'FAILED',?) ON CONFLICT(item_id) DO UPDATE SET
+            summary_status='FAILED',summary_error=excluded.summary_error""",
+            (item_id,str(result.get('error') or result.get('reason') or result.get('reason_code') or 'Screening failed')[:2000]))
+
 def run_pipeline(store, agent, *, limit=None, poll=True, fetcher=fetch_resource, source_ids=None):
     stats = {'sources_checked':0,'sources_failed':0,'sources_empty':0,'documents_found':0,'new_items':0,
              'passed':0,'excluded':0,'review':0,'errors':0,'processed':0,'pending':0}
@@ -251,6 +268,7 @@ def run_pipeline(store, agent, *, limit=None, poll=True, fetcher=fetch_resource,
             rows = [dict(r) for r in c.execute('''SELECT i.*,s.name AS source_name,s.collector_config
                 FROM items i JOIN sources s USING(source_id) LEFT JOIN court_screenings cs USING(item_id)
                 WHERE s.active=1 AND s.lane='B' AND i.status='NEW'
+                AND COALESCE(json_extract(cs.result_json,'$.terminal_failure'),0)=0
                 AND (cs.item_id IS NULL OR cs.decision='ERROR' OR cs.rule_version!=?
                     OR cs.reason_code='INSURANCE_COMPANY_UNCERTAIN'
                     OR (cs.decision='PASS' AND COALESCE(json_extract(cs.result_json,
@@ -286,26 +304,38 @@ def run_pipeline(store, agent, *, limit=None, poll=True, fetcher=fetch_resource,
                                      'involvement': 'UNCERTAIN', 'segments': [],
                                      'error': str(exc)[:1000]}
                     result = apply_result(result, insurance)
+                if result.get('needs_review') or result['decision']=='ERROR':
+                    result = terminal_failure(result)
                 save_screen(store,item['item_id'],result,doc['content_hash'])
-                stats['excluded' if result['decision']=='EXCLUDED' else 'passed'] += 1
+                stats['errors' if result['decision']=='ERROR' else ('excluded' if result['decision']=='EXCLUDED' else 'passed')] += 1
                 stats['review'] += int(result.get('needs_review',False))
-                if result.get('gist'):
+                if result['decision']=='ERROR':
+                    save_failure_note(store,item['item_id'],result)
+                elif result.get('gist'):
                     store.save_summary(item['item_id'],display_headline=result['display_headline'],gist=result['gist'],
                         summary_prompt_version=RULE_VERSION,extraction_method=doc['method'],
                         extracted_char_count=sum(map(len,doc['pages'])),input_char_count=sum(map(len,doc['pages'])))
+                else:
+                    store.save_summary(item['item_id'],summary_status='SKIPPED',summary_error=result.get('reason',''),summary_prompt_version=RULE_VERSION)
             except Exception as exc:
                 stats['errors'] += 1
-                save_screen(store,item['item_id'],{
-                    'decision':'EXCLUDED','reason_code':'INSURANCE_COMPANY_UNCERTAIN',
-                    'needs_review':True,'reason':'Insurance-company involvement could not be verified',
-                    'error':str(exc)[:1000],
-                    'insurance_company_screening':{'policy_version':INSURANCE_POLICY_VERSION,
-                                                   'involvement':'UNCERTAIN','segments':[]}},
-                    doc['content_hash'] if doc else '')
+                result = terminal_failure({
+                    'decision':'ERROR','reason_code':'DOCUMENT_OR_SCREENING_FAILED',
+                    'needs_review':True,'reason':'Document extraction or screening failed',
+                    'error':str(exc)[:1000]})
+                save_screen(store,item['item_id'],result,doc['content_hash'] if doc else '')
+                save_failure_note(store,item['item_id'],result)
             stats['pending'] = len(rows) - stats['processed']
             with store._connect() as c:
                 c.execute('UPDATE court_runs SET stats_json=? WHERE run_id=?',(json.dumps(stats),run_id))
-        status = 'PARTIAL' if stats['sources_failed'] or stats['errors'] or stats['sources_empty'] or stats['pending'] else 'COMPLETE'
+        for item in rows[len(selected):]:
+            result = terminal_failure({'decision':'ERROR','reason_code':'RUN_LIMIT_REACHED',
+                'reason':'Not screened: the configured run limit was reached', 'needs_review':True})
+            save_screen(store,item['item_id'],result)
+            save_failure_note(store,item['item_id'],result)
+            stats['errors'] += 1
+        stats['pending'] = 0
+        status = 'COMPLETE_WITH_FAILURES' if stats['sources_failed'] or stats['errors'] or stats['sources_empty'] else 'COMPLETE'
         with store._connect() as c:
             c.execute('UPDATE court_runs SET finished_at=?,status=?,stats_json=? WHERE run_id=?',(utc_now(),status,json.dumps(stats),run_id))
         return {'run_id':run_id,'status':status,**stats}

@@ -349,7 +349,7 @@ function candidateCard(c){
     actions+=`${action(c.source_link,'Source','primary')}`;
     if(c.can_promote_to_phase2!==false)actions+=`<button class="action telegram phase2-action btn-phase2" data-phase2-item="${esc(c.item_id)}"${state.pending[c.item_id]?' disabled':''}>${state.pending[c.item_id]?'Starting Phase 2…':'Promote to Phase 2'}</button>`;
   }
-  return `<article class="candidate-card"><div class="candidate-top"><span class="candidate-summary-status ${summaryStatus.toLowerCase()}">${esc(summaryStatus)}</span><span class="candidate-lane">${esc(laneLabels[c.lane]||'Other content')}</span></div><h3 class="candidate-display-headline">${esc(display)}</h3><details class="candidate-original"><summary>Original headline</summary><p>${esc(c.headline)}</p></details><p class="candidate-meta"><strong>${esc(c.source)}</strong> · ${esc(c.date||'Undated')} · item ${esc(c.item_id)}</p>${c.screening?.needs_review||c.screening?.decision==='ERROR'?'<p class="review-badge">Needs review</p>':''}${gist}${appealDocs}${screeningDetail(c.screening)}<div class="actions">${actions}</div></article>`;
+  return `<article class="candidate-card"><div class="candidate-top"><span class="candidate-summary-status ${summaryStatus.toLowerCase()}">${esc(summaryStatus)}</span><span class="candidate-lane">${esc(laneLabels[c.lane]||'Other content')}</span></div><h3 class="candidate-display-headline">${esc(display)}</h3><details class="candidate-original"><summary>Original headline</summary><p>${esc(c.headline)}</p></details><p class="candidate-meta"><strong>${esc(c.source)}</strong> · ${esc(c.date||'Undated')} · item ${esc(c.item_id)}</p>${c.screening?.terminal_failure?'<p class="review-badge">Failed</p>':c.screening?.needs_review||c.screening?.decision==='ERROR'?'<p class="review-badge">Needs review</p>':''}${gist}${appealDocs}${screeningDetail(c.screening)}<div class="actions">${actions}</div></article>`;
 }
 
 function render(){
@@ -396,7 +396,7 @@ function renderSourceManagement(shown){$('#sourceManagementCount').textContent=`
 
 function screeningDetail(s){
   if(!s)return '<p class="muted">Opinion not screened yet</p>';
-  const label=s.decision==='EXCLUDED'?`Excluded: ${s.reason_code}`:s.decision==='ERROR'?'Document/screening error — retained':s.needs_review?'Passed — needs review':'Passed';
+  const label=s.decision==='EXCLUDED'?`Excluded: ${s.reason_code}`:s.decision==='ERROR'?(s.terminal_failure?'Failed — automatic retries stopped':'Document/screening error — retained'):s.needs_review?'Passed — needs review':'Passed';
   return `<details class="candidate-original"><summary>${esc(label)}</summary><p>${esc(s.reason||'')}</p>${(s.evidence||[]).map(e=>`<blockquote>Page ${esc(e.page)}: ${esc(e.quote)}</blockquote>`).join('')}<p class="muted">${esc(s.rule_version||'')} · ${esc(s.screened_at||'')}</p></details>`;
 }
 function renderCourtPipeline(p){

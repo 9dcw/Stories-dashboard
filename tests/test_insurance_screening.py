@@ -64,7 +64,7 @@ def test_absence_requires_every_segment_and_uncertainty_stays_excluded():
     assert combine([{'involvement':'NO'},{'involvement':'NO'}])['involvement'] == 'NO'
 
 
-@pytest.mark.parametrize('involvement,expected',[('YES','PASS'),('NO','EXCLUDED'),('ERROR','EXCLUDED')])
+@pytest.mark.parametrize('involvement,expected',[('YES','PASS'),('NO','EXCLUDED'),('ERROR','ERROR')])
 def test_pipeline_applies_insurance_gate(tmp_path,involvement,expected):
     from court_pipeline import run_pipeline
     from story_store import StoryStore
@@ -90,13 +90,13 @@ def test_pipeline_applies_insurance_gate(tmp_path,involvement,expected):
     with store._connect() as connection:
         row = connection.execute('SELECT decision FROM court_screenings WHERE item_id=?',(item.item_id,)).fetchone()
     assert row[0] == expected
-    assert first['errors'] == 0
+    assert first['errors'] == (1 if involvement == 'ERROR' else 0)
     if involvement != 'ERROR':
         second = run_pipeline(store,lambda _:pytest.fail('Already screened'),poll=False)
         assert second['processed'] == 0
     else:
         second = run_pipeline(store,agent,poll=False)
-        assert second['processed'] == 1
+        assert second['processed'] == 0
 
 
 def test_audit_apply_is_reversible_and_preserves_promoted_items(tmp_path,monkeypatch):
