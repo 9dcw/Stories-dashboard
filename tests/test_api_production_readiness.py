@@ -305,17 +305,16 @@ def test_session_expiration_uses_real_timestamp_validation(runtime_config, monke
     assert caught.type.__name__ == "SignatureExpired"
 
 
-def test_deployment_rollback_uses_the_previously_running_immutable_image():
+def test_deployment_delegates_app_and_runner_rollback_to_the_image_release_helper():
     root = Path(__file__).resolve().parents[1]
     compose = (root / "docker-compose.yml").read_text()
     workflow = (root / ".github/workflows/deploy-contabo.yml").read_text()
 
     assert "${STORIES_IMAGE:-" in compose
-    assert "CURRENT_IMAGE=$(docker inspect" in workflow
-    assert 'docker-compose.rollback.yml' in workflow
-    assert 'docker-compose.rollback.yml' in workflow
-    assert '-f docker-compose.yml -f docker-compose.rollback.yml up -d' in workflow
-    assert "export IMAGE_TAG=latest" not in workflow
+    assert '/app/scripts/release_court_intake.py' in workflow
+    assert 'python3 "$RELEASE_SCRIPT"' in workflow
+    assert 'org.opencontainers.image.revision' in workflow
+    assert 'STORIES_IMAGE=latest' not in workflow
 
 
 def test_container_user_matches_documented_volume_owner_and_ci_db_is_writable():
@@ -343,28 +342,26 @@ def test_production_compose_passes_domain_and_persistent_backup_mount():
     assert "scripts/backup_db.py" in entrypoint
 
 
-def test_deploy_runs_only_after_tests_with_package_permission_and_host_pin():
+def test_manual_deploy_requires_tests_with_package_permission_and_host_pin():
     root = Path(__file__).resolve().parents[1]
     workflow = (root / ".github/workflows/deploy-contabo.yml").read_text()
 
-    assert "workflow_run:" in workflow
-    assert 'workflows: ["Test"]' in workflow
-    assert "workflow_dispatch:" not in workflow
-    assert "github.event.workflow_run.conclusion == 'success'" in workflow
-    assert "github.event.workflow_run.event == 'push'" in workflow
+    assert "workflow_dispatch:" in workflow
+    assert "workflow_run:" not in workflow
+    assert "workflow_id:'test.yml'" in workflow
+    assert "run.conclusion === 'success'" in workflow
+    assert "head_sha:sha" in workflow
     assert 'git fetch origin main:refs/remotes/origin/main' in workflow
     assert 'git rev-parse origin/main' in workflow
     assert "packages: write" in workflow
+    assert "actions: read" in workflow
     assert "fingerprint: ${{ secrets.CONTABO_HOST_FINGERPRINT }}" in workflow
     assert "known_hosts:" not in workflow
     assert "vars.DEPLOY_PATH" in workflow
     assert "secrets.DEPLOY_PATH" not in workflow
     assert "DOMAIN: ${{ vars.DOMAIN }}" in workflow
     assert "envs: DOMAIN" in workflow
-    assert "GitHub Actions variable DOMAIN must be set" in workflow
-    assert 'ROLLBACK_ASSETS=$(mktemp -d)' in workflow
-    assert 'cp -a "$ROLLBACK_ASSETS/docker-compose.yml" docker-compose.yml' in workflow
-
+    assert "Set the production DOMAIN variable" in workflow
 
 def test_deploy_docs_pin_the_host_key_algorithm_used_by_ssh_action():
     root = Path(__file__).resolve().parents[1]
