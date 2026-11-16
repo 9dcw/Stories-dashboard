@@ -114,7 +114,8 @@ def test_pipeline_retains_errors_exclusions_and_editorial_status(tmp_path):
     result=run_pipeline(store,lambda _:answer(),fetcher=fetch)
     assert result['errors']==1 and result['status']=='PARTIAL'
     model=build_read_model(store)
-    assert model['recent_candidates'][0]['screening']['decision']=='ERROR'
+    assert model['recent_candidates'][0]['screening']['decision']=='EXCLUDED'
+    assert model['recent_candidates'][0]['screening']['reason_code']=='INSURANCE_COMPANY_UNCERTAIN'
     assert model['recent_candidates'][0]['status']=='NEW'
     assert model['sources'][0]['court_poll']['documents_found']==1
     assert model['court_pipeline']['last_run']['status']=='PARTIAL'
