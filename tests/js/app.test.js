@@ -634,3 +634,16 @@ test('asset counts distinguish unchecked, zero, stale and blocked progress',()=>
   assert.match(render({saved:null,refresh_failed:true}),/count unavailable/);
   assert.match(render({saved:3,build_outdated:true}),/Narrative revised since last build/);
 });
+
+test('terminal screening failures appear in Problems with a failed label instead of New Candidates', () => {
+  const {context}=loadApp();
+  const result=vm.runInContext(`(() => {
+    const item={item_id:991,headline:'Unresolved opinion',lane:'B',status:'NEW',summary_status:'FAILED',
+      screening:{decision:'ERROR',terminal_failure:true,needs_review:true,reason:'Opinion unavailable'}};
+    return {candidate:inCategory(item,'candidate','candidates'),problem:inCategory(item,'candidate','problems'),html:candidateCard(item)};
+  })()`,context);
+  assert.equal(result.candidate,false);
+  assert.equal(result.problem,true);
+  assert.match(result.html,/Failed — automatic retries stopped/);
+  assert.doesNotMatch(result.html,/>PENDING</);
+});

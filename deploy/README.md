@@ -210,6 +210,41 @@ Add these **environment variables**:
 
 The GitHub token used by automation needs repository permissions **Secrets: read/write**, **Variables: read/write**, and **Environments: read/write** to do this through the API. Ordinary Git push permission is not enough.
 
+## Routine releases: one manual deployment
+
+Merge the integration PR, wait for the **Test** workflow to pass on the resulting
+`main` commit, then open **Actions → Deploy Contabo → Run workflow**. Select
+`main`; leave `revision` empty to use current main. Run it once. Merging alone
+runs tests and does not deploy production.
+
+The manual workflow verifies successful main-branch CI for that exact SHA, builds
+and publishes its immutable image, then invokes the release helper from that
+image. The helper stages `/app` from the same image as the host court-runner
+release, checks its modules using the existing runner Python, acquires the court
+processor lock, backs up SQLite, switches the runner symlink, and recreates the
+app using the pinned image ID. It verifies health and app/runner agreement and
+prints the before/after queue counts. Deployment does not enroll sources or
+repeat the already completed screening cleanup.
+
+Run while the court processor is idle. If its lock is held, the release stops
+before activating either component; it never interrupts screening. The existing
+`deploy/run-court-daily.sh` launcher must continue to point at
+`/srv/stories-dashboard/court-runner`, and its Python must be available at
+`/home/david/.hermes/hermes-agent/venv/bin/python3`. The runner dependencies have
+not changed in this integration.
+
+The release audit is written under `/srv/stories-dashboard/releases/release-*.json`.
+It records the exact app image, runner path, prior image/runner, private SQLite
+backup and queue counts. On an activation or health-check failure, the helper
+restores **both** previous components and verifies health. It preserves the live
+database, including any user activity after the backup. Do not restore a whole
+backup over subsequent user changes as part of code rollback.
+
+For an operator who already pulled the tested image, the same helper can be run
+from that image without checking out or overwriting the server's deployment
+configuration. The workflow contains the complete bootstrap command; always use
+the full tested main SHA and matching image revision label.
+
 ## 8. First start
 
 Do not start until DNS, the database, the complete env file, and ports 80/443 are ready.

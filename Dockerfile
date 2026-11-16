@@ -17,6 +17,9 @@ COPY collectors.py /app/
 COPY source_fetch.py /app/
 COPY polling.py /app/
 COPY polling_sources.py /app/
+COPY insurance_screening.py /app/
+COPY court_failures.py /app/
+COPY step2_courts.py /app/
 COPY court_pipeline.py /app/
 COPY court_inventory.py /app/
 COPY court_pilot.py /app/

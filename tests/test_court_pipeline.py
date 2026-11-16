@@ -112,12 +112,13 @@ def test_pipeline_retains_errors_exclusions_and_editorial_status(tmp_path):
         if url.endswith('/opinions'):return b'<a href="/opnfiles/a.pdf">An opinion</a>','text/html',url
         raise OSError('Fetch failed')
     result=run_pipeline(store,lambda _:answer(),fetcher=fetch)
-    assert result['errors']==1 and result['status']=='PARTIAL'
+    assert result['errors']==1 and result['status']=='COMPLETE_WITH_FAILURES'
     model=build_read_model(store)
     assert model['recent_candidates'][0]['screening']['decision']=='ERROR'
+    assert model['recent_candidates'][0]['screening']['reason_code']=='DOCUMENT_OR_SCREENING_FAILED'
     assert model['recent_candidates'][0]['status']=='NEW'
     assert model['sources'][0]['court_poll']['documents_found']==1
-    assert model['court_pipeline']['last_run']['status']=='PARTIAL'
+    assert model['court_pipeline']['last_run']['status']=='COMPLETE_WITH_FAILURES'
 
 
 def test_successful_pipeline_is_idempotent_and_caches_documents(tmp_path):

@@ -48,6 +48,11 @@ jobs:
         run: |
           docker run --rm -i --entrypoint python3 stories-dashboard:test - <<'PY'
           import appeal_identity
+          import insurance_screening
+          import court_failures
+          import step2_courts
+          from state_courts import fetch_listing
+          from scripts.release_court_intake import release
           import originating_courts
           from pathlib import Path
           from tempfile import TemporaryDirectory
