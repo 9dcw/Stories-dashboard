@@ -404,6 +404,19 @@ test('Phase 2 promotion stays in dashboard and setup failures expose a safe retr
 });
 
 
+test('Phase 2 Google reauthorization has its own setup status and keeps retry', () => {
+  const { context, getElement } = loadApp();
+  const { status, html } = vm.runInContext(`(() => {
+    const story={story_id:7,status:'Phase 2 pending',phase2_job:{state:'blocked', failure_code:'google_reauth_required'}};
+    selectView('phase2');
+    return {status:setupStatus(story),html:phase2Progress(story)};
+  })()`, context);
+  assert.equal(status,'google_reauth_required');
+  assert.match(html,/Google reauthorization required/);
+  assert.match(html,/data-phase2-retry="7"/);
+  assert.match(getElement('#filters').innerHTML,/value="google_reauth_required"/);
+});
+
 test('late Google SDK load renders sign-in after the session check', () => {
   const { context, getElement } = loadApp();
   vm.runInContext("state.googleClientId='test-client';showLoginGate()",context);

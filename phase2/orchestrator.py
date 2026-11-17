@@ -10,6 +10,7 @@ from concurrent.futures import ThreadPoolExecutor
 from contextlib import contextmanager
 from pathlib import Path
 
+from google.auth.exceptions import RefreshError
 from jsonschema import ValidationError
 
 from phase2.context import build_context
@@ -18,7 +19,7 @@ from phase2.doc_policy import render_document
 from phase2.registry import digest, apply_content_policy, apply_research_policy
 from phase2.hermes_adapter import ResearchFailure
 from phase2.registry import validate_output
-from phase2.store import Conflict, LostLease
+from phase2.store import Conflict, GOOGLE_REAUTH_MESSAGE, LostLease
 from phase2.telegram import notify_one
 
 log=logging.getLogger(__name__)
@@ -170,8 +171,15 @@ class Worker:
         except Exception as exc:
             status=getattr(getattr(exc,'resp',None),'status',None)
             # Do not log exception URLs, payloads, credentials, or untrusted text.
+            if isinstance(exc, RefreshError) and any(
+                isinstance(detail, dict) and detail.get('error') == 'invalid_grant'
+                for detail in exc.args
+            ):
+                self.fail(job,GOOGLE_REAUTH_MESSAGE)
+                return
             transient=status in {429,500,502,503,504} or isinstance(exc,(TimeoutError,ConnectionError))
-            self.fail(job,'External integration failed ('+type(exc).__name__+'); verify credentials, identity and connectivity',retryable=transient)
+            message = 'Google OAuth refresh failed; check the integration configuration' if isinstance(exc, RefreshError) else 'External integration failed ('+type(exc).__name__+'); verify credentials, identity and connectivity'
+            self.fail(job,message,retryable=transient or (isinstance(exc, RefreshError) and exc.retryable))
         finally:
             stop.set()
             keeper.join(timeout=1)

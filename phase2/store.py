@@ -12,6 +12,11 @@ from phase2.registry import OPERATIONS, canonical, dependents, digest, snapshot,
 from phase2.doc_policy import instructions
 
 
+GOOGLE_REAUTH_REQUIRED = 'google_reauth_required'
+GOOGLE_REAUTH_MESSAGE = 'Reauthorize Google Workspace, then retry Phase 2.'
+LEGACY_REFRESH_ERROR = 'External integration failed (RefreshError); verify credentials, identity and connectivity'
+
+
 class Conflict(ValueError):
     pass
 
@@ -198,6 +203,8 @@ class WorkflowStore:
                 return None
             row = db.execute("SELECT run_id,state,error,operation,target,updated_at,tokens FROM workflow_runs WHERE workspace_id=? AND operation<>'projection' ORDER BY CASE WHEN state IN ('running','queued','blocked') THEN 0 ELSE 1 END, created_at DESC LIMIT 1", (story['workspace_id'],)).fetchone()
             result = dict(row) if row else dict(state='migrated', error='')
+            if result['state']=='blocked' and result['error'] in {GOOGLE_REAUTH_MESSAGE, LEGACY_REFRESH_ERROR}:
+                result.update(failure_code=GOOGLE_REAUTH_REQUIRED,error=GOOGLE_REAUTH_MESSAGE)
             result['can_start_research']=not bool(db.execute("SELECT 1 FROM workflow_runs WHERE workspace_id=? AND operation='initial' AND state<>'cancelled'",(story['workspace_id'],)).fetchone())
             result['artifacts'] = [dict(a) for a in db.execute('SELECT artifact_key,doc_id,current_version,stale,render_state FROM artifacts WHERE workspace_id=? ORDER BY artifact_key', (story['workspace_id'],))]
             from phase2.asset_inventory import progress
@@ -223,6 +230,8 @@ class WorkflowStore:
                         cancel_command='/story cancel '+row['run_id'],
                         restart_command='/story start' if row['operation']=='initial' else '/story reconcile '+db.execute('SELECT instruction FROM workflow_runs WHERE run_id=?',(row['run_id'],)).fetchone()[0] if row['operation']=='reconcile_package' else '/story revise '+step['step_key']+' <direction>'))
                 active = next((s for s in reversed(steps) if s['state'] in {'running','blocked','failed','queued'}), {})
+                if result['state']=='blocked':
+                    active = next((s for s in reversed(steps) if s['state']=='blocked'), active)
                 result.update(step=active.get('step_key', 'complete'),attempts=active.get('attempt',1))
             return result
 

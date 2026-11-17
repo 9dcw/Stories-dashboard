@@ -30,7 +30,8 @@ def main():
         parser.error('Worker requires PHASE2_ENGINE=repository')
     store=WorkflowStore(os.environ['STORIES_DB_PATH'])
     store.initialize()
-    google=GoogleDocs.authenticated(os.environ['PHASE2_GOOGLE_TOKEN'],os.environ['PHASE2_GOOGLE_PARENT_ID'])
+    # Authenticate within jobs so an expired grant can be reported on the run.
+    google=GoogleDocs.authenticated(os.environ['PHASE2_GOOGLE_TOKEN'],os.environ['PHASE2_GOOGLE_PARENT_ID'],validate=False)
     research=HermesAdapter(os.environ['PHASE2_HERMES_PYTHON'],os.environ['PHASE2_HERMES_SOURCE'])
     telegram=Telegram(os.environ['TELEGRAM_BOT_TOKEN'],os.environ.get('PHASE2_CHAT_ID','-1003984316484'))
     worker=Worker(store,research,google,telegram,os.environ.get('PHASE2_LOCK_DIR',str(Path(store.path).parent/'phase2-locks')))

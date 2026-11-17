@@ -48,7 +48,7 @@ class GoogleDocs:
         return self._clients()[1]
 
     @classmethod
-    def authenticated(cls,token_path,parent_id):
+    def authenticated(cls,token_path,parent_id,*,validate=True):
         # httplib2 transports are not thread-safe. Credentials and both services
         # belong to the calling thread; refresh never rewrites the shared token.
         def clients():
@@ -64,7 +64,8 @@ class GoogleDocs:
                 raise Conflict('Google authentication is unavailable')
             return (build('drive','v3',http=AuthorizedHttp(creds,http=httplib2.Http(timeout=30)),cache_discovery=False),build('docs','v1',http=AuthorizedHttp(creds,http=httplib2.Http(timeout=30)),cache_discovery=False))
         instance=cls(None,None,parent_id,client_factory=clients)
-        instance._clients()  # Validate authentication before starting the worker.
+        if validate:
+            instance._clients()
         return instance
 
     def metadata(self,file_id):

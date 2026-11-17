@@ -1,4 +1,4 @@
-const ASSET_VERSION='20261114-fast-dashboard';
+const ASSET_VERSION='20261117-phase2-google-reauth';
 const CACHE=`stories-dashboard-${ASSET_VERSION}`;
 const FILES=['./','./index.html',`./styles.css?v=${ASSET_VERSION}`,`./app.js?v=${ASSET_VERSION}`,'./manifest.json'];
 const APP_SHELL_PATH=/\/(?:index\.html|styles\.css|app\.js|manifest\.json)$|\/$/;

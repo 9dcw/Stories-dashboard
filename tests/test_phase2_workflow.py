@@ -7,6 +7,7 @@ from types import SimpleNamespace
 
 import pytest
 from fastapi.testclient import TestClient
+from google.auth.exceptions import RefreshError
 from jsonschema import ValidationError
 
 from phase2.doc_policy import SPECS
@@ -164,6 +165,41 @@ def test_lease_recovery_fences_dead_worker(workflow):
     assert recovered['fence']!=first['fence']
     with pytest.raises(LostLease):
         store.finish(first)
+
+
+@pytest.mark.parametrize('error_code,expected', [
+    ('invalid_grant', 'google_reauth_required'),
+    ('invalid_client', None),
+])
+def test_google_refresh_failure_status(workflow,tmp_path,monkeypatch,error_code,expected):
+    store,story=workflow
+    store.enqueue(story,'initial')
+    w=worker(store,tmp_path)
+    job=store.claim()
+
+    def fail_provision(*args):
+        raise RefreshError('private response', {'error': error_code})
+
+    with monkeypatch.context() as patch:
+        patch.setattr(w.google,'provision',fail_provision)
+        w.execute(job)
+    status=store.status(story)
+    assert status['state']=='blocked'
+    assert status['step']=='provision'
+    assert status.get('failure_code')==expected
+    assert 'private response' not in status['error']
+    assert store.claim() is None
+    store.retry(story)
+    assert 'failure_code' not in store.status(story)
+    assert w.tick()
+    assert store.status(story)['state']=='running'
+
+
+def test_old_google_refresh_failure_has_dedicated_status(workflow):
+    store,story=workflow
+    store.enqueue(story,'initial')
+    store.fail(store.claim(),'External integration failed (RefreshError); verify credentials, identity and connectivity')
+    assert store.status(story)['failure_code']=='google_reauth_required'
 
 
 def test_concurrent_claim_only_dispatches_provision_once(workflow):
