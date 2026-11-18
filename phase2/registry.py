@@ -40,13 +40,16 @@ def apply_research_policy(original):
     # Preserve the prior contract hash and the pinned engine and producer prompt.
     if 'narrative' not in original.get('steps',[]):return original
     from phase2.research_agents import VERSION as RESEARCH_VERSION
-    if original.get('research_policy_version')==RESEARCH_VERSION:return original
+    budgets=original['budgets']
+    if (original.get('research_policy_version')==RESEARCH_VERSION
+            and budgets['step_tokens']>=450000 and budgets['run_tokens']>=550000):
+        return original
     import copy
     manifest=copy.deepcopy(original)
     manifest['research_base_workflow_hash']=original.get('hash','')
     manifest['research_policy_version']=RESEARCH_VERSION
-    manifest['budgets']['step_tokens']=max(300000,manifest['budgets']['step_tokens'])
-    manifest['budgets']['run_tokens']=max(400000,manifest['budgets']['run_tokens'])
+    manifest['budgets']['step_tokens']=max(450000,manifest['budgets']['step_tokens'])
+    manifest['budgets']['run_tokens']=max(550000,manifest['budgets']['run_tokens'])
     manifest.pop('hash',None);manifest['hash']=digest(manifest)
     return manifest
 

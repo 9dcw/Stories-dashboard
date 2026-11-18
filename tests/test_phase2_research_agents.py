@@ -98,9 +98,19 @@ def test_research_policy_updates_legacy_queued_narratives_without_changing_engin
     manifest=snapshot();manifest.pop('research_policy_version');manifest['budgets'].update(step_tokens=120000,run_tokens=140000)
     engine=dict(manifest['engine']);prompt=manifest['prompts']['narrative']
     effective=apply_research_policy(manifest)
-    assert effective['budgets']['step_tokens']==300000 and effective['budgets']['run_tokens']==400000
+    assert effective['budgets']['step_tokens']==450000 and effective['budgets']['run_tokens']==550000
     assert effective['engine']==engine and effective['prompts']['narrative']==prompt
     assert apply_research_policy(effective) is effective
+
+
+def test_research_budgets_upgrade_current_policy_manifests():
+    from phase2.registry import snapshot,apply_research_policy
+    manifest=snapshot()
+    manifest['budgets'].update(step_tokens=300000,run_tokens=400000)
+    effective=apply_research_policy(manifest)
+    assert effective['budgets']['step_tokens']==450000
+    assert effective['budgets']['run_tokens']==550000
+    assert manifest['budgets']['step_tokens']==300000
 
 
 def test_direction_agent_cannot_claim_unverified_dissent_either():
