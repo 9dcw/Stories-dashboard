@@ -29,11 +29,13 @@ def parse(text):
         if tail==['show']: return dict(action='prompt_show')
         if len(tail)==2 and tail[0]=='update' and tail[1].strip():
             return dict(action='prompt_update',text=tail[1])
+    if len(parts)==3 and parts[1]=='append' and len(parts[2].split())==1:
+        return dict(action='append',identifier=parts[2])
     if len(parts)==3 and parts[1]=='read' and parts[2]=='narrative':
         return dict(action='read',identifier='narrative')
     if len(parts)==3 and parts[1]=='visuals' and parts[2]=='build':
         return dict(action='operate',operation='build_visuals',target='narrative',instruction='')
-    raise ValueError('Use /story revise <guidance>, /story visuals build, /story prompt update <feedback>, or /story prompt show')
+    raise ValueError('Use /story revise <guidance>, /story append <version>, /story visuals build, /story prompt update <feedback>, or /story prompt show')
 
 
 def dispatch(store,event,allowed_users,chat_id):

@@ -240,7 +240,8 @@ def test_human_conflict_retains_candidate_and_explicit_append(workflow,tmp_path)
     assert recovery['cancel_command']=='/story cancel '+status['run_id']
     with pytest.raises(Conflict):
         store.retry(story)
-    store.enqueue_resolution(story,'append-request','append',candidate,'editor')
+    command=parse('/story append '+candidate)
+    store.enqueue_resolution(story,'append-request',command['action'],command['identifier'],'editor')
     w.tick()
     assert store.version(candidate)['state']=='published'
     assert any(k=='append' for k,_,_ in w.google.writes)
