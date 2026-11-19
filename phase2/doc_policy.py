@@ -4,9 +4,10 @@ import re
 
 VERSION = "tables.v1"
 NARRATIVE_HEADERS = ['Visual', 'Talk track (bullet points)', 'Production / evidence notes', 'Collateral in Drive / how to obtain it and original owner']
+NARRATIVE_WORD_CAP = 5000
 NARRATIVE_FIELDS = ['visual','talk_track','production_notes','collateral']
 SPECS = {
-    'narrative': (2500, 150, 20, []),
+    'narrative': (NARRATIVE_WORD_CAP, 150, 20, []),
     'hub': (500, 60, 5, ['Story', 'Current assessment', 'Progress', 'Blockers', 'Next decision']),
     'angles': (1500, 120, 7, ['Central finding', 'People and stakes', 'What happened', 'Mechanism', 'Outcome', 'Contradictions', 'Research gaps']),
     'plan': (1500, 120, 7, ['Central question', 'Primary records', 'Fact validation', 'Visual research', 'Context', 'Contradictions', 'Next actions']),
@@ -24,7 +25,7 @@ def words(text):
 def instructions(key):
     if key == 'narrative':
         return ('Publish one native four-column table: ' + ' | '.join(NARRATIVE_HEADERS) +
-                '. Aim for 6–10 beats, <=150 words per cell, whole Doc <=2500 words including guidance. '
+                f'. Aim for 6–10 beats, <=150 words per cell, whole Doc <={NARRATIVE_WORD_CAP} words including guidance. '
                 'No logs or raw JSON. Preserve evidence, qualifications, asset provenance and rights restrictions. '
                 'Use policy_exception for necessary excess; never silently truncate producer guidance.')
     cap, detail, rows, topics = SPECS[key]

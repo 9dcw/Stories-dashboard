@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 
 from jsonschema import Draft202012Validator
-from phase2.doc_policy import instructions, validate_rows, VERSION
+from phase2.doc_policy import instructions, validate_rows, VERSION, NARRATIVE_WORD_CAP
 
 ROOT = Path(__file__).resolve().parent
 OPERATIONS = {"create_artifact", "revise_artifact", "investigate", "refresh_artifact", "review_artifact", "reconcile_package", "build_visuals"}
@@ -78,7 +78,14 @@ def apply_content_policy(original):
     remain pinned. The effective contract is hashed and saved with step inputs.
     """
     if original.get('content_policy_version')==VERSION:
-        return original
+        prompt=original['prompts'].get('narrative','')
+        updated=prompt.replace('whole Doc <=2500 words including guidance',f'whole Doc <={NARRATIVE_WORD_CAP} words including guidance')
+        if updated==prompt:
+            return original
+        manifest=dict(original,prompts=dict(original['prompts'],narrative=updated))
+        manifest.pop('hash',None)
+        manifest['hash']=digest(manifest)
+        return manifest
     import copy
     manifest=copy.deepcopy(original)
     manifest['base_workflow_hash']=original.get('hash','')
