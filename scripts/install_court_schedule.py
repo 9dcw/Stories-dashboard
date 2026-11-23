@@ -3,7 +3,7 @@
 import argparse,sqlite3,subprocess
 from pathlib import Path
 MARKER='# stories-court-daily'
-ENTRY='0 7 * * * /bin/bash /srv/stories-dashboard/court-runner/deploy/run-court-daily.sh >> /srv/stories-dashboard/story-data/court-daily.log 2>&1 '+MARKER
+ENTRY='0 7 * * * /bin/bash /srv/stories-dashboard/deploy/run-court-daily.sh >> /srv/stories-dashboard/story-data/court-daily.log 2>&1 '+MARKER
 p=argparse.ArgumentParser(description=__doc__);p.add_argument('--db',type=Path,required=True);a=p.parse_args()
 zone=subprocess.run(['timedatectl','show','-p','Timezone','--value'],text=True,capture_output=True,check=True).stdout.strip()
 if zone!='Europe/Berlin':raise SystemExit('Host must use Europe/Berlin for this cron schedule')

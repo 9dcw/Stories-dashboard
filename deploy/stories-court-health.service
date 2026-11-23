@@ -1,0 +1,6 @@
+[Unit]
+Description=Stories Dashboard court intake health check
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /srv/stories-dashboard/deploy/check-court-intake.py --db /srv/stories-dashboard/story-data/stories.sqlite3 --launcher /srv/stories-dashboard/deploy/run-court-daily.sh

@@ -233,6 +233,29 @@ before activating either component; it never interrupts screening. The existing
 `/home/david/.hermes/hermes-agent/venv/bin/python3`. The runner dependencies have
 not changed in this integration.
 
+### Court intake health check
+
+Install the host check as the user who owns the court intake cron job. From a
+checkout of the revision to deploy, run:
+
+```bash
+install -m 644 deploy/check-court-intake.py /srv/stories-dashboard/deploy/
+install -d ~/.config/systemd/user
+install -m 644 deploy/stories-court-health.{service,timer} ~/.config/systemd/user/
+systemctl --user daemon-reload
+systemctl --user enable --now stories-court-health.timer
+systemctl --user start stories-court-health.service
+systemctl --user list-timers stories-court-health.timer
+journalctl --user -u stories-court-health.service -n 10
+```
+
+The timer checks the stable launcher and the recorded polling run every 15
+minutes. Check failed units with `systemctl --user --failed`. A missed morning
+poll is reported after the 45-minute start grace period. This timer runs on the
+host independently of the dashboard container and court cron job. The
+deployment user must have a persistent systemd user manager (`loginctl
+show-user "$USER" -p Linger`).
+
 The release audit is written under `/srv/stories-dashboard/releases/release-*.json`.
 It records the exact app image, runner path, prior image/runner, private SQLite
 backup and queue counts. On an activation or health-check failure, the helper
