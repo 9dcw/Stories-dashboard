@@ -164,6 +164,18 @@ def release(root, image, revision, health_url, runner_python):
     with (root / 'story-data/manual-release.lock').open('a') as release_lock:
         fcntl.flock(release_lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         identity = verify_image(image, revision)
+        active_runner = current.resolve()
+        metadata = active_runner / 'release-image.json'
+        if metadata.is_file():
+            active = json.loads(metadata.read_text())
+            if active['revision'] == revision:
+                container = compose(root, identity, parsed.hostname, 'ps', '-q', 'app')
+                if container and inspect_container(container) == active['image_id']:
+                    active_image = verify_image(active['image_id'], revision)
+                    if stage_runner(root, active_image, revision, runner_python) == active_runner:
+                        wait_healthy(health_url)
+                        return record | {'status': 'ALREADY_DEPLOYED',
+                                         'image_id': active_image, 'runner': str(active_runner)}
         target = stage_runner(root, identity, revision, runner_python)
         record.update(image_id=identity, runner=str(target))
         # Same lock as court_daily.py: never change the runner underneath a screening run.

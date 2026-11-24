@@ -125,6 +125,29 @@ def test_running_processor_blocks_activation_and_backup(deployment):
     assert not any(call[0][:2] == ['docker', 'compose'] and 'up' in call[0] for call in state['calls'])
 
 
+def test_repeat_release_succeeds_while_processor_is_running(deployment, monkeypatch):
+    root, old, db, image_files, state = deployment
+    initial = run(root)
+    rebuilt = 'sha256:' + 'd' * 64
+    original = release.command
+
+    def command(argv, **kwargs):
+        if argv[:4] == ['docker', 'image', 'inspect', 'registry.example/app:tested']:
+            if argv[-1] == '{{.Id}}':
+                return rebuilt
+        return original(argv, **kwargs)
+
+    monkeypatch.setattr(release, 'command', command)
+    with (root / 'story-data/court-daily.lock').open('a') as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        repeat = run(root)
+    assert repeat['status'] == 'ALREADY_DEPLOYED'
+    assert repeat['image_id'] == initial['image_id']
+    assert repeat['runner'] == initial['runner']
+    assert state['created'] == 1
+    assert len(list((root / 'backups').glob('*.sqlite3'))) == 1
+
+
 @pytest.mark.parametrize('bad_file', ['insurance_screening.py', 'step2_courts.py', 'court_failures.py'])
 def test_missing_image_module_fails_before_touching_live_release(deployment, bad_file):
     root, old, db, image_files, state = deployment
@@ -152,7 +175,7 @@ def test_image_revision_must_match_tested_commit(deployment, monkeypatch):
 def test_repeated_release_reuses_verified_runner_and_detects_tampering(deployment):
     root, old, db, image_files, state = deployment
     result = run(root)
-    assert run(root)['status'] == 'COMPLETE' and state['created'] == 1
+    assert run(root)['status'] == 'ALREADY_DEPLOYED' and state['created'] == 1
     (Path(result['runner']) / 'court_pipeline.py').write_text('unexpected edit')
     with pytest.raises(RuntimeError, match='failed verification'):
         run(root)
