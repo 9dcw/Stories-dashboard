@@ -82,7 +82,8 @@ def court_candidates(source, body):
 
 
 def extract_document(url, config, fetcher=fetch_resource):
-    """Resolve official landing pages and extract every PDF page, with no clipping."""
+    """Extract complete documents from audited official opinion endpoints."""
+    settings = json.loads(config or '{}') if isinstance(config, str) else (config or {})
     visited = set()
     for _ in range(4):
         if url in visited or not official_url(url, config):
@@ -102,6 +103,10 @@ def extract_document(url, config, fetcher=fetch_resource):
                 raise ValueError('PDF contains a blank/scanned page; manual review required')
             return {'resolved_url': resolved, 'content_hash': hashlib.sha256(body).hexdigest(),
                     'pages': pages, 'method': 'pdf_full_text', 'fetched_at': utc_now()}
+        if settings.get('document_adapter') == 'oklahoma_html':
+            from step2_courts import oklahoma_document
+            return {'resolved_url': resolved, 'content_hash': hashlib.sha256(body).hexdigest(),
+                    'pages': oklahoma_document(body), 'method': 'html_full_text', 'fetched_at': utc_now()}
         text = body.decode('utf-8', errors='replace')
         links = Links(); links.feed(text)
         pdfs = list(dict.fromkeys(urljoin(resolved, html.unescape(v)) for v in links.links

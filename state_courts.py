@@ -118,7 +118,7 @@ def fetch_listing(source, fetcher, now=None):
     config=json.loads(source['collector_config']);adapter=config.get('listing_adapter')
     if not adapter:return fetcher(source['poll_url'],source_config=config,timeout=30,max_bytes=8_000_000)
     now=now or datetime.now(ZoneInfo('America/New_York'));base=source['poll_url'];results=[]
-    if adapter in {'illinois_first','pennsylvania_superior'}:
+    if adapter in {'illinois_first','pennsylvania_superior','oklahoma_rss'}:
         from step2_courts import fetch_step2
         return fetch_step2(source,fetcher,now)
     if adapter=='florida':

@@ -135,3 +135,32 @@ The daily runner now accepts repeatable `--source ID` alongside `--limit N`, so
 bounded source-specific checks can use the production lock and unchanged rules
 without polling or screening unrelated sources. The scheduled default still
 polls all active Lane B sources.
+
+## Pennsylvania, Illinois and Oklahoma batch (November 24, 2026)
+
+The batch adds definitions for Pennsylvania Commonwealth Court, Illinois
+Appellate Districts 2–5 and Oklahoma's Supreme Court, Court of Civil Appeals
+and Court of Criminal Appeals. The audit in
+`samples/state-court-audit-2026-11-24.json` records three full-text samples per
+source, their hashes and the listing counts. The eight listings exposed 275
+documents at audit time.
+
+- Pennsylvania Commonwealth uses all pages of the official API, the
+  Commonwealth Court's posting types and document directory, and a rolling
+  30-day window.
+- Illinois uses the official district-specific table and follows pagination
+  through the 30-day filing-date window. Rule 23 entries without a document
+  are skipped when the listing records an allowed motion to publish. Entries
+  with documents retain their publication classification.
+- Oklahoma uses three separate official OSCN RSS feeds. Each exposes up to
+  ten published decisions. Full opinion text and footnotes are extracted
+  from the official HTML document. The feeds can include published orders,
+  exclude unpublished decisions and cannot guarantee recovery after more than
+  ten new decisions on a court's feed.
+
+After the matching runner is deployed, audit and activate these exact IDs via
+`scripts/configure_state_courts.py` while holding the court-daily lock.
+The scope is `pacommwct`, `illappct2`, `illappct3`, `illappct4`,
+`illappct5`, `okla`, `oklacivapp` and `oklacrimapp`. The first poll can be
+run independently of the existing feeds by passing the new source IDs to the
+daily runner. Subsequent polls use the normal schedule.

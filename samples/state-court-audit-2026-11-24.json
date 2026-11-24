@@ -1,0 +1,250 @@
+[
+  {
+    "definition_hash": "74b00a5179c0b8bc9e87a6ee2a81da327f559d6a6779213565299d93f5161733",
+    "name": "Pennsylvania Commonwealth Court opinions",
+    "court_id": "pacommwct",
+    "url": "https://www.pacourts.us/api/opinion",
+    "scope": "Commonwealth Court only; rolling 30 days, every API page. Individual opinion/memorandum/order documents including separate opinions; aggregate judgment lists and reargument tables excluded. Publication status retained for existing exclusions.",
+    "checked_at": "2026-11-24T12:24:51Z",
+    "documents_found": 96,
+    "status": "validated",
+    "samples": [
+      {
+        "url": "https://www.pacourts.us/assets/opinions/Commonwealth/out/398CD25ORD_11-20-2026.pdf?cb=1",
+        "headline": "City of Lancaster v. I. Grivas - 398 C.D. 2025 [pco], Nonprecedential",
+        "pages": 1,
+        "content_hash": "dcbfb454a77c5d6339eddc82dac36228aae36bf31d2d8a0224d6e0c0c9bf69b7"
+      },
+      {
+        "url": "https://www.pacourts.us/assets/opinions/Commonwealth/out/662CD25ORD_11-20-2026.pdf?cb=1",
+        "headline": "C. Hontz v. UCBR - 662 C.D. 2025 [pco], Nonprecedential",
+        "pages": 1,
+        "content_hash": "9e2a7d5b4272a438ae9a7c95a22fb796f874b3ca1955c23b03c4544d3dab04a8"
+      },
+      {
+        "url": "https://www.pacourts.us/assets/opinions/Commonwealth/out/612CD25_11-19-2026.pdf?cb=1",
+        "headline": "J. Parker v. PPB - 612 C.D. 2025 [mo], Nonprecedential",
+        "pages": 8,
+        "content_hash": "7b0e54d25e468cd69d1d74014a393e70d9db0a9f75c1b135c646902910a7fce1"
+      }
+    ],
+    "sample_failures": []
+  },
+  {
+    "definition_hash": "c8bfc15ecad44ab9b30ef467b5ce6e1368f375b973a555d2e644fa017f95d6dd",
+    "name": "Illinois Second District Appellate Court opinions",
+    "court_id": "illappct2",
+    "url": "https://www.illinoiscourts.gov/top-level-opinions?d=2&t=appellate",
+    "scope": "Second District only; opinions and Rule 23 orders, rolling 30 days, descending filing dates. Rule 23 status retained for existing nonprecedential exclusion.",
+    "checked_at": "2026-11-24T12:24:51Z",
+    "documents_found": 23,
+    "status": "validated",
+    "samples": [
+      {
+        "url": "https://www.illinoiscourts.gov/resources/2e904366-f828-4c41-bb14-bcc9dd0b83f8/file",
+        "headline": "2026 IL App (2d) 250490-U: In re Commitment of Brown [Rule 23], Nonprecedential",
+        "pages": 30,
+        "content_hash": "ad19ec4228552f06b20baffe999368965cda07115983c7f1635a1926866f1c5b"
+      },
+      {
+        "url": "https://www.illinoiscourts.gov/resources/74981a46-1d48-46f1-a242-81e6458c24c3/file",
+        "headline": "2026 IL App (2d) 250297-U: People v. Williams [Rule 23], Nonprecedential",
+        "pages": 28,
+        "content_hash": "a772611ca5ca6c1d012f97999059ff3539c04a7d131328b6d4e8397f73b61c15"
+      },
+      {
+        "url": "https://www.illinoiscourts.gov/resources/2c74d1ee-ece0-4f98-a122-961dee35d2d1/file",
+        "headline": "2026 IL App (2d) 250496-U: People v. Becerra [Rule 23], Nonprecedential",
+        "pages": 20,
+        "content_hash": "ceb7c97d75bd05fd2d0c48dd1415753f8f5bff382eed77245e1b79add19a6db3"
+      }
+    ],
+    "sample_failures": []
+  },
+  {
+    "definition_hash": "cbc521635d799524408b396a020306fcf9b1e7eac2437d543fabbe2a02b309a6",
+    "name": "Illinois Third District Appellate Court opinions",
+    "court_id": "illappct3",
+    "url": "https://www.illinoiscourts.gov/top-level-opinions?d=3&t=appellate",
+    "scope": "Third District only; opinions and Rule 23 orders, rolling 30 days, descending filing dates. Rule 23 status retained for existing nonprecedential exclusion.",
+    "checked_at": "2026-11-24T12:24:51Z",
+    "documents_found": 10,
+    "status": "validated",
+    "samples": [
+      {
+        "url": "https://www.illinoiscourts.gov/resources/c8377e50-d81d-459b-b4f4-1fe2d4f5725a/file",
+        "headline": "2026 IL App (3d) 250558-U: Nucor Steel Kankakee v. Terex USA [Rule 23], Nonprecedential",
+        "pages": 19,
+        "content_hash": "62b2210da83f36ddda89685582e59e61161d4c2c8b74f45a5b020b20b988b22c"
+      },
+      {
+        "url": "https://www.illinoiscourts.gov/resources/d955051d-6316-48ba-81c3-d0818ef6e346/file",
+        "headline": "2026 IL App (3d) 260446-U: People v. Rendina [Rule 23], Nonprecedential",
+        "pages": 11,
+        "content_hash": "0fc892ba9c03364921e5c465936779ee93a7cd52c658ed99299d1e06a63a442f"
+      },
+      {
+        "url": "https://www.illinoiscourts.gov/resources/49faecca-44da-49e9-a76f-93e0ea022707/file",
+        "headline": "2026 IL App (3d) 260028-U: People v. Lewis [Rule 23], Nonprecedential",
+        "pages": 7,
+        "content_hash": "3ceb08d7104b8be9bcb6e3301b477232f02849ad3a296b11a0382d2ee8d0df88"
+      }
+    ],
+    "sample_failures": []
+  },
+  {
+    "definition_hash": "505afb97f03270a823878a723ad076b61bd2745cc772c215ace784b4ea5c3c34",
+    "name": "Illinois Fourth District Appellate Court opinions",
+    "court_id": "illappct4",
+    "url": "https://www.illinoiscourts.gov/top-level-opinions?d=4&t=appellate",
+    "scope": "Fourth District only; opinions and Rule 23 orders, rolling 30 days, descending filing dates. Rule 23 status retained for existing nonprecedential exclusion.",
+    "checked_at": "2026-11-24T12:24:55Z",
+    "documents_found": 61,
+    "status": "validated",
+    "samples": [
+      {
+        "url": "https://www.illinoiscourts.gov/resources/a26a8f7e-0433-4abf-8e13-3ea558ae3895/file",
+        "headline": "2026 IL App (4th) 250213: People v. Beard",
+        "pages": 27,
+        "content_hash": "25afa88a02e8eaa772510e5dfb5dbc91c3ce884da36eb8c89718f74f5b111d8d"
+      },
+      {
+        "url": "https://www.illinoiscourts.gov/resources/fd3ac0ad-0ef4-4d6b-9f02-48d8a91d619d/file",
+        "headline": "2026 IL App (4th) 260004: People v. Barbary",
+        "pages": 19,
+        "content_hash": "3470d9fcf01bf0d1d1a4f6402ebf30f8351a701f869f3b9e54f5bf550644329f"
+      },
+      {
+        "url": "https://www.illinoiscourts.gov/resources/ef8b492e-fce3-4934-936c-6282c25bab7d/file",
+        "headline": "2026 IL App (4th) 260034-U: People v. Sanchez [Rule 23], Nonprecedential",
+        "pages": 23,
+        "content_hash": "54747123a385fb6d2fbd7754bc99866701c301621e0b80cee15d200d14dcba93"
+      }
+    ],
+    "sample_failures": []
+  },
+  {
+    "definition_hash": "aee706d427ec296760e1113646fe6e39646d3585dc5df61e3bf90c8823d0f546",
+    "name": "Illinois Fifth District Appellate Court opinions",
+    "court_id": "illappct5",
+    "url": "https://www.illinoiscourts.gov/top-level-opinions?d=5&t=appellate",
+    "scope": "Fifth District only; opinions and Rule 23 orders, rolling 30 days, descending filing dates. Rule 23 status retained for existing nonprecedential exclusion.",
+    "checked_at": "2026-11-24T12:24:57Z",
+    "documents_found": 55,
+    "status": "validated",
+    "samples": [
+      {
+        "url": "https://www.illinoiscourts.gov/resources/6bf2b390-9110-40cb-853e-6d515b9dc8cb/file",
+        "headline": "2026 IL App (5th) 250085: City of Mattoon v. Quackenbush",
+        "pages": 36,
+        "content_hash": "0ff06b0738bda62fe68d25c24fe2775e3a9402c8b097428832699cc386e9b16d"
+      },
+      {
+        "url": "https://www.illinoiscourts.gov/resources/bd546266-d347-4049-97c4-953d2bc049c3/file",
+        "headline": "2026 IL App (5th) 260641-U: In re Jayden K. [Rule 23], Nonprecedential",
+        "pages": 22,
+        "content_hash": "b9eece628b8ef1d85c62a4dd6444694d0773f9386fe09739190f92dd3e9c26b6"
+      },
+      {
+        "url": "https://www.illinoiscourts.gov/resources/04ebdf6e-5879-446a-bc7d-83e1c4b8b4b5/file",
+        "headline": "2026 IL App (5th) 250595-U: People v. Dorris [Rule 23], Nonprecedential",
+        "pages": 18,
+        "content_hash": "96f0709c55cbeab1e5df580e001c3ff1a759f11bcf834b6023be19b866600226"
+      }
+    ],
+    "sample_failures": []
+  },
+  {
+    "definition_hash": "97b2580daa436a894cd89bd8371addae42494db0c7744255f98e2ae8ceef7159",
+    "name": "Oklahoma Supreme Court published decisions",
+    "court_id": "okla",
+    "url": "https://www.oscn.net/rss/STOKCSSC.asp",
+    "scope": "Official OSCN RSS, latest 10 published decisions. No archive crawl or unpublished decisions.",
+    "checked_at": "2026-11-24T12:24:58Z",
+    "documents_found": 10,
+    "status": "validated",
+    "samples": [
+      {
+        "url": "https://www.oscn.net/applications/oscn/DeliverDocument.asp?CiteID=553812",
+        "headline": "RE: Termination of Certificate of an Official Court Reporter Appointed on a Temporary Basis, SCAD-2026-111, 2026 OK 83, ___ P.3d ___",
+        "pages": 1,
+        "content_hash": "d5c5dfea16f45ad30e2ad158963e2cef92938cbf9c38016a508063ffa58b144a"
+      },
+      {
+        "url": "https://www.oscn.net/applications/oscn/DeliverDocument.asp?CiteID=553817",
+        "headline": "In re: Amendment to Rule Five of the Rules Governing Admission to the Practice of Law, 5 O.S.2011, ch.1, app. 5, SCAD-2026-113, 2026 OK 85, ___ P.3d ___",
+        "pages": 1,
+        "content_hash": "85f0a83bb3565c5ad2dd47322ae4cd7af0d0946c1dcdb783974898632fa7040d"
+      },
+      {
+        "url": "https://www.oscn.net/applications/oscn/DeliverDocument.asp?CiteID=553793",
+        "headline": "DIAZ v. PREMIER FRANCHISE MANAGEMENT, LLC et al., 123384, 2026 OK 79, ___ P.3d ___",
+        "pages": 1,
+        "content_hash": "e0763ec5d08f4fc6b42584fd118b677b0547b992349016833605eae317a490b1"
+      }
+    ],
+    "sample_failures": []
+  },
+  {
+    "definition_hash": "53506c67805d5e3d0a0725d8a1616d838a243ad0a19a29edf803c124eb4286d9",
+    "name": "Oklahoma Court of Civil Appeals published decisions",
+    "court_id": "oklacivapp",
+    "url": "https://www.oscn.net/rss/STOKCSCV.asp",
+    "scope": "Official OSCN RSS, latest 10 published decisions. No archive crawl or unpublished decisions.",
+    "checked_at": "2026-11-24T12:25:01Z",
+    "documents_found": 10,
+    "status": "validated",
+    "samples": [
+      {
+        "url": "https://www.oscn.net/applications/oscn/DeliverDocument.asp?CiteID=553776",
+        "headline": "DE FURIA V. LUTHER INDEPENDENT SCHOOL DISTRICT NUMBER 3 OF OKLAHOMA COUNTY, et al., 123062, 2026 OK CIV APP 35, ___ P.3d ___",
+        "pages": 1,
+        "content_hash": "03f2727855ea3f367db65cba8a38d94512662a73996c6c5fa43a38c0f1c2daa5"
+      },
+      {
+        "url": "https://www.oscn.net/applications/oscn/DeliverDocument.asp?CiteID=553756",
+        "headline": "REED v. THE GREENWOOD CHAMBER OF COMMERCE d/b/a GREENWOOD COMMUNITY DEVOLPMENT CORPORATION et al., 122849, 2026 OK CIV APP 34, ___ P.3d ___",
+        "pages": 1,
+        "content_hash": "f715a820d1e792dfb1b06b3cc55d1b4ea961e3d0143c94cd266bde53049fd207"
+      },
+      {
+        "url": "https://www.oscn.net/applications/oscn/DeliverDocument.asp?CiteID=553728",
+        "headline": "CONNOR L. HELMS & ASSOCIATES, P.C. v. KELLEY RIEBOLD, 123496, 2026 OK CIV APP 33, ___ P.3d ___",
+        "pages": 1,
+        "content_hash": "72bbf27a0460063f98f00995bc4fb689dc421e22e7c165a41ea3a05350598899"
+      }
+    ],
+    "sample_failures": []
+  },
+  {
+    "definition_hash": "bd09d9b85a8ed26d293309f636d8254dc4ad8f4436016caa480bf51cbec41114",
+    "name": "Oklahoma Court of Criminal Appeals published decisions",
+    "court_id": "oklacrimapp",
+    "url": "https://www.oscn.net/rss/STOKCSCR.asp",
+    "scope": "Official OSCN RSS, latest 10 published decisions. No archive crawl or unpublished decisions.",
+    "checked_at": "2026-11-24T12:25:03Z",
+    "documents_found": 10,
+    "status": "validated",
+    "samples": [
+      {
+        "url": "https://www.oscn.net/applications/oscn/DeliverDocument.asp?CiteID=553762",
+        "headline": "GUTIERREZ v. STATE OF OKLAHOMA, F-2024-355, 2026 OK CR 20, ___ P.3d ___",
+        "pages": 1,
+        "content_hash": "efaad53edabcc03613f49bedd7eb5da826b6e8f9db00c70580a79dd8a4adae4d"
+      },
+      {
+        "url": "https://www.oscn.net/applications/oscn/DeliverDocument.asp?CiteID=553761",
+        "headline": "COX v. STATE OF OKLAHOMA, F-2025-285, 2026 OK CR 21, ___ P.3d ___",
+        "pages": 1,
+        "content_hash": "ded8974b6d14fc057b68841a90e40d0e2f0321875717313b48217ba13770c49a"
+      },
+      {
+        "url": "https://www.oscn.net/applications/oscn/DeliverDocument.asp?CiteID=553642",
+        "headline": "MEEKS v. STATE OF OKLAHOMA, F-2025-197, 2026 OK CR 19, 597 P.3d 669",
+        "pages": 1,
+        "content_hash": "dd475c8e7e87b5d9b69b1c28d14a718d88e07eb8c686daa657145f3ddf22a006"
+      }
+    ],
+    "sample_failures": []
+  }
+]

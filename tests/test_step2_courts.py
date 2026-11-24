@@ -3,9 +3,9 @@ from datetime import datetime
 from urllib.parse import parse_qs,urlsplit
 import pytest
 from court_pilot import source_record,install
-from court_pipeline import court_candidates,nonprecedential
+from court_pipeline import court_candidates,extract_document,nonprecedential
 from state_courts import fetch_listing
-from step2_courts import specs,illinois_page,pennsylvania_page
+from step2_courts import additional_specs,specs,illinois_page,pennsylvania_page
 from story_store import StoryStore
 
 
@@ -77,3 +77,41 @@ def test_registration_is_scoped_and_idempotent(tmp_path):
     store=StoryStore(tmp_path/'db');a=install(store,specs(),activate=True);b=install(store,specs(),activate=True)
     assert a==b and len(store.list_sources())==2
     assert json.loads(store.list_sources()[0]['collector_config'])['court_ids']==['illappct1']
+
+
+def test_illinois_other_district_and_superseded_rule_23():
+    source = source_record(next(s for s in additional_specs() if s['court_id'] == 'illappct5'))
+    court = 'Fifth District Appellate Court'
+    listing = ilpage(ilrow(court=court) + ilrow(
+        1, court=court, kind='Rule 23', link=False, notes='Withdrawn - Motion to Publish Allowed 11/18/26'))
+    body, _, _ = fetch_listing(source, lambda url, **kw: (listing.encode(), 'text/html', url),
+                              datetime(2026,11,24))
+    assert len(court_candidates(source, body.decode())) == 1
+
+
+def test_commonwealth_uses_its_own_court_and_document_path():
+    source = source_record(next(s for s in additional_specs() if s['court_id'] == 'pacommwct'))
+    def fetch(url, **kwargs):
+        assert parse_qs(urlsplit(url).query)['courtType'] == ['COMMONWEALTH']
+        return papage([parow(kind='mo',court=0)]), 'application/json', url
+    body, _, _ = fetch_listing(source,fetch,datetime(2026,11,24))
+    candidates = court_candidates(source,body.decode())
+    assert len(candidates) == 1 and '/Commonwealth/out/' in candidates[0].url
+
+
+def test_oklahoma_rss_and_full_text_keep_footnotes_only_from_opinion():
+    source = source_record(next(s for s in additional_specs() if s['court_id'] == 'oklacivapp'))
+    feed = b'''<rss><channel><title>Oklahoma Court of Civil Appeals Cases</title>
+      <item><title>Case opinion</title><pubDate>Tue, 24 Nov 2026 09:00:00 CST</pubDate>
+      <link>http://www.oscn.net/applications/oscn/DeliverDocument.asp?CiteID=123</link>
+      </item></channel></rss>'''
+    body, _, _ = fetch_listing(source,lambda url, **kw: (feed,'application/rss+xml',url))
+    candidate, = court_candidates(source,body.decode())
+    opinion = ('navigation<!--BEGIN DOCUMENT--><p>' + 'Opinion text. '*12 +
+               '</p><p>Footnote details.</p><!--END DOCUMENT-->citation index').encode()
+    doc = extract_document(candidate.url,source['collector_config'],
+                           lambda url, **kw: (opinion,'text/html',url))
+    assert candidate.url.startswith('https://')
+    assert doc['method'] == 'html_full_text'
+    assert doc['pages'][0].endswith('\nFootnote details.')
+    assert 'citation index' not in doc['pages'][0]
